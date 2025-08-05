@@ -7,6 +7,7 @@ from flask import Blueprint, request
 from werkzeug.utils import secure_filename
 
 from services.artwork_analysis_service import analyze_artwork
+from scripts.generate_composites import generate as generate_mockups
 
 bp = Blueprint("analysis", __name__)
 
@@ -22,9 +23,12 @@ def process_analysis_vision() -> tuple[dict, int]:
     filename = secure_filename(filename)
     try:
         slug = analyze_artwork(filename)
+        # Automatically generate mockup composites once analysis has
+        # completed successfully.
+        generate_mockups(slug)
     except FileNotFoundError:
         logger.error("File not found during analysis: %s", filename)
         return {"error": "file not found"}, 404
 
-    return {"status": "complete", "slug": slug}, 200
+    return {"slug": slug, "status": "complete"}, 200
 
