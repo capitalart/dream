@@ -4,13 +4,7 @@ from __future__ import annotations
 from flask import Blueprint, request
 from werkzeug.utils import secure_filename
 
-from config import (
-    UNANALYSED_ARTWORK_DIR,
-    FINALISED_ARTWORK_DIR,
-    sanitize_slug,
-    finalised_artwork_path,
-    mockup_path,
-)
+from config import UNANALYSED_ARTWORK_DIR, FINALISED_ARTWORK_DIR, sanitize_slug, mockup_path
 
 bp = Blueprint("routes", __name__)
 
@@ -45,15 +39,8 @@ def mockups(slug: str) -> tuple[dict, int]:
     return {"mockups": files}, 200
 
 
-@bp.route("/finalise/<slug>", methods=["POST"])
-def finalise(slug: str) -> tuple[dict, int]:
-    slug = sanitize_slug(slug)
-    final_path = finalised_artwork_path(slug)
-    if not final_path.exists():
-        return {"error": "final image missing"}, 404
-    return {"final": str(final_path)}, 200
-
-
 from .analyze_routes import bp as analyze_bp
+from .finalise_routes import bp as finalise_bp
 
 bp.register_blueprint(analyze_bp)
+bp.register_blueprint(finalise_bp)
