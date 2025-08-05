@@ -1,0 +1,80 @@
+"""Configuration for DreamArtMachine application."""
+from __future__ import annotations
+
+import logging
+from logging.handlers import RotatingFileHandler
+import os
+import re
+from pathlib import Path
+
+# Load environment variables from .env if present
+try:
+    from dotenv import load_dotenv
+    load_dotenv()  # type: ignore
+except Exception:  # pragma: no cover
+    pass
+
+# Base directory for all operations
+BASE_DIR = Path(os.getenv("DREAM_HOME", "/home/dream")).resolve()
+
+# Core folder structure
+ART_PROCESSING_DIR = BASE_DIR / "art-processing"
+UNANALYSED_ARTWORK_DIR = ART_PROCESSING_DIR / "unanalysed-artwork"
+PROCESSED_ARTWORK_DIR = BASE_DIR / "processed-artwork"
+FINALISED_ARTWORK_DIR = BASE_DIR / "finalised-artwork"
+LOG_DIR = BASE_DIR / "logs"
+INPUTS_DIR = BASE_DIR / "inputs"
+MOCKUPS_DIR = INPUTS_DIR / "mockups"
+
+# Ensure required directories exist
+for directory in [
+    UNANALYSED_ARTWORK_DIR,
+    PROCESSED_ARTWORK_DIR,
+    FINALISED_ARTWORK_DIR,
+    LOG_DIR,
+    MOCKUPS_DIR,
+]:
+    directory.mkdir(parents=True, exist_ok=True)
+
+# Logging configuration
+LOG_FILE = LOG_DIR / "app.log"
+
+
+def configure_logging() -> None:
+    """Set up application-wide logging."""
+    logger = logging.getLogger()
+    if logger.handlers:
+        return
+    logger.setLevel(logging.INFO)
+    handler = RotatingFileHandler(LOG_FILE, maxBytes=10 * 1024 * 1024, backupCount=5)
+    formatter = logging.Formatter(
+        "%(asctime)s %(levelname)s %(name)s: %(message)s"
+    )
+    handler.setFormatter(formatter)
+    logger.addHandler(handler)
+
+
+_slug_re = re.compile(r"[^a-zA-Z0-9-]+")
+
+
+def sanitize_slug(text: str) -> str:
+    """Return a filesystem-safe slug."""
+    slug = _slug_re.sub("-", text.lower())
+    slug = re.sub(r"-+", "-", slug).strip("-")
+    return slug
+
+
+def finalised_artwork_path(slug: str) -> Path:
+    return FINALISED_ARTWORK_DIR / slug / f"{slug}.jpg"
+
+
+def mockup_path(slug: str, index: int) -> Path:
+    return FINALISED_ARTWORK_DIR / slug / f"{slug}-MU-{index:02d}.jpg"
+
+
+def thumb_path(slug: str) -> Path:
+    return FINALISED_ARTWORK_DIR / slug / f"{slug}-thumb.jpg"
+
+
+def openai_path(slug: str) -> Path:
+    return FINALISED_ARTWORK_DIR / slug / f"{slug}-openai.jpg"
