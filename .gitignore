@@ -1,3 +1,6 @@
 venv/
 __pycache__/
 .DS_Store
+.ssh/
+.cache/
+.sudo_as_admin_successful
