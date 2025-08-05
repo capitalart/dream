@@ -52,3 +52,8 @@ def finalise(slug: str) -> tuple[dict, int]:
     if not final_path.exists():
         return {"error": "final image missing"}, 404
     return {"final": str(final_path)}, 200
+
+
+from .analyze_routes import bp as analyze_bp
+
+bp.register_blueprint(analyze_bp)

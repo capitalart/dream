@@ -25,6 +25,7 @@ FINALISED_ARTWORK_DIR = BASE_DIR / "finalised-artwork"
 LOG_DIR = BASE_DIR / "logs"
 INPUTS_DIR = BASE_DIR / "inputs"
 MOCKUPS_DIR = INPUTS_DIR / "mockups"
+MASTER_ARTWORK_PATHS_FILE = BASE_DIR / "master-artwork-paths.json"
 
 # Ensure required directories exist
 for directory in [
@@ -78,3 +79,15 @@ def thumb_path(slug: str) -> Path:
 
 def openai_path(slug: str) -> Path:
     return FINALISED_ARTWORK_DIR / slug / f"{slug}-openai.jpg"
+
+
+def processed_artwork_path(slug: str) -> Path:
+    return PROCESSED_ARTWORK_DIR / slug / f"{slug}.jpg"
+
+
+def processed_analysis_path(slug: str) -> Path:
+    return PROCESSED_ARTWORK_DIR / slug / f"{slug}-analysis.json"
+
+
+def processed_openai_path(slug: str) -> Path:
+    return PROCESSED_ARTWORK_DIR / slug / f"{slug}-openai.jpg"
