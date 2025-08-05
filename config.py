@@ -77,6 +77,10 @@ def thumb_path(slug: str) -> Path:
     return FINALISED_ARTWORK_DIR / slug / f"{slug}-thumb.jpg"
 
 
+def preview_path(slug: str) -> Path:
+    return FINALISED_ARTWORK_DIR / slug / f"{slug}-thumb.jpg"
+
+
 def openai_path(slug: str) -> Path:
     return FINALISED_ARTWORK_DIR / slug / f"{slug}-openai.jpg"
 
