@@ -55,8 +55,11 @@ def analyze_artwork(filename: str) -> str:
     slug_dir.mkdir(parents=True, exist_ok=True)
 
     processed_image = processed_artwork_path(slug)
-    shutil.copyfile(source, processed_image)
-    logger.info("Copied artwork to %s", processed_image)
+    # Move the original file into the processed artwork directory
+    # instead of copying to ensure there is only a single source of
+    # truth for the artwork file.
+    shutil.move(str(source), processed_image)
+    logger.info("Moved artwork to %s", processed_image)
 
     analysis = _perform_analysis(processed_image)
     analysis_path = processed_analysis_path(slug)
@@ -104,9 +107,12 @@ def _update_master_paths(
 
     record = {
         slug: {
-            "image": str(image),
-            "analysis": str(analysis),
-            "openai": str(openai_img),
+            # Store absolute paths so downstream consumers have the
+            # correct locations regardless of the current working
+            # directory.
+            "image": str(image.resolve()),
+            "analysis": str(analysis.resolve()),
+            "openai": str(openai_img.resolve()),
         }
     }
 
