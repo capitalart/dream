@@ -13,3 +13,10 @@
 2025-08-05 20:04:16.985 [info] Registering default platform agent...
 2025-08-05 20:04:16.986 [info] activationBlocker from 'conversationFeature' took for 5628ms
 2025-08-05 20:04:17.176 [info] BYOK: Copilot Chat known models list fetched successfully.
+2025-08-05 20:19:20.383 [info] Fetched model metadata in 1266ms f546fd04-82bd-41c0-b4f6-9789c90017bd
+2025-08-05 20:34:22.292 [info] Logged in as capitalart
+2025-08-05 20:34:23.219 [info] Got Copilot token for capitalart
+2025-08-05 20:34:24.430 [info] Fetched model metadata in 1207ms 0b060982-1675-417f-a801-881454d043cb
+2025-08-05 20:34:25.160 [info] copilot token chat_enabled: true, sku: free_limited_copilot
+2025-08-05 20:34:25.319 [info] BYOK: Copilot Chat known models list fetched successfully.
+2025-08-05 20:49:28.652 [info] Fetched model metadata in 1320ms 734adbe2-e780-4fd5-8cab-c38c7e2d5709

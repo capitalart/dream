@@ -34,3 +34,13 @@
 2025-08-05 20:04:05.379 [info] [<unknown>][ea89b0a3][ManagementConnection] New connection established.
 2025-08-05 20:04:05.380 [info] [<unknown>][3ec91066][ExtensionHostConnection] New connection established.
 2025-08-05 20:04:05.386 [info] [<unknown>][3ec91066][ExtensionHostConnection] <14294> Launched Extension Host Process.
+2025-08-05 20:08:54.149 [info] New EH opened, aborting shutdown
+2025-08-05 20:08:54.152 [error] Error: Unexpected SIGPIPE
+    at process.<anonymous> (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/server-main.js:184:1060)
+    at process.emit (node:events:530:35)
+2025-08-05 20:34:06.947 [error] AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1714:7)
+2025-08-05 20:34:06.949 [error] AggregateError [ECONNREFUSED]: 
+    at internalConnectMultiple (node:net:1139:18)
+    at afterConnectMultiple (node:net:1714:7)

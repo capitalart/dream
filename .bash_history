@@ -16,3 +16,10 @@ mkdir -p ~/.ssh
 nano ~/.ssh/authorized_keys
 chmod 600 ~/.ssh/authorized_keys
 chown -R dream:dream ~/.ssh
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+nano ~/.ssh/authorized_keys
+chmod 600 ~/.ssh/authorized_keys
+chown -R dream:dream ~/.ssh
+nano ~/.ssh/config
+exit

@@ -1,0 +1,32 @@
+2025-08-05 20:18:49,565 DEBUG    root            Loaded Command Group: ['gcloud', 'compute']
+2025-08-05 20:18:49,567 DEBUG    root            Loaded Command Group: ['gcloud', 'compute', 'firewall_rules']
+2025-08-05 20:18:49,603 DEBUG    root            Loaded Command Group: ['gcloud', 'compute', 'firewall-rules', 'create']
+2025-08-05 20:18:49,790 DEBUG    root            Running [gcloud.compute.firewall-rules.create] with arguments: [--allow: "['tcp:443']", --source-ranges: "['0.0.0.0/0']", --target-tags: "['https-server']", NAME: "default-allow-https"]
+2025-08-05 20:18:50,236 INFO     ___FILE_ONLY___ Creating firewall...
+2025-08-05 20:18:50,249 DEBUG    urllib3.connectionpool Starting new HTTPS connection (1): compute.googleapis.com:443
+2025-08-05 20:18:50,285 DEBUG    urllib3.connectionpool https://compute.googleapis.com:443 "POST /compute/v1/projects/art-narrator/global/firewalls?alt=json HTTP/11" 403 None
+2025-08-05 20:18:50,315 DEBUG    root            Chosen display Format:list[title="Could not fetch resource:",always-display-title]
+2025-08-05 20:18:50,316 DEBUG    root            (gcloud.compute.firewall-rules.create) Could not fetch resource:
+ - Request had insufficient authentication scopes.
+Traceback (most recent call last):
+  File "/usr/bin/../lib/google-cloud-sdk/lib/googlecloudsdk/calliope/cli.py", line 985, in Execute
+    resources = calliope_command.Run(cli=self, args=args)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/bin/../lib/google-cloud-sdk/lib/googlecloudsdk/calliope/backend.py", line 945, in Run
+    resources = command_instance.Run(args)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/bin/../lib/google-cloud-sdk/lib/surface/compute/firewall_rules/create.py", line 171, in Run
+    return client.MakeRequests([(client.apitools_client.firewalls, 'Insert',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/bin/../lib/google-cloud-sdk/lib/googlecloudsdk/api_lib/compute/client_adapter.py", line 145, in MakeRequests
+    utils.RaiseToolException(
+  File "/usr/bin/../lib/google-cloud-sdk/lib/googlecloudsdk/api_lib/compute/utils.py", line 139, in RaiseToolException
+    RaiseException(problems, calliope_exceptions.ToolException, error_message)
+  File "/usr/bin/../lib/google-cloud-sdk/lib/googlecloudsdk/api_lib/compute/utils.py", line 148, in RaiseException
+    raise exception(
+googlecloudsdk.calliope.exceptions.ToolException: Could not fetch resource:
+ - Request had insufficient authentication scopes.
+
+2025-08-05 20:18:50,318 ERROR    root            (gcloud.compute.firewall-rules.create) Could not fetch resource:
+ - Request had insufficient authentication scopes.
+

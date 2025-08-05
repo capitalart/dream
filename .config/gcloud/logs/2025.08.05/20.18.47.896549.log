@@ -1,0 +1,37 @@
+2025-08-05 20:18:47,977 DEBUG    root            Loaded Command Group: ['gcloud', 'compute']
+2025-08-05 20:18:48,005 DEBUG    root            Loaded Command Group: ['gcloud', 'compute', 'firewall_rules']
+2025-08-05 20:18:48,075 DEBUG    root            Loaded Command Group: ['gcloud', 'compute', 'firewall-rules', 'create']
+2025-08-05 20:18:48,308 DEBUG    root            Running [gcloud.compute.firewall-rules.create] with arguments: [--allow: "['tcp:80']", --source-ranges: "['0.0.0.0/0']", --target-tags: "['http-server']", NAME: "default-allow-http"]
+2025-08-05 20:18:48,520 DEBUG    google.auth.transport.requests Making request: GET http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/791567154193-compute@developer.gserviceaccount.com/?recursive=true
+2025-08-05 20:18:48,522 DEBUG    urllib3.connectionpool Starting new HTTP connection (1): metadata.google.internal:80
+2025-08-05 20:18:48,524 DEBUG    urllib3.connectionpool http://metadata.google.internal:80 "GET /computeMetadata/v1/instance/service-accounts/791567154193-compute@developer.gserviceaccount.com/?recursive=true HTTP/11" 200 197
+2025-08-05 20:18:48,525 DEBUG    google.auth.transport.requests Making request: GET http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/791567154193-compute@developer.gserviceaccount.com/token
+2025-08-05 20:18:48,527 DEBUG    urllib3.connectionpool http://metadata.google.internal:80 "GET /computeMetadata/v1/instance/service-accounts/791567154193-compute@developer.gserviceaccount.com/token HTTP/11" 200 869
+2025-08-05 20:18:48,646 INFO     ___FILE_ONLY___ Creating firewall...
+2025-08-05 20:18:48,648 DEBUG    urllib3.connectionpool Starting new HTTPS connection (1): compute.googleapis.com:443
+2025-08-05 20:18:48,686 DEBUG    urllib3.connectionpool https://compute.googleapis.com:443 "POST /compute/v1/projects/art-narrator/global/firewalls?alt=json HTTP/11" 403 None
+2025-08-05 20:18:48,715 DEBUG    root            Chosen display Format:list[title="Could not fetch resource:",always-display-title]
+2025-08-05 20:18:48,716 DEBUG    root            (gcloud.compute.firewall-rules.create) Could not fetch resource:
+ - Request had insufficient authentication scopes.
+Traceback (most recent call last):
+  File "/usr/bin/../lib/google-cloud-sdk/lib/googlecloudsdk/calliope/cli.py", line 985, in Execute
+    resources = calliope_command.Run(cli=self, args=args)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/bin/../lib/google-cloud-sdk/lib/googlecloudsdk/calliope/backend.py", line 945, in Run
+    resources = command_instance.Run(args)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/bin/../lib/google-cloud-sdk/lib/surface/compute/firewall_rules/create.py", line 171, in Run
+    return client.MakeRequests([(client.apitools_client.firewalls, 'Insert',
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/bin/../lib/google-cloud-sdk/lib/googlecloudsdk/api_lib/compute/client_adapter.py", line 145, in MakeRequests
+    utils.RaiseToolException(
+  File "/usr/bin/../lib/google-cloud-sdk/lib/googlecloudsdk/api_lib/compute/utils.py", line 139, in RaiseToolException
+    RaiseException(problems, calliope_exceptions.ToolException, error_message)
+  File "/usr/bin/../lib/google-cloud-sdk/lib/googlecloudsdk/api_lib/compute/utils.py", line 148, in RaiseException
+    raise exception(
+googlecloudsdk.calliope.exceptions.ToolException: Could not fetch resource:
+ - Request had insufficient authentication scopes.
+
+2025-08-05 20:18:48,721 ERROR    root            (gcloud.compute.firewall-rules.create) Could not fetch resource:
+ - Request had insufficient authentication scopes.
+
