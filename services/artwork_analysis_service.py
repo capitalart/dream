@@ -1,17 +1,18 @@
 """Artwork analysis service for DreamArtMachine."""
 from __future__ import annotations
 
+import base64
 import json
 import logging
 import os
 import shutil
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
-try:  # Optional dependencies
-    import openai  # type: ignore
+try:  # Optional dependency
+    from openai import OpenAI  # type: ignore
 except Exception:  # pragma: no cover
-    openai = None
+    OpenAI = None
 
 from config import (
     MASTER_ARTWORK_PATHS_FILE,
@@ -45,30 +46,31 @@ def analyze_artwork(filename: str) -> str:
         If the specified file does not exist.
     """
 
-    source = UNANALYSED_ARTWORK_DIR / filename
+    source = (UNANALYSED_ARTWORK_DIR / filename).resolve()
     if not source.exists():
-        logger.error("Source file missing: %s", source)
+        logger.error("Analysis failed for %s", filename)
         raise FileNotFoundError(filename)
 
     slug = sanitize_slug(Path(filename).stem)
-    slug_dir = PROCESSED_ARTWORK_DIR / slug
+    slug_dir = (PROCESSED_ARTWORK_DIR / slug).resolve()
     slug_dir.mkdir(parents=True, exist_ok=True)
 
-    processed_image = processed_artwork_path(slug)
+    processed_image = processed_artwork_path(slug).resolve()
     # Move the original file into the processed artwork directory
     # instead of copying to ensure there is only a single source of
     # truth for the artwork file.
-    shutil.move(str(source), processed_image)
+    shutil.move(str(source), str(processed_image))
     logger.info("Moved artwork to %s", processed_image)
 
-    analysis = _perform_analysis(processed_image)
-    analysis_path = processed_analysis_path(slug)
+    analysis, oa_bytes = _perform_analysis(slug, processed_image)
+    analysis_path = processed_analysis_path(slug).resolve()
     _safe_write_json(analysis_path, analysis)
     logger.info("Wrote analysis to %s", analysis_path)
 
-    openai_img = processed_openai_path(slug)
-    shutil.copyfile(processed_image, openai_img)
-    logger.info("Created placeholder image %s", openai_img)
+    openai_img = processed_openai_path(slug).resolve()
+    with openai_img.open("wb") as fh:
+        fh.write(oa_bytes)
+    logger.info("Wrote OpenAI image %s", openai_img)
 
     _update_master_paths(slug, processed_image, analysis_path, openai_img)
 
@@ -76,21 +78,35 @@ def analyze_artwork(filename: str) -> str:
     return slug
 
 
-def _perform_analysis(image: Path) -> Dict[str, Any]:
+def _perform_analysis(slug: str, image: Path) -> Tuple[Dict[str, Any], bytes]:
     """Run AI analysis for ``image``.
 
-    Falls back to a mock response when no provider is available.
+    Returns analysis data and image bytes. Falls back to a mock response
+    when OpenAI is unavailable or errors.
     """
 
-    if openai and os.getenv("OPENAI_API_KEY"):
+    img_path = image.resolve()
+    api_key = os.getenv("OPENAI_API_KEY")
+    if OpenAI and api_key:
         try:  # pragma: no cover - network dependent
-            resp = openai.Image.create_variation(image=open(image, "rb"))
-            return {"provider": "openai", "data": resp}
+            client = OpenAI(api_key=api_key)
+            with img_path.open("rb") as fh:
+                resp = client.images.generate_variation(
+                    model="gpt-image-1", image=fh, timeout=30
+                )
+            b64_img = resp.data[0].b64_json
+            img_bytes = base64.b64decode(b64_img)
+            logger.info("OpenAI Vision success for %s", slug)
+            return {"provider": "openai", "data": resp.model_dump()}, img_bytes
         except Exception as exc:  # pragma: no cover
             logger.exception("OpenAI analysis failed: %s", exc)
+            logger.warning("OpenAI fallback used for %s", slug)
+    else:
+        logger.warning("OpenAI fallback used for %s", slug)
 
-    logger.warning("Using mock analysis for %s", image)
-    return {"provider": "mock", "notes": "analysis unavailable"}
+    with img_path.open("rb") as fh:
+        img_bytes = fh.read()
+    return {"provider": "mock", "notes": "OpenAI unavailable or errored"}, img_bytes
 
 
 def _safe_write_json(path: Path, data: Dict[str, Any]) -> None:
