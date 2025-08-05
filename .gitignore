@@ -8,3 +8,7 @@ __pycache__/
 .vscode-server/
 .env
 .vscode-server/data/logs/
+backups/
+logs/backup-restore-*.md
+logs/backup-cron-*.log
+manifest-*.txt

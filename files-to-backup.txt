@@ -1,0 +1,4 @@
+# Additional individual files to include in backups
+requirements.txt
+config.py
+app.py

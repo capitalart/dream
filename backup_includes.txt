@@ -1,0 +1,3 @@
+# Directories or files to include in backups
+# Paths are relative to the project root
+.
