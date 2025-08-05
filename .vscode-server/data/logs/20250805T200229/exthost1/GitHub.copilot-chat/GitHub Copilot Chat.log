@@ -1,0 +1,81 @@
+2025-08-05 20:02:51.173 [info] [GitExtensionServiceImpl] Initializing Git extension service.
+2025-08-05 20:02:51.173 [info] Can't use the Electron fetcher in this environment.
+2025-08-05 20:02:51.173 [info] Using the Node fetch fetcher.
+2025-08-05 20:02:51.173 [info] [GitExtensionServiceImpl] Successfully activated the vscode.git extension.
+2025-08-05 20:02:51.173 [info] [GitExtensionServiceImpl] Enablement state of the vscode.git extension: true.
+2025-08-05 20:02:51.173 [info] [GitExtensionServiceImpl] Successfully registered Git commit message provider.
+2025-08-05 20:02:52.103 [error] Canceled: Canceled
+    at Kc (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:7:1394)
+    at file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:161598
+    at Array.forEach (<anonymous>)
+    at a4.dispose (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:161538)
+    at QG.terminate (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:117:10084)
+    at Y3.terminate (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:119:914)
+    at us (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:356:9945)
+    at Gh.value (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:356:8097)
+    at $.C (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2375)
+    at $.fire (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2593)
+    at ao.fire (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:9459)
+    at H1.A (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:12575)
+    at Gh.value (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:10995)
+    at $.C (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2375)
+    at $.fire (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2593)
+    at Hx.acceptChunk (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:7942)
+    at file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:7228
+    at Socket.t (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:15252)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Socket.Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23): Failed to get copilot token
+2025-08-05 20:02:52.103 [error] GitHub Copilot could not connect to server. Extension activation failed: "Canceled"
+2025-08-05 20:02:52.103 [warning] [LanguageModelAccess] LanguageModel/Embeddings are not available without auth token
+2025-08-05 20:02:52.103 [error] Canceled: Canceled
+    at Kc (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:7:1394)
+    at file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:161598
+    at Array.forEach (<anonymous>)
+    at a4.dispose (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:161538)
+    at QG.terminate (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:117:10084)
+    at Y3.terminate (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:119:914)
+    at us (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:356:9945)
+    at Gh.value (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:356:8097)
+    at $.C (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2375)
+    at $.fire (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2593)
+    at ao.fire (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:9459)
+    at H1.A (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:12575)
+    at Gh.value (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:10995)
+    at $.C (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2375)
+    at $.fire (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2593)
+    at Hx.acceptChunk (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:7942)
+    at file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:7228
+    at Socket.t (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:15252)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Socket.Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)
+2025-08-05 20:02:52.103 [warning] [LanguageModelAccess] LanguageModel/Embeddings are not available without auth token
+2025-08-05 20:02:52.103 [error] Canceled: Canceled
+    at Kc (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:7:1394)
+    at file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:161598
+    at Array.forEach (<anonymous>)
+    at a4.dispose (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:161538)
+    at QG.terminate (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:117:10084)
+    at Y3.terminate (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:119:914)
+    at us (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:356:9945)
+    at Gh.value (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:356:8097)
+    at $.C (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2375)
+    at $.fire (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2593)
+    at ao.fire (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:9459)
+    at H1.A (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:12575)
+    at Gh.value (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:10995)
+    at $.C (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2375)
+    at $.fire (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:27:2593)
+    at Hx.acceptChunk (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:7942)
+    at file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:7228
+    at Socket.t (file:///home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/server/out/vs/workbench/api/node/extensionHostProcess.js:29:15252)
+    at Socket.emit (node:events:518:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Socket.Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23)

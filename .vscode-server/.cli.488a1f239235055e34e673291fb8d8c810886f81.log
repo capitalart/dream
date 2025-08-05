@@ -1,0 +1,4 @@
+Listening on 127.0.0.1:46153
+[2025-08-05 20:04:04] info Disposed of connection to running server.
+[2025-08-05 20:04:04] info Checking /home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/log.txt and /home/dream/.vscode-server/cli/servers/Stable-488a1f239235055e34e673291fb8d8c810886f81/pid.txt for a running server...
+[2025-08-05 20:04:04] info Found running server (pid=13199)

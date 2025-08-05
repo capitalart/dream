@@ -1,0 +1,49 @@
+2025-08-05 20:03:04.446 [info] [main] Log level: Info
+2025-08-05 20:03:04.446 [info] [main] Validating found git in: "git"
+2025-08-05 20:03:04.446 [info] [main] Using git "2.39.5" from "git"
+2025-08-05 20:03:04.446 [info] [Model][doInitialScan] Initial repository scan started
+2025-08-05 20:03:04.446 [info] > git rev-parse --show-toplevel [5ms]
+2025-08-05 20:03:04.446 [info] > git rev-parse --git-dir --git-common-dir [7ms]
+2025-08-05 20:03:04.446 [info] [Model][openRepository] Opened repository (path): /home/dream
+2025-08-05 20:03:04.446 [info] [Model][openRepository] Opened repository (real path): /home/dream
+2025-08-05 20:03:04.447 [info] > git config --get commit.template [4ms]
+2025-08-05 20:03:04.447 [info] > git rev-parse --show-toplevel [2ms]
+2025-08-05 20:03:04.456 [info] > git rev-parse --show-toplevel [2ms]
+2025-08-05 20:03:04.457 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) refs/heads/main refs/remotes/main [6ms]
+2025-08-05 20:03:04.457 [warning] [Git][getBranch] No such branch: main
+2025-08-05 20:03:04.470 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [5ms]
+2025-08-05 20:03:04.472 [info] > git rev-parse --show-toplevel [3ms]
+2025-08-05 20:03:04.523 [info] > git status -z -uall [62ms]
+2025-08-05 20:03:04.524 [info] > git rev-parse --show-toplevel [47ms]
+2025-08-05 20:03:04.585 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) refs/heads/main refs/remotes/main [15ms]
+2025-08-05 20:03:04.586 [warning] [Git][getBranch] No such branch: main
+2025-08-05 20:03:04.586 [error] [GitHistoryProvider][resolveHEADMergeBase] Failed to resolve merge base for main: Error: No such branch: main.
+2025-08-05 20:03:04.590 [info] > git config --get commit.template [8ms]
+2025-08-05 20:03:04.590 [info] > git rev-parse --show-toplevel [13ms]
+2025-08-05 20:03:04.592 [info] [Model][doInitialScan] Initial repository scan completed - repositories (1), closed repositories (0), parent repositories (0), unsafe repositories (0)
+2025-08-05 20:03:04.593 [info] > git fetch [167ms]
+2025-08-05 20:03:04.593 [info] Missing or invalid credentials.
+Skip silent fetch commands
+Host key verification failed.
+fatal: Could not read from remote repository.
+
+Please make sure you have the correct access rights
+and the repository exists.
+2025-08-05 20:03:04.610 [info] > git config --get commit.template [11ms]
+2025-08-05 20:03:04.611 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) refs/heads/main refs/remotes/main [3ms]
+2025-08-05 20:03:04.612 [warning] [Git][getBranch] No such branch: main
+2025-08-05 20:03:05.328 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) refs/heads/main refs/remotes/main [711ms]
+2025-08-05 20:03:05.328 [warning] [Git][getBranch] No such branch: main
+2025-08-05 20:03:05.349 [info] > git status -z -uall [17ms]
+2025-08-05 20:03:05.350 [info] > git check-ignore -v -z --stdin [10ms]
+2025-08-05 20:03:05.351 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [15ms]
+2025-08-05 20:03:05.832 [info] > git config --get commit.template [3ms]
+2025-08-05 20:03:05.837 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) refs/heads/main refs/remotes/main [2ms]
+2025-08-05 20:03:05.837 [warning] [Git][getBranch] No such branch: main
+2025-08-05 20:03:05.846 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [2ms]
+2025-08-05 20:03:05.853 [info] > git status -z -uall [12ms]
+2025-08-05 20:03:53.498 [info] > git config --get commit.template [5ms]
+2025-08-05 20:03:53.498 [info] > git for-each-ref --format=%(refname)%00%(upstream:short)%00%(objectname)%00%(upstream:track)%00%(upstream:remotename)%00%(upstream:remoteref) refs/heads/main refs/remotes/main [2ms]
+2025-08-05 20:03:53.498 [warning] [Git][getBranch] No such branch: main
+2025-08-05 20:03:53.508 [info] > git for-each-ref --sort -committerdate --format %(refname)%00%(objectname)%00%(*objectname) [1ms]
+2025-08-05 20:03:53.516 [info] > git status -z -uall [14ms]
