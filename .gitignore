@@ -6,3 +6,5 @@ __pycache__/
 .sudo_as_admin_successful
 .ssh/
 .vscode-server/
+.env
+.vscode-server/data/logs/
