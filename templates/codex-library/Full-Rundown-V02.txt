@@ -1,0 +1,1636 @@
+DreamArtMachine: Full Project System Overview
+(Table of Contents Draft)
+Project Vision & Scope
+1.1 Purpose and End Game
+1.2 Key Features & Differentiators
+1.3 Target Users (for personal and future member use)
+
+Core Architecture & Tech Stack
+2.1 High-Level Architecture Diagram
+2.2 Core Directories & File Layout
+2.3 Main Tech & Tools Used (Python, FastAPI, OpenAI, etc.)
+2.4 Key Integration Points (OpenAI, Gelato, Etsy, Nembol, Gemini, etc.)
+
+Artwork Processing Workflow
+3.1 Artwork Upload
+3.2 Temp Processing & Analysis
+3.3 AI Vision Analysis & Description
+3.4 Listing Generation (Etsy, CSV, etc.)
+3.5 Mockup Generation & Management
+3.6 Finalization, Renaming, and File Organization
+3.7 Export & Publishing
+3.8 Quality Control, Audit, and Verification
+
+Data & File Management
+4.1 Database (Schema & Key Tables)
+4.2 Artwork File Storage Structure
+4.3 Naming Conventions & Standards
+4.4 Versioning & Backups
+
+AI & Content Generation
+5.1 AI Analysis Profiles & Prompt Templates
+5.2 Vision and Text Model Integration (OpenAI/Gemini)
+5.3 Content Blocks & SEO Strategy
+5.4 EEAT, Curation, and Cultural Guidance
+5.5 Member/Custom Profiles
+
+User Interface & Experience
+6.1 Web App Navigation & UX Principles
+6.2 Security & Permissions
+6.3 Admin/Member Modes
+6.4 Customization & Themes
+
+Workflow Automation & DevOps
+7.1 Automated Scripts (Reporting, Audit, Maintenance)
+7.2 Codex AI Assistance (Testing, Refactoring, QA)
+7.3 GitOps/Deployment Best Practices
+7.4 System Health, Logging & Monitoring
+
+External Service Integrations
+8.1 Print-On-Demand (Gelato, etc.)
+8.2 Marketplace Exports (Etsy, Nembol)
+8.3 AI Services (OpenAI, Gemini, Google, etc.)
+8.4 Third-Party Libraries & APIs
+
+Quality Control & Testing
+9.1 Manual QA
+9.2 Automated Testing
+9.3 Reporting & Auditing
+9.4 Failure Handling & Error Reporting
+
+Future Enhancements & Roadmap
+10.1 Features in Progress
+10.2 Wishlist & Stretch Goals
+10.3 Known Limitations
+10.4 Member/Community Expansion Plan
+
+Appendix
+11.1 File/Folder Tree (Current Snapshot)
+11.2 Key Settings/Config Reference
+11.3 Troubleshooting
+11.4 Useful Scripts, Aliases, and Helper Tools
+
+
+
+
+1. Project Vision & Scope
+1.1 Purpose and End Game
+DreamArtMachine is a robust, production-grade, AI-driven platform designed by and for Australian artists and makers—originally for personal use but extensible to a membership-based model. Its purpose is to radically streamline and automate the journey from digital artwork creation to high-quality print-ready listings across print-on-demand (POD) and e-commerce marketplaces (e.g., Etsy, Nembol, Gelato), while preserving full control, quality, and integrity at every stage.
+
+The end goal is to provide a turnkey system for managing thousands of artwork files, auto-generating professional mockups, AI-powered art descriptions, and export-ready listings, with zero manual CSV wrangling or tedious admin. Quality control, copyright, and curation standards are baked in, as is deep flexibility for Aboriginal, Australian, and contemporary art needs. The system also automates final listing QA and can be adapted to new platforms as needed.
+
+1.2 Key Features & Differentiators
+Self-hosted, Modular, Secure: Built on FastAPI/Python, designed for easy deployment, with a structure ready for both solo and future multi-user expansion.
+
+Artwork-Centric Workflow: Every part of the system revolves around the lifecycle of a single artwork file, from upload to multi-platform listing.
+
+Full AI/ML Pipeline: Uses OpenAI Vision (and optionally Gemini) for image analysis, and GPT-powered prompt templates for world-class, SEO-rich, culturally respectful listings.
+
+Mockup Automation: Batch generates and manages professional wall-art mockups, enforcing strict naming and organizational rules.
+
+Zero CSV Headaches: Handles all listing and export formatting in the backend—producing CSVs compatible with Nembol, Etsy, and future platforms.
+
+Deep Quality Control: Integrates system-level checks for missing, duplicate, or misnamed files, image quality, and listing consistency.
+
+Cultural Sensitivity: Aboriginal and Australian art profiles ensure all content generation respects cultural protocols, with option for exclusive art packages for partners.
+
+Automation Scripts: Built-in scripts for system health checks, full project snapshots, and ongoing audits.
+
+Production-Grade Standards: All code, configs, and templates are fully documented, version-controlled, and structured for ongoing improvement (Robbie Mode™).
+
+1.3 Target Users (Now & Future)
+Personal/Professional Use: Australian artists, art entrepreneurs, and digital creators who want to take control of their print-on-demand art business with pro-level tools.
+
+Membership Mode (Future): Expandable to a private, invite-only club of trusted artists/creators, with member-specific settings, listing profiles, and user management.
+
+Integration Partners: Print-on-demand businesses seeking access to exclusive, high-quality Australian artwork libraries (with package or non-exclusive options).
+
+2. Core Architecture & Tech Stack
+2.1 High-Level System Structure
+DreamArtMachine is engineered for robustness, modularity, and extensibility. The platform is structured around a core FastAPI backend, using Python for all business logic and orchestration. The application is strictly organized into functional domains (routes, services, utils, etc.), and follows modern Python best practices—favoring clarity, maintainability, and explicitness.
+
+Major Directories & Files:
+
+routes/ — All FastAPI route definitions (upload, analyze, mockup, export, etc.)
+
+services/ — Business logic, AI integration, content generation, etc.
+
+utils/ — Reusable helpers for file management, templates, security, image processing, etc.
+
+core/ — Configuration, settings, constants, and environment handling.
+
+templates/ — Jinja2 templates for HTML rendering.
+
+data/ — Artwork database (artworks.db), user data, settings, etc.
+
+static/ — Static files (CSS, images, icons, etc.)
+
+mockup-generator/ — All mockup processing scripts, coordinates, and templates.
+
+Application Entry Point
+main.py — Sets up FastAPI app, includes all routers, configures Jinja2, error handlers, and other startup logic.
+
+2.2 Primary Technology Choices
+Layer	Technology / Tool	Purpose
+Web Framework	FastAPI	Modern, async-ready Python web API framework
+Templating	Jinja2	HTML rendering, template composition
+ORM/Database	SQLAlchemy + SQLite	Relational DB, scalable to PostgreSQL if needed
+AI/ML Integration	OpenAI API (GPT, Vision)	Image & text analysis, listing generation
+File Ops/Imaging	Pillow (PIL), pathlib	Image processing, resizing, sRGB management
+CSV/Export	csv, pandas (optional)	Exporting listings for Nembol, Etsy, etc.
+Auth/Security	passlib, itsdangerous	Password hashing, session/token security
+Frontend	Minimal JS/HTML/CSS	No complex SPA—focus on efficient, minimal UI
+Automation/Scripts	Custom Python scripts	System health, QA, code snapshots, audits
+Version Control	Git	Full versioning, commit history, code reviews
+
+2.3 System Components & Responsibilities
+A. FastAPI Backend
+Handles:
+
+User authentication (with roles for future expansion)
+
+Artwork upload, metadata extraction, file validation
+
+Routing for all business actions (analyze, mockup, export, etc.)
+
+Error handling, logging, and custom endpoints (health checks, reports)
+
+B. Artwork Analysis & Listing Generator
+Handles:
+
+Automated image analysis via OpenAI Vision (or Gemini if enabled)
+
+Generation of detailed, SEO-optimized, culturally aware art listings using custom AI prompt templates
+
+Profile-based configuration for different art styles (Aboriginal, Australian, etc.)
+
+All AI and logic is server-side—no browser-based AI calls
+
+C. Mockup Generator System
+Handles:
+
+Batch and single mockup creation from base templates
+
+Strict naming and output folder conventions (all automated)
+
+Management of mockup variants, thumbnails, AI-optimized images
+
+D. File & Data Management
+Handles:
+
+Structured file/folder handling for uploads, processing, and finalized artwork
+
+Reliable storage and referencing of all files, using absolute and relative paths
+
+Automated migration of files during workflow (e.g., temp → finalized)
+
+E. CSV Export & Integration
+Handles:
+
+Generating platform-ready CSV files for Nembol, Etsy, and future POD integrations
+
+Full control over output fields, formatting, and data consistency
+
+Sidecar JSON or other formats supported for future integrations
+
+F. Quality Assurance (QA) & System Scripts
+Handles:
+
+Automated health checks, system reports, code snapshots, and audits
+
+File/folder integrity checks (naming, existence, duplicates, etc.)
+
+Can be run as scheduled jobs or on demand
+
+G. Security & User Management
+Handles:
+
+Secure authentication for solo and future member use
+
+Full password management, session security, and permissions logic
+
+Ready for expansion to support invited artists/curators in the future
+
+2.4 Extensibility & DevOps
+Modular by design: New routes, services, or integrations can be added with minimal risk of breaking existing workflows.
+
+Automated reports: Project includes scripts for generating full codebase snapshots, folder trees, config dumps, and database schema exports—ideal for debugging, onboarding, or audits.
+
+Config-driven: All critical paths, credentials, and platform settings are centralized in config files (with safe defaults and .env overrides).
+
+Portable & VM-friendly: Designed for easy deployment in VM/cloud environments (Linux first, but portable to Docker or cloud PaaS if needed).
+
+Pro-grade Git discipline: All files and changes are version-controlled with strict commit protocols (no “it works on my machine” disasters).
+
+3. Detailed Workflow Stages & Data Flow
+3.1 Overview of Workflow Stages
+The DreamArtMachine system is designed around a linear, trackable workflow that takes artwork from initial upload through to final CSV export, ready for marketplaces and print-on-demand partners. Every step is auditable, and all data transitions (file moves, DB updates, AI actions) are explicitly managed for traceability.
+
+Key Workflow Stages:
+
+Artwork Upload & Ingestion
+
+Artwork Analysis (AI Visual & Text)
+
+Mockup Generation
+
+Mockup Review & Finalization
+
+Artwork & Mockup Finalization
+
+Export Preparation (CSV/JSON)
+
+Quality Assurance & Reporting
+
+3.2 Stage-by-Stage Breakdown
+A. Artwork Upload & Ingestion
+Entry Point:
+upload_routes.py (route: /upload)
+
+Process:
+
+User selects and uploads one or more art files (all common formats supported).
+
+Each upload is assigned a unique processing subfolder within art-uploads/temp-processing/.
+
+Metadata is extracted: original filename, timestamp, user ID (if logged in), preliminary SEO filename (if available).
+
+Database entry is created in the artworks table, including file paths, status (uploaded), and any attached notes.
+
+Data Flow:
+User → FastAPI route → disk (temp-processing) → database
+
+B. Artwork Analysis (AI Visual & Text)
+Entry Point:
+analyze_routes.py (route: /analyze/{artwork_id})
+
+Process:
+
+The system retrieves the artwork from its recorded file path.
+
+Visual Analysis:
+
+Sends the image to OpenAI Vision (or Gemini, if enabled) for a rich, structured description—colour, subject, composition, textures, etc.
+
+Description is validated for completeness.
+
+Textual Listing Generation:
+
+Constructs an AI prompt using a master template (from master_listing_templates/etsy_master_template.txt), populated with the visual analysis and profile-based settings (e.g., Aboriginal or Aussie landscape, etc.).
+
+The result is a long-form, SEO-friendly listing, reviewed for formatting and content guidelines (e.g., minimum word count, cultural sensitivity).
+
+Database is updated with generated title, description, and analysis metadata.
+
+Data Flow:
+DB/artwork file → AI model(s) → DB update (analysis, title, description)
+
+C. Mockup Generation
+Entry Point:
+mockup_routes.py and supporting scripts
+
+Process:
+
+After successful analysis, users can generate mockups (in batch or single mode).
+
+The mockup generator uses pre-defined templates (frames, walls, objects) to composite the artwork onto a range of realistic settings.
+
+All mockup files are stored with strict naming conventions (e.g., SEO-FILENAME-MU-01.jpg) in the designated temp folder for that artwork.
+
+Each mockup’s path and metadata is tracked in the database.
+
+Data Flow:
+Artwork (temp folder) → Mockup scripts → new image files → DB mockup records
+
+D. Mockup Review & Finalization
+Entry Point:
+mockup_management_routes.py + frontend (review screens)
+
+Process:
+
+The user reviews all generated mockups in a sortable gallery.
+
+Selection: User can “accept” or “reject” each mockup (only accepted are finalized).
+
+Finalization: Accepted mockups are moved to the analysed-artwork/{seo-folder}/ directory, renamed per convention, and non-selected variants are archived or discarded.
+
+Database status for each mockup and artwork is updated to reflect finalization.
+
+Data Flow:
+Mockup images (temp) → user review → finalized folder/archive → DB update
+
+E. Artwork & Mockup Finalization
+Entry Point:
+analyze_routes.py (/accept-finalize/{artwork_id} route)
+
+Process:
+
+Once all reviews are done, artwork and its mockups are “locked in” and marked as finalized.
+
+The system:
+
+Moves all files (main, thumb, openai-variant, and mockups) into their permanent, SEO-named directory under analysed-artwork/.
+
+Updates all DB references with new paths.
+
+Changes artwork status to finalized and records the finalized timestamp.
+
+Data Flow:
+Temp processing folders → permanent location → DB path/status updates
+
+F. Export Preparation (CSV/JSON)
+Entry Point:
+export_routes.py (routes: /export/csv, /export/json, etc.)
+
+Process:
+
+Users can export finalized artwork (and all attached mockups) in formats ready for Nembol, Etsy, or other partners.
+
+The export generator compiles all required fields—title, description, paths/URLs for all images, pricing, tags, etc.—and ensures CSV-safety (no rogue line breaks, no HTML).
+
+Optionally generates JSON “sidecars” for additional integrations.
+
+All exports are logged for auditability.
+
+Data Flow:
+Finalized artwork/mockups + DB → CSV/JSON writer → export files
+
+G. Quality Assurance & Reporting
+Entry Point:
+System scripts (e.g., a-total-nuclear.py report), QA endpoints, admin screens.
+
+Process:
+
+Automated scripts scan the system regularly:
+
+Integrity checks: File/directory existence, naming conformity, orphaned records.
+
+DB checks: Invalid data, missing references, status mismatches.
+
+AI health checks: OpenAI API connectivity, API key validity, model status.
+
+Full codebase and folder tree snapshots for backup or review.
+
+QA results are written to timestamped reports, available in /reports/.
+
+Data Flow:
+Full system → reporting/QA script → Markdown/txt/CSV reports
+
+3.3 Data Integrity, Statuses, and Auditing
+Every artwork and mockup has status fields (e.g., uploaded, analyzed, mockups, finalized, exported, error) to track its lifecycle.
+
+All file moves and renames are explicitly recorded in the database, and old paths are never re-used.
+
+QA scripts and admin actions can reconcile DB and file system, flagging any inconsistencies for manual review.
+
+All critical actions (uploads, AI runs, file moves, exports) are timestamped and attributed (user, script, or system).
+
+3.4 Visual Summary
+Here’s the overall flow in simple steps:
+
+Upload → Analyze → Generate Mockups → Review/Accept → Finalize → Export → QA/Report
+
+Each step is self-contained, but the DB always tracks current status and file paths, and the system is built to be resumable and fault-tolerant (crashes or errors can be retried from last good state).
+
+
+4. AI Integration & Prompt Engineering
+4.1 AI Services Overview
+DreamArtMachine deeply integrates with modern AI models for both visual and textual analysis. The primary provider is OpenAI (Vision & Text), with infrastructure in place to support future additions like Gemini (Google) or other model APIs.
+
+AI is leveraged for:
+
+Visual description and style breakdown (OpenAI Vision)
+
+SEO-rich, long-form listing descriptions (GPT-4+)
+
+Title, tags, and attribute suggestions
+
+Optional: future quality checks, mockup suggestions, auto-tagging
+
+4.2 Model Access, API Key Handling & Versioning
+API keys are stored securely via .env or system secrets and loaded by the FastAPI app on boot.
+
+Model version is fully configurable: e.g., OPENAI_MODEL=gpt-4.1 in .env or via UI.
+
+Fallback logic is built in: if the preferred model fails, the app will attempt the previous stable or supported version automatically (e.g., gpt-4-turbo).
+
+4.3 AI Workflow in Practice
+A. Visual Analysis (Vision API)
+When a new artwork is uploaded, its file path is passed to the vision analysis function.
+
+The image is submitted to OpenAI Vision, which returns a rich description: subject, colours, composition, techniques, even "vibe."
+
+Output is validated—missing fields or "null" responses are flagged for manual review.
+
+B. Prompt Engineering for Listing Generation
+The result from vision analysis is plugged into a master prompt template (etsy_master_template.txt) which also incorporates:
+
+AI profile settings (e.g., Aboriginal art, Aussie nature, etc. as per settings.json)
+
+Required tone (Aussie humour, professional curation language, etc.)
+
+Minimum word count, CTA phrases, and cultural notes as needed
+
+This prompt is dynamically constructed by artwork_analysis_service.py, using reusable content blocks for things like aspect ratio, dot art history, etc.
+
+C. OpenAI Chat/Completion Call
+The prompt is sent to the OpenAI API (GPT-4.1 or latest), with all required parameters set.
+
+Results are checked for format (no HTML, CSV-safe, proper paragraphing, no forbidden phrases).
+
+If the AI output fails any checks, the process is repeated or manual review is flagged.
+
+D. Output Handling
+The generated title, description, tags, and analysis metadata are saved to the artwork record.
+
+If mockup suggestions or image-specific tags are generated, these are attached to the artwork or added as structured fields.
+
+4.4 Reusable Content Blocks & Prompt Structure
+Content blocks for listing prompts (e.g., “Dot Painting History,” “Aspect Ratio Explainer,” “Aussie Wildlife References”) are kept modular in /utils/content_blocks.py for easy update or reuse.
+
+The master prompt template is centralized in master_listing_templates/etsy_master_template.txt and never includes HTML (critical for CSV export).
+
+Prompts can be extended with context or user overrides at runtime (e.g., user-specific art themes or special campaign instructions).
+
+4.5 Quality & Ethics
+Aboriginal and Indigenous content: AI is prompted to follow cultural sensitivity, never overstep, and always preference user-supplied stories if available.
+
+All outputs are required to follow platform and business rules: word count, tone, no banned phrases, and full attribution.
+
+Future versions will integrate AI-driven quality checks (e.g., does the generated description match the visual? Are there inconsistencies between title and tags?).
+
+4.6 AI Audit & Logging
+Every AI call (input prompt, output, model, duration, success/failure) is logged to the database or a log file.
+
+Logs include:
+
+Timestamp
+
+User/requestor
+
+Model version
+
+Prompt content (scrubbed for secrets)
+
+Output snippet or error message
+
+This enables full traceability for debugging, improvement, or regulatory review.
+
+4.7 Extensibility
+The AI layer is abstracted—new providers (e.g., Gemini, local models, third-party APIs) can be slotted in with minimal refactor.
+
+Prompt logic and templates are versioned and tracked for A/B testing or continuous improvement.
+
+All user and AI-generated content is saved separately for transparency and easy override/rollback.
+
+
+5. Image and File Management
+5.1 Overview of File Flow
+DreamArtMachine implements a robust, multi-stage file handling workflow to support image integrity, traceability, and automated processing:
+
+Upload Stage
+
+Images are first placed in /art-uploads/temp-processing/[unique-id]/.
+
+Original filenames are preserved on disk for traceability, with the upload timestamp and user tracked in the database.
+
+Temporary directories are uniquely generated for each artwork to prevent conflicts and enable parallel processing.
+
+Processing Stage
+
+Images undergo validation (file type, size, corruption check) and then are queued for AI vision analysis and preview generation.
+
+Any mockups, thumbs, or OpenAI variant images are generated in this temp folder and linked to the main artwork record.
+
+Finalization Stage
+
+Once analysis is complete and the artwork is accepted/finalized, all related files are moved to their permanent location under /analysed-artwork/[seo_folder]/.
+
+Strict naming conventions are enforced:
+
+Main artwork: {seo_filename}.jpg
+
+Thumbnails: {seo_filename}-thumb.jpg
+
+OpenAI variant: {seo_filename}-openai.jpg
+
+Mockups: {seo_filename}-MU-01.jpg … -MU-10.jpg
+
+5.2 Directory Structure
+Uploads:
+/home/dream/dreamartmachine/art-uploads/temp-processing/[unique-id]/
+
+Finalized Artworks:
+/home/dream/dreamartmachine/analysed-artwork/[seo_folder]/
+
+Mockups (input/output):
+/home/dream/dreamartmachine/mockup-generator/Input/Mockups/
+
+Exports & CSVs:
+/home/dream/exports/Composites/
+(Or user-specified location for final exports/Nembol/Etsy CSVs.)
+
+5.3 Naming & Metadata Rules
+SEO Filename is the single source of truth for all finalized files (created automatically or supplied by user).
+
+All generated files reference the artwork’s unique database ID, original filename, and final SEO filename for full traceability.
+
+Any manual renames or corrections are reflected in both disk structure and DB fields.
+
+5.4 URL Generation & Serving
+Static URLs for finalized artwork are mapped to /static/analysed-artwork/ (served by FastAPI or Nginx).
+
+Temp file URLs are mapped to /static-temp-uploads/ and include cache-busting query params based on the file’s last-modified timestamp.
+
+Functions for URL generation (get_artwork_display_url, etc.) always prefer the latest, valid, on-disk file, falling back to placeholders if not found.
+
+5.5 Thumbnail & OpenAI Variant Generation
+Thumbnails are auto-generated via Pillow or AI-driven resizing and stored alongside the main image.
+
+OpenAI variant is optionally generated if requested or required for AI comparison/optimisation.
+
+All variants follow strict naming:
+{seo_filename}-thumb.jpg, {seo_filename}-openai.jpg.
+
+5.6 File Move & Cleanup Logic
+When an artwork is finalized, all files are atomically moved to their target folders—failure in any part triggers rollback or admin alert.
+
+Temporary upload directories are purged after successful finalization or at scheduled intervals, keeping disk usage lean.
+
+Old, orphaned, or abandoned uploads are regularly scanned and removed by automated scripts.
+
+5.7 Error Handling, Logging & Recovery
+Every file move, rename, or deletion is logged (with user, time, and file paths).
+
+If a file move fails, the user is alerted via the UI and given clear next steps (retry, admin contact).
+
+Corrupt or unreadable images are flagged immediately for admin attention and cannot proceed to mockup/finalization.
+
+5.8 Extensibility & Best Practices
+Folder and filename rules are future-proofed—new variants or mockup types can be added without breaking existing logic.
+
+Cloud storage or CDN integration (e.g., S3, Azure Blob) is supported via settings—switchable with minimal code changes.
+
+Image metadata (EXIF, ICC profiles, etc.) is preserved where possible and can be surfaced in admin or export views.
+
+
+6. Database, Models & State Management
+6.1 Overview
+DreamArtMachine uses a structured, normalized database—currently SQLite for local/test use, but ready for Postgres or MySQL in production. SQLAlchemy is the ORM of choice, with Pydantic models for FastAPI data validation and API responses.
+
+6.2 Key Database Tables
+artworks
+
+Primary record for all uploaded and processed artwork.
+
+Fields include:
+id, original_filename, seo_filename, sku, user_id,
+artwork_base_folder_path, original_file_storage_path,
+renamed_artwork_path, thumb_path, openai_image_path,
+status, created_at, finalized_at, updated_at,
+generated_title, ai_analysis_profile_key, listing_profile_key,
+mockup_selection, etc.
+
+users
+
+All user logins with secure password hashes.
+
+Fields: id, username, email, hashed_password, is_active, is_superuser, created_at, updated_at, ai_analysis_profile_key, etc.
+
+mockup_template_metadata
+
+Stores info about available mockup templates (style, type, enabled/disabled).
+
+Includes template file references, tags, and preview image paths.
+
+(Planned/Optional)
+
+exports: Tracks exported CSVs or listings for auditing.
+
+activity_log: All key actions for traceability (uploads, edits, AI calls, file moves).
+
+6.3 ORM & Models
+SQLAlchemy ORM provides Python classes for each table—relationships (e.g., user → artworks) are mapped with foreign keys.
+
+Pydantic schemas wrap the models for validation of input/output in API routes (robust and type-safe).
+
+Database migrations (e.g., Alembic) ensure schema evolves smoothly without breaking data.
+
+6.4 State Transitions & Artwork Status
+Every artwork record maintains a clear status:
+
+uploaded, processing, analyzed, finalized, ready_for_export, exported, error_*
+
+Status transitions are atomic—changes to both the DB and file system happen together.
+
+If any step fails (file move, AI call, export), the status is set to error_* with details for debugging and user notification.
+
+6.5 Data Consistency & Recovery
+Artwork records always track their current file paths; any file move triggers a DB update.
+
+Orphaned DB records (e.g., if files are lost) are flagged and shown in admin.
+
+Manual admin tools/scripts exist for fixing broken state, retrying failed steps, or purging abandoned records.
+
+6.6 Extensibility & Future-Proofing
+Table and field structure is designed for painless extension (e.g., more AI analysis fields, additional mockup types, versioned exports).
+
+Supports multi-user, multi-role workflows (artist, reviewer, admin, exporter).
+
+Ready for migration to managed DBs (RDS, Cloud SQL) and scaling up to millions of records.
+
+6.7 Data Export & Integration
+Database fields are mapped for seamless export to CSV for Nembol/Etsy—field mapping is centralized and configurable.
+
+Every exported listing is traceable back to its original artwork record.
+
+Planned: export logs and rollback support for compliance or bulk editing.
+
+
+7. AI & Content Generation Pipeline
+7.1 Overview
+DreamArtMachine’s heart is its AI-driven pipeline, which handles everything from image analysis to Pulitzer-worthy Etsy listing copy. The system leverages OpenAI’s GPT-4 Vision (and ready for Gemini and others), running each artwork through a multi-stage process—analyzing visuals, extracting attributes, and generating high-converting product listings with a uniquely Aussie and Aboriginal-flavoured tone.
+
+7.2 Analysis & Listing Workflow
+Artwork Uploaded
+
+Triggers automatic queuing for analysis.
+
+Visual Analysis
+
+AI (OpenAI Vision) interprets the artwork’s image file directly from disk.
+
+Outputs detailed natural-language descriptions, colors, style, composition, and more.
+
+For dot paintings, it prompts for Aboriginal art history/context (if appropriate).
+
+Metadata Extraction
+
+AI generates suggested SEO title, tags, colour palette, and identifies textures/styles for the artwork.
+
+Also produces technical data (dimensions, aspect ratio) and content for mockup captions.
+
+Etsy Listing Generation
+
+AI composes a 400+ word, CSV-safe, text-only (no HTML) description.
+
+Description adheres to the “Robbie Mode™” prompt:
+
+No generic “realistic”/“immerse yourself” phrases
+
+Fun, warm, Aussie humour and heartfelt tone
+
+Deep art curation language (methods, texture, palette)
+
+Aboriginal stories if appropriate
+
+“Add to ya shopping basket” style CTAs
+
+EEAT (Expertise, Experience, Authority, Trustworthiness) principles baked in
+
+Each listing profile (Aboriginal Dot Art, Flora Art, Wildlife Art, etc.) has a corresponding AI prompt block (centralized in settings.json and template files).
+
+Listing Review & Export
+
+Generated text is reviewed (manual or AI bot) for tone, formatting, and compliance.
+
+On approval, all listing data and images are bundled for CSV/Nembol/Etsy export.
+
+7.3 Prompt Engineering & Content Blocks
+Centralized Prompt Management
+
+etsy_master_template.txt serves as the master prompt for all Etsy copywriting.
+
+Profile-specific prompts are stored in settings.json for quick swaps between art styles and platforms.
+
+Reusable Content Blocks
+
+Modular “blocks” for dot painting history, aspect ratio, palette analysis—plugged in or left out by profile.
+
+Ensures each artwork’s listing is unique, richly detailed, and culturally sensitive.
+
+7.4 API Integration & Model Selection
+OpenAI API (default)
+
+Model: gpt-4.1 (configurable, with fallback to gpt-4-turbo etc.)
+
+Uses both text and vision endpoints as needed.
+
+Future Expansion
+
+Gemini, Claude, Mistral, or custom AI endpoints can be added via the backend dispatcher.
+
+Multi-provider logic built in for instant failover if an API is unreachable or hits quota.
+
+7.5 Content Quality & Review System
+Manual & Automated Review
+
+Listings can be flagged for review if tone, length, or structure don’t meet standards.
+
+AI “listing QA” bot (planned) can spot-check and auto-suggest edits or highlight cultural compliance risks.
+
+Audit Log
+
+All AI calls, prompt texts, and outputs are logged with timestamp and artwork ID for full traceability.
+
+7.6 Future-Proofing AI
+All prompt templates, profiles, and model parameters are versioned.
+
+Easily add new profiles (e.g., “Contemporary Aboriginal”, “Aussie Surrealism”) without breaking existing workflow.
+
+Automated test suite covers listing generation, ensuring output matches all current prompt logic and compliance rules.
+
+
+8. Mockup Generation, Review & Finalization
+8.1 Overview
+Mockups are critical to DreamArtMachine’s “gallery feel” and conversion rate. The system automates high-quality wall art previews for each artwork—generating, organizing, and managing mockups so you (or your partners) always have stunning, ready-to-export assets.
+
+8.2 Mockup Generation Workflow
+Artwork Submission
+
+When new artwork is uploaded and analyzed, it is instantly queued for mockup generation.
+
+Template Selection
+
+System supports a growing library of mockup templates (living room, nursery, modern apartment, rustic, etc.).
+
+Templates can be classified by room type, orientation, and style—each tagged and previewed in the UI for easy selection.
+
+Automated Mockup Creation
+
+AI or script-driven image compositing overlays each artwork onto selected backgrounds.
+
+Output files named using strict SEO conventions (seo-name-MU-01.jpg, etc.), all auto-stored in a temp-processing folder.
+
+Thumbnails and AI-optimized variants are generated for each mockup batch.
+
+Batch Review UI
+
+All mockups in the batch appear in an easy-to-use “review” screen, showing full-size previews, filenames, and variant tags.
+
+Each can be accepted, rejected, renamed, or edited in-batch.
+
+Batch metadata, including aspect ratio, template used, and colour theme, is logged with the artwork in the database.
+
+8.3 Finalization & Storage
+Finalizing Mockups
+
+Once the best mockups are selected, the “finalize” process:
+
+Moves files from temp to permanent /finalised-artwork/{seo_folder}/ folder
+
+Applies enforced filename and folder naming rules
+
+Deletes unselected variants and old temp files
+
+Updates database records with final paths, thumbnail, and mockup metadata
+
+Export-Ready Structure
+
+Every finalized artwork now lives in its own SEO-friendly subfolder:
+
+
+/finalised-artwork/{seo-folder}/
+   {seo_filename}.jpg
+   {seo_filename}-MU-01.jpg
+   {seo_filename}-MU-02.jpg
+   ...
+   {seo_filename}-thumb.jpg
+   {seo_filename}-openai.jpg
+Ensures direct compatibility for Etsy CSV export, Nembol batch uploads, and other marketplaces.
+
+Quality Checks
+
+Finalization logic checks for missing or duplicate files, validates image sizes, and logs any issues.
+
+QA bot (planned) will automatically spot-check batches for consistency or watermark issues.
+
+8.4 Mockup Template Management
+Central Template Repository
+
+Templates are managed as image assets in /mockup-generator/Input/Mockups.
+
+Each template has metadata (orientation, style, tags) and preview image.
+
+Adding/Editing Templates
+
+Admin UI supports drag-n-drop for new templates, with instant preview.
+
+Template metadata is stored in the DB for filtering and fast searching.
+
+Versioning
+
+Template updates don’t overwrite live templates—instead, new versions are added, with full audit history.
+
+8.5 Future Improvements
+AI-Driven Template Matching
+
+Future: Automatically suggest best mockup backgrounds based on artwork style, colour palette, and market trends.
+
+Bulk/Partner Mode
+
+Designed to handle entire batches (e.g., 100+ artworks) with a single click—partners can get exclusive preview sets with their branding.
+
+Auto-Export
+
+Finalized mockups can be zipped and batch-exported directly for partner libraries or API handoff (coming soon).
+
+
+9. CSV Export, Etsy/Nembol/Partner Integration
+9.1 Overview
+DreamArtMachine is engineered to make exporting, listing, and syndicating artwork across multiple marketplaces (Etsy, Nembol, and B2B partner shops) completely painless and error-free. Everything from SKU to mockup image URLs, SEO titles, and ready-to-go descriptions is built into the workflow.
+
+9.2 Etsy CSV Export
+CSV File Generation
+
+System automatically builds Etsy-compliant CSV files for bulk upload.
+
+All listing fields (title, description, price, tags, mockup image URLs, etc.) are generated or filled from the database.
+
+Only finalized, “ready for export” artworks are included.
+
+SEO & Compliance
+
+Titles, descriptions, and tags are AI-generated using your Pulitzer-worthy, culturally aware templates.
+
+No HTML; clean, CSV-safe text only.
+
+Strict adherence to Etsy’s field limits and requirements (e.g., no duplicate images, correct ordering, 13 tags, no forbidden words).
+
+Image Linking
+
+Image columns auto-fill with URLs that map to your finalized mockups and main artwork, formatted for direct Etsy use.
+
+Thumbnails, AI variants, and OpenAI-enhanced previews are included where relevant.
+
+9.3 Nembol Export
+Direct Nembol Integration
+
+CSVs or JSON files can be exported in Nembol format, including all mockup images, metadata, and category mappings.
+
+Supports partner-specific pricing, SKU prefixes, or “exclusive” tags as needed.
+
+Automation-Ready
+
+Batch process: select a group of artworks, click “Export for Nembol,” and get a validated file in seconds.
+
+Future: API sync direct to Nembol or via webhooks for fully automated product sync.
+
+9.4 B2B & POD Partner Library Export
+Custom Packages
+
+Partners can receive exclusive, non-exclusive, or white-label art packs in their chosen format (CSV, JSON, ZIP).
+
+Licensing, usage, and exclusivity status is tracked in the DB and exported alongside image and metadata files.
+
+Flexible Structure
+
+Export logic adapts fields and templates to partner requirements (e.g., Shopify, WooCommerce, Gelato.com, or unique in-house formats).
+
+Bulk Export
+
+Any set of artworks (filtered by profile, collection, partner, etc.) can be instantly exported with all image assets bundled and correctly mapped.
+
+9.5 Quality Assurance for Exports
+Pre-Export Checks
+
+Built-in verification before export: checks for missing images, title/description length, tag count, empty fields, and CSV/JSON validity.
+
+Any detected issues are flagged for easy fix in the admin UI.
+
+Human-Readable Reports
+
+Every export generates a summary report (CSV row counts, missing fields, warnings), archived for future reference.
+
+9.6 Automation and Integration Roadmap
+Scheduled Exports
+
+Future: System will auto-schedule daily/weekly partner exports for your top resellers and update feeds as new artwork goes live.
+
+API Integration
+
+Partner integration roadmap includes push-to-marketplace and webhook triggers for new drops, instant inventory updates, and custom partner dashboards.
+
+Export Templates
+
+Export template system allows custom mapping and logic per partner—no more “one-size-fits-none” headaches.
+
+
+
+10. Quality Assurance, AI Checks & Automation
+10.1 Automated Quality Control (QC) at Every Stage
+Image & Data Integrity
+
+As each artwork moves through the pipeline (upload, analysis, mockup, export), DreamArtMachine performs automated checks:
+
+Ensures original, thumbnail, mockup, and AI-variant images exist and are valid images (not corrupted, not 0 bytes, right aspect ratio).
+
+Checks for duplicate or missing files.
+
+Validates that each record in the database has a matching file on disk (bi-directional integrity).
+
+Filename & Path Validation
+
+Every image is checked to conform with strict naming conventions (e.g., seo-filename-MU-01.jpg).
+
+Storage paths are validated—no images left stranded in temp folders or missing from finalized folders.
+
+10.2 AI-Driven Listing & Metadata QA
+Automated Listing Review
+
+AI bots re-read generated Etsy/Nembol/Partner descriptions, titles, tags, and SEO metadata for:
+
+Keyword density.
+
+No forbidden phrases or formatting (e.g., “realistic”, “immerse yourself”).
+
+Proper use of Aboriginal story elements, colour and texture analysis, and professional curation language.
+
+CTAs and style checks (e.g., always “add to ya shopping basket” or equivalent).
+
+Cultural & Legal Checks
+
+Ensures all Aboriginal content is culturally appropriate and non-offensive.
+
+Flags any potential copyright or licensing conflicts before export.
+
+10.3 Workflow “Traffic Lights” & Error Highlighting
+Visual Indicators
+
+Each artwork gets a status (“ready for mockup”, “QC fail”, “finalized”, “exported”, etc.) visible in the admin dashboard.
+
+Failed QC steps are highlighted with reasons (e.g., “thumbnail missing”, “mockup count low”, “SEO tags missing”).
+
+Batch Actions
+
+Bulk-fix tools allow you to re-run QA or AI checks for whole folders or batches of artworks with one click.
+
+10.4 Export Pre-Check & Final Audit
+Before Export:
+
+The system runs a final pre-export audit:
+
+Verifies all mandatory images and metadata exist and are accessible.
+
+Runs AI re-check of titles/descriptions/tags for format and policy compliance.
+
+Generates a “pre-flight” report listing any items needing manual attention.
+
+Export Blockers
+
+Listings with fatal errors (e.g., missing artwork file, description too short) are blocked from export, with error explanations and quick links to fix.
+
+10.5 Human & AI Feedback Loops
+Human Verification
+
+You (or trusted staff) can manually approve, override, or flag any artwork or listing if the bot gets it wrong.
+
+AI Suggestions
+
+The AI proposes improvements for flagged issues (e.g., alternative CTAs, stronger tags, summary rewordings) and can auto-fix routine errors if enabled.
+
+Change Log & Rollback
+
+Every automated and manual QC action is logged, so you can review, audit, and roll back changes as needed.
+
+10.6 Continuous Self-Improvement
+Analytics Dashboard
+
+System tracks QC failures, common errors, and recurring issues, letting you fine-tune your workflow or prompt templates.
+
+Learning Loops
+
+As you correct or approve AI suggestions, the system can learn from your feedback and improve over time—getting closer to “set-and-forget” reliability.
+
+
+11. Security, Permissions & User Management
+11.1 Authentication & Access Control
+User Accounts
+
+DreamArtMachine supports named user accounts for all system access.
+
+Admin/root user (that’s you) has full privileges, including configuration, workflow overrides, and export authority.
+
+Additional users can be granted limited or specific roles (e.g., “mockup team”, “curator”, “listing reviewer”).
+
+Login Security
+
+All logins require strong passwords; password hashes are stored securely (never plaintext).
+
+Optional: Enforce 2-factor authentication (2FA) for admin or sensitive actions.
+
+Session Management
+
+Session cookies use secure, HTTP-only flags and can be set to expire automatically after inactivity.
+
+Forced logout and session expiry available in case of suspected breach.
+
+11.2 Permissions & Role-based Workflow
+Granular Role Assignment
+
+Each route/function can be restricted by user role. For example:
+
+Only admins can finalize artwork or export listings.
+
+Curators can approve or reject art but not change database records.
+
+Mockup team can only access mockup-related screens and actions.
+
+Audit Logs
+
+Every login, edit, finalization, export, or admin action is logged with username, time, and action type.
+
+Tamper-evident logs—admins can’t erase their own tracks.
+
+Approval Workflows
+
+Optional: Listings or image sets can require two-stage approval (e.g., AI pre-check then human sign-off).
+
+11.3 Data Security & Privacy
+Sensitive Data Handling
+
+User passwords and session tokens are encrypted at rest.
+
+API keys (OpenAI, partner integrations) are stored in environment variables or a secured config file, never hardcoded.
+
+Exported CSVs and metadata do not contain any private user information—only what’s required for listings.
+
+GDPR & Privacy Compliance
+
+User data is never shared with third parties unless required for external integrations (e.g., Etsy API, Nembol).
+
+Optional: Account deletion tools and data access/export requests if you onboard additional team members.
+
+File Security
+
+Uploaded images and files are stored in directories that are not directly web-accessible—served only via secure, permission-checked routes.
+
+Temporary uploads are routinely purged.
+
+11.4 System Security Practices
+Regular Dependency Checks
+
+Automated tools check for vulnerabilities in your Python/JS dependencies (e.g., pip-audit, safety, npm audit).
+
+Warnings surface in the admin dashboard when updates are required.
+
+Backup & Disaster Recovery
+
+Nightly automated backups of the database and all image assets.
+
+Restore tools included: Roll back to previous backups in case of data loss or system failure.
+
+Server Security
+
+VM-level firewalls block non-essential ports and restrict SSH to whitelisted IPs (optional).
+
+Environment variables and credentials are not exposed to public logs or front-end code.
+
+11.5 User Onboarding & Management
+Admin Interface for User Management
+
+Easily add, remove, or update users from the admin panel.
+
+Set or reset passwords, assign roles, and review activity logs.
+
+Notification & Alerts
+
+Users get instant feedback on failed logins, access denied, or session expiry.
+
+Admins are alerted to failed logins, permission escalations, or suspicious activity.
+
+Help & Support
+
+Built-in help/documentation for system users, including workflow overviews and troubleshooting guides.
+
+
+
+12. Extensibility, Maintenance & Future-Proofing
+12.1 Modularity & Extensible Design
+Component-based Structure
+
+DreamArtMachine is built around clear separation of concerns: routes, services, models, and utilities are in their own modules.
+
+New features—such as additional export formats, print partners, or AI services—can be integrated with minimal disruption to existing workflows.
+
+Plug-and-play Integrations
+
+Art marketplace integrations (e.g., Gelato, Nembol, Printful) can be swapped or extended via well-documented interface points.
+
+New AI models (e.g., Google Gemini, open-source vision models) can be dropped in as additional analysis providers without codebase rewrites.
+
+Flexible Settings
+
+Key options (like art styles, listing templates, export fields) are stored in JSON or config files rather than being hardcoded.
+
+System can adapt to new business requirements by updating settings files, not Python code.
+
+12.2 Maintenance & Upgrade Strategy
+Routine Updates
+
+System dependencies are reviewed regularly for security and performance updates.
+
+Docker/venv setups ensure consistent environments and easy upgrades.
+
+Code Health & Refactoring
+
+All code follows strict section numbering, professional comments, and clear docstrings so future contributors (or AI code bots) can jump in quickly.
+
+Outdated code and deprecated APIs are reviewed and replaced as needed, following a “no scaffolding, no dead code” rule.
+
+Automated Testing
+
+Key workflows (upload, analyze, finalize, export) are covered by automated tests (pytest).
+
+Before each major release, run:
+
+pytest -q
+and check that all tests pass.
+
+12.3 Backup, Recovery & Data Integrity
+Regular Backups
+
+Automated daily (or more frequent) backups for both database and media assets.
+
+Backups are stored offsite or on separate storage, with easy tools to restore from any point.
+
+Disaster Recovery
+
+If the worst happens (hardware failure, data corruption), you can quickly restore from backups with minimal downtime.
+
+Recovery steps are documented in your admin notes and help files.
+
+12.4 Future-Proofing
+API Versioning & Upgrade Path
+
+All external integrations (OpenAI, Etsy, Gelato) use versioned API endpoints, so changes upstream won’t instantly break your system.
+
+System designed to tolerate service failures gracefully and provide meaningful error messages.
+
+Scalable Foundations
+
+Runs on a VM today, but can move to containers, cloud infrastructure, or even managed PaaS if traffic or user base grows.
+
+Minimal stateful dependencies—stateless code can be deployed or scaled as microservices if required.
+
+Documentation & Onboarding
+
+Every major component and workflow is documented in your project README and internal docs.
+
+New contributors (human or AI) can follow clear TOCs and code comments to get started without lengthy hand-holding.
+
+12.5 Vision for Long-term Success
+Evolves with the Business
+
+As your art business grows, DreamArtMachine grows with you: new workflows, new partners, more automation, or even a membership SaaS offering.
+
+Community & Support
+
+Designed to be maintainable by you or any future developer, with no “black box” code or vendor lock-in.
+
+Support for adding new team members, contractors, or collaborators as needed, with permission controls and audit logs.
+
+
+
+13. Known Limitations, To-Do List & Open Questions
+13.1 Current Known Limitations
+Manual Steps Remain
+
+Some workflows (e.g., CSV review, artwork approval, certain mockup selections) still require human intervention and aren’t yet fully automated.
+
+UI/UX Limitations
+
+Admin interface is functional but very plain—minimalist by design, but may confuse non-technical users.
+
+No “mobile first” responsive version; experience is best on desktop.
+
+Bulk Operations
+
+Batch uploads, bulk listing edits, or multi-artwork exports are possible but not yet fully optimized for huge libraries (e.g., 10,000+ artworks).
+
+AI Model Selection
+
+Current OpenAI integration is best-in-class for art analysis, but the system doesn’t yet auto-select models based on image content or fallback gracefully if API limits are hit.
+
+Print Partner API Changes
+
+Integrations like Gelato, Nembol, or Printful are subject to third-party API changes that could require code updates.
+
+Security and Permissions
+
+User authentication works, but fine-grained permission levels (e.g., admin vs staff vs guest) are basic and could be expanded.
+
+Limited Multi-language Support
+
+System is built for English; adding internationalization/multi-language workflows would require additional development.
+
+Testing Coverage
+
+Test coverage is solid for the “happy path” but edge cases, error handling, and rare race conditions may be under-tested.
+
+13.2 To-Do List (Short & Medium Term)
+Automate More Steps
+
+Integrate AI or smart workflows for:
+
+Automated approval of low-risk artworks
+
+Automated CSV preview/validation
+
+Automated duplicate detection (for artwork uploads)
+
+Improve Mockup Generation
+
+Support more complex, layered mockup templates
+
+Enable preview/export of multiple mockup styles per artwork in one click
+
+UI/UX Improvements
+
+Add clear, persistent admin menu
+
+Build a true mobile/tablet-friendly version
+
+Integrate drag-and-drop file uploads
+
+Advanced Export Workflows
+
+Add batch export for Nembol/Etsy
+
+Export directly to additional POD/marketplace partners
+
+Notification & Status Tracking
+
+Email or in-app notifications for key workflow events (analysis complete, export ready, errors)
+
+Artwork status change logs and “activity feed”
+
+Security Hardening
+
+Add 2FA/multi-factor support for admin users
+
+Refine user roles and permissions
+
+Code & Docs
+
+Expand and refine auto-generated docs
+
+Regularly refactor and add/expand tests for edge cases
+
+13.3 Open Questions & Future Ideas
+AI Curation & Recommendations
+
+Should the system recommend “next best” artworks for mockup generation or export, based on sales data or style analysis?
+
+Explore integration with sales/analytics APIs (Etsy, Shopify) for smarter automation.
+
+User Roles & Collaboration
+
+Should the system support multiple artists or “guest contributors,” with artwork ownership and approval workflows?
+
+Marketplace Expansion
+
+What other platforms (Redbubble, Saatchi Art, Society6) should be added for direct listing/export?
+
+Scaling for Volume
+
+What are the next steps if artwork count grows by 10x or 100x? Consider cloud storage, CDN for images, etc.
+
+AI Model Choice & Competition
+
+How to best evaluate emerging AI image analysis/generation models and switch between them (or blend outputs)?
+
+Full API-First Design
+
+Should the system expose a public API (for partners, automation, etc.) or stay as an internal tool?
+
+Licensing & Membership
+
+If offering the platform as a SaaS to other artists, what features or controls are required for multi-tenant, membership-based usage?
+
+
+
+14. Integrating Latest Reports, Snapshots & System Checks
+14.1. Purpose and Overview
+Regular reporting, code snapshotting, and automated system checks are key for maintaining confidence in project health, diagnosing problems, and supporting efficient development—especially when working with a fast-evolving or AI-assisted codebase.
+
+This system incorporates a custom reporting script (a-total-nuclear.py report) that outputs a set of comprehensive checks and artifacts covering every critical aspect of the application and environment. These outputs are designed for both human review and future AI/automation integrations.
+
+14.2. Types of Reports Generated
+When the reporting script is executed, it generates and saves the following artifacts (usually in a timestamped reports/ subdirectory):
+
+Code Snapshot (report_code_snapshot_YYYY-MM-DD_HH-MMam/pm.md)
+
+Markdown dump of the current codebase, including directory trees and file listings. Useful for version review or debugging code state at any point in time.
+
+Folder Tree (report_folder_tree_YYYY-MM-DD_HH-MMam/pm.txt)
+
+Full text outline of the directory structure, highlighting locations of key assets, templates, and data files.
+
+Combined Summary Report (report_combined_summary_YYYY-MM-DD_HH-MMam/pm.txt)
+
+Plain English rollup of all major checks, including which components are present, status of routers/templates/config, any anomalies, and direct links/paths to relevant files.
+
+Database Schema Report (report_db_schema_YYYY-MM-DD_HH-MMam/pm.txt)
+
+Export of the current SQLite database schema for tables, fields, types, and indexes. Critical for verifying expected DB structure after migrations or updates.
+
+Environment File Check
+
+Confirmation that all required .env variables are set and correct (API keys, DB URLs, etc.).
+
+OpenAI API Health Check
+
+Quick verification that OpenAI API credentials are valid and connectivity is working.
+
+14.3. System Health & Integrity Checks
+Key checks run automatically and included in every report:
+
+Route, Template, and Config File Discovery
+
+Ensures all expected route, template, and config files exist and are in the right locations. Flags missing or extra files for manual review.
+
+Python Syntax Validation
+
+Scans all project Python files for syntax errors to catch issues before deployment or test runs.
+
+Database File & Schema Checks
+
+Verifies that the SQLite database exists, is accessible, and matches the expected schema.
+
+Pip Package Status
+
+Reports on outdated packages in the current virtual environment, making it easy to keep dependencies up to date and secure.
+
+14.4. Usage in Day-to-Day Workflow
+Pre-deployment Checklist
+
+Always run the report script before deploying updates or major code merges. Review for missing files, errors, or config drift.
+
+Debugging Aid
+
+Use code and folder snapshots to roll back or diagnose complex bugs (“what changed since last good run?”).
+
+Audit Trail
+
+Saved reports provide an auditable trail of changes, config, and system health over time. Great for accountability or onboarding new devs.
+
+AI/Assistant Friendly
+
+All outputs are plain text or markdown—easy for future bots (or humans) to parse, search, or use as context for further troubleshooting or code generation.
+
+14.5. Potential Improvements
+Automated Alerts
+
+Hook the report script into a notification system (email, Slack, etc.) for instant alerts when something critical changes or breaks.
+
+Automated Rollbacks
+
+With enough history and snapshotting, build an automated “restore last good state” command if a bad deploy is detected.
+
+Report Comparison
+
+Develop tools/scripts to diff two reports and highlight only what changed—very handy for large projects.
+
+Direct Integration with Codex/AI Assistants
+
+Allow bots to request or parse latest reports as “system context” for advanced troubleshooting, code generation, or documentation tasks.
+
+
+
+15. Project Philosophy & Guiding Principles
+15.1. Big Picture Approach
+The DreamArtMachine project is built around a philosophy of automation, reliability, and continuous improvement—balancing creative control with robust systems engineering. The system is meant to serve not just the current needs of its creator, but to be flexible and future-proof enough for expansion, collaboration, and even AI-powered co-piloting.
+
+15.2. Core Guiding Principles
+A. Maintainability
+
+Full File Edits: Always prefer full-file rewrites over code snippets or patchwork. Every update should result in a self-contained, easily-reviewed module.
+
+Sectioned, Documented Code: All code and documentation should use clear section headers, comments, and unique section codes. No “magic numbers” or hidden logic.
+
+No Scaffolding or Skeleton Code: Only include real, working logic. If a feature is incomplete, explicitly mark it as such or stub it out safely.
+
+B. Robustness
+
+Syntax & Health Checks: Nothing gets merged or deployed without passing automated checks (syntax, routes, templates, configs, DB, etc.).
+
+Auditability: System must produce audit trails—code snapshots, report logs, and clear commit histories.
+
+C. Transparency
+
+Every Change is Explained: All significant code or config changes should be documented, preferably with clear commit messages and changelogs.
+
+Clear Structure: Directory trees and code architecture should be easily navigable by humans and bots alike.
+
+D. Automation First
+
+Reporting, Testing, Linting: Where possible, automate mundane but critical processes (pre-deployment checks, test runs, code formatting, etc.).
+
+Room for AI Co-Pilots: System is designed so AI tools (like Codex or ChatGPT) can understand, extend, or repair it without “insider knowledge.”
+
+E. Minimal Friction for Creators
+
+Simple UI/UX: Minimalist interfaces for workflow, easy navigation, and low cognitive load.
+
+Batch Actions & Mass Edits: Designed for creators who handle hundreds or thousands of artworks at once, not just single uploads.
+
+15.3. Commitment to Quality
+No Placeholder Logic: If a feature is still under construction, it must be clearly marked and isolated—never break the main workflow.
+
+No Data Loss or Regression: Migrations and updates must preserve all existing data, filenames, and structure unless a full backup is taken and confirmed.
+
+Consistent Naming & Structure: All files, folders, and database fields use established conventions (e.g., SEO-named folders, artwork IDs, etc.).
+
+15.4. EEAT & Professional Standards
+Expertise, Authoritativeness, Trustworthiness (EEAT):
+
+Listings, documentation, and UI text always reflect deep knowledge, real artistic practice, and cultural respect (especially with Aboriginal art or stories).
+
+Accessibility & Respect:
+
+All user-facing text and imagery should be welcoming, humorous (where appropriate), and professional—never culturally insensitive or exclusionary.
+
+Production-Ready:
+
+Code, templates, and outputs are always kept at “production ready” standard—even for small fixes or updates.
+
+15.5. The “Robbie Mode™” Standard
+A unique protocol for this project, “Robbie Mode™” means:
+
+No content truncation.
+
+No partial updates.
+
+Every output and file rewrite must be complete, fully documented, and auditable.
+
+Every change is reversible or tracked.
+
+AI, automation, and humans must all be able to confidently extend, repair, or review the system at any stage.
+
+
+
+16. Future Vision: Roadmap, Expansion & AI Co-Pilot Goals
+16.1. End Game & “Members Only” Platform
+DreamArtMachine is not just a personal tool— it’s built to become a robust, scalable members-only platform for professional artists and art sellers once workflows are fully tested and stable.
+
+Step-by-step activation: First, finalize and polish all core workflows and quality controls for internal use. When proven, onboard trusted early members, then eventually open up to a broader art community with strict onboarding.
+
+Premium/Exclusive Features: Future iterations could offer tiered access, exclusive art libraries, priority support, advanced analytics, and AI-powered creative tools.
+
+16.2. Workflow Automation & Expansion
+Full Workflow Automation: Every step, from artwork upload through mockup generation, curation, and listing export, will be as automated as possible—with safety checks and manual overrides.
+
+Quality Assurance Bots:
+
+Integrated AI agents will constantly check for file integrity, metadata accuracy, and compliance with export requirements (Etsy, Nembol, etc.).
+
+Automated “pre-flight” checklists before any major export or bulk operation.
+
+One-Click Publishing: Ultimate goal is that a creator can, with one click, safely push hundreds of artworks to all supported platforms, fully optimized and quality checked.
+
+16.3. AI Co-Pilot & “Codex-Driven” Development
+AI as a True Team Member:
+
+The entire project is structured for AI co-pilots (like OpenAI Codex and ChatGPT) to help fix, extend, or optimize any part of the workflow—using clear code, section headers, and permanent section codes.
+
+Routine “project health checks” and updates can be run by AI scripts, with transparent reporting and reversible actions.
+
+Continuous Improvement:
+
+The platform will learn from usage data, feedback, and common errors—so AI tools can suggest enhancements or spot bottlenecks in real time.
+
+Documentation and templates always updated to the latest best practices, with input from both AI and human contributors.
+
+16.4. Extensibility & Integration
+New Features:
+
+Modular structure makes it easy to add new analysis models (Gemini, Midjourney, etc.), support more print-on-demand services, or introduce batch video generation.
+
+API-First Approach:
+
+All core functions are exposed via a documented API, allowing for external integrations, partner services, or even white-label deployments in the future.
+
+Plug-in System (Planned):
+
+Artists and tech-savvy users can develop and share workflow plug-ins, analysis profiles, or mockup templates without breaking the core.
+
+16.5. Long-Term Ethical & Cultural Commitments
+Cultural Respect:
+
+Continued focus on cultural safety, especially for Aboriginal and First Nations art. Ongoing consultation and permission protocols will be maintained as the system grows.
+
+Data Privacy:
+
+User and artwork data will be protected with strong access controls, transparent usage logs, and a clear opt-out for analytics or AI training.
+
+Community-Driven Development:
+
+Feature requests, bug reports, and improvements will be openly tracked and prioritized by both user demand and ethical priorities.
+
+16.6. Final Notes on Expansion
+Ready for the Unexpected:
+
+System design anticipates that art, technology, and business needs will change—so everything from storage to interface can be upgraded with minimal drama.
+
+Documentation & Onboarding:
+
+Step-by-step guides, inline help, and AI onboarding wizards will help new members (and future bots) hit the ground running.
+
+
+
+17. Appendices, References & Changelog Protocol
+17.1. Reference Documents & Key Resources
+Main Project Documents:
+
+Full-Rundown.txt (this master system description, always kept up to date)
+
+report_code_snapshot_YYYY-MM-DD_HH-MM.md (auto-generated source code snapshots)
+
+report_combined_summary_YYYY-MM-DD_HH-MM.txt (operation & audit summaries)
+
+report_folder_tree_YYYY-MM-DD_HH-MM.txt (folder structure and file presence)
+
+report_db_schema_YYYY-MM-DD_HH-MM.txt (database schema at a glance)
+
+Templates & Configuration:
+
+/master_listing_templates/etsy_master_template.txt
+
+/data/settings.json (listing profiles, AI configs)
+
+/core/config.py (all project path, key, and setting definitions)
+
+Where to Find Them:
+
+All reports, changelogs, and snapshots are saved in the /reports/ directory, time- and date-stamped.
+
+Key templates and configs live in their respective /data/ and /master_listing_templates/ folders.
+
+Pro tip: Automated health check scripts will always output where the latest report versions are.
+
+17.2. Changelog Protocol & Documentation Practice
+Commit Messages:
+
+Every code update must be accompanied by a detailed commit message (see previous examples)—summarizing purpose, scope, and affected areas.
+
+Significant workflow or system-level changes should reference which section(s) of the master system document they affect.
+
+Change Documentation:
+
+Any major process or logic revision should trigger an update to Full-Rundown.txt (or its next version), with the revision date and a summary of what’s changed.
+
+All documentation changes are version-controlled, and a rolling changelog is maintained at the end of the master doc.
+
+Changelog Format Example:
+
+## Changelog
+[2025-06-13] - Added Section 16: AI Co-Pilot Roadmap and Future Vision
+[2025-06-10] - Refactored analyze_routes.py for new file storage logic
+[2025-05-27] - Initial DreamArtMachine workflow established
+Code Comments & Section Markers:
+
+All production code must use structured section headers and sub-section markers, e.g.:
+
+# === [ Section 5: Export Workflow | export-py-5 ] ===
+Permanent section codes are not to be changed—this enables automated doc/code alignment and search by both human and AI.
+
+Automated Reports & Snapshots:
+
+Before any big deployment, run a-total-nuclear.py report to generate current code, config, and DB snapshots.
+
+Save all output in /reports/—this provides full rollback points and audit history for both code and documentation.
+
+17.3. Protocol for AI-Assisted Collaboration
+Codex/AI Protocol:
+
+All future AI collaborators (Codex, ChatGPT, Gemini, etc.) are to:
+
+Thoroughly read the master system doc before major interventions.
+
+Always reference which section(s) their proposed code or doc changes touch.
+
+Avoid “scaffolding”—only write or rewrite full sections/files with complete, production-ready logic.
+
+Never remove section codes, table of contents, or documentation structure.
+
+Human & AI Onboarding:
+
+Anyone (or any bot) contributing to the project should start by reading the latest Full-Rundown.txt and all major templates/configs.
+
+Quickstart checklists and inline documentation are prioritized to flatten the learning curve.
+
+17.4. Final Words
+Everything is a living document:
+
+DreamArtMachine will keep evolving—system documentation, workflow guides, and templates should always be kept fresh, clear, and detailed.
+
+Feedback, corrections, and improvements (from anyone, including bots!) are not just welcome, they’re expected.
+
+If in doubt:
+
+If a process, template, or piece of code isn’t clear or seems outdated, mark it for review and propose an update in the changelog.
+
+System health above all:
+
+Robust automation, rollback, and reporting are more important than fancy features—reliability, cultural respect, and user safety are the foundation.

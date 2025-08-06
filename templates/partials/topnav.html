@@ -1,0 +1,48 @@
+<header class="site-header">
+  <div class="nav-row1 container">
+    <a href="{{ url_for('artwork.home') }}" class="logo">
+      <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon icon" width="35"/>
+      ArtNarrator
+    </a>
+    <nav role="navigation" class="main-nav">
+      <a href="{{ url_for('artwork.upload_artwork') }}">Upload</a>
+      <a href="{{ url_for('artwork.artworks') }}">Artwork</a>
+      <a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a>
+      <a href="{{ url_for('artwork.locked_gallery') }}">Locked</a>
+      <a href="{{ url_for('exports.sellbrite_management') }}">Exports</a>
+    </nav>
+    <div class="user-links">
+      {% if session.get('logged_in') %}
+        <span class="user-name">{{ session.get('username') }}</span>
+        <a href="{{ url_for('auth.logout') }}">Logout</a>
+      {% endif %}
+    </div>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+      <svg id="icon-sun" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" aria-hidden="true">
+        <path d="M128 40v-24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        <circle cx="128" cy="128" r="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        <path d="M64 64L48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        <path d="M64 192L48 208" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        <path d="M192 64l16-16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        <path d="M192 192l16 16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        <path d="M40 128H16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        <path d="M128 216v24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+        <path d="M216 128h24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+      </svg>
+      <svg id="icon-moon" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" aria-hidden="true">
+        <path d="M108.11 28.11A96.09 96.09 0 00227.89 147.89 96 96 0 11108.11 28.11z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
+      </svg>
+    </button>
+  </div>
+  <div class="nav-row2 container">
+    <nav role="navigation" class="secondary-nav">
+      {% if session.get('username') == 'robbie' %}
+        <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+      {% endif %}
+      <a href="/gdws">GDWS</a>
+      <a href="/udwa">UDWA</a>
+      <a href="/art-prompts">Art Prompts</a>
+      <a href="/mockups">Mockups</a>
+    </nav>
+  </div>
+</header>

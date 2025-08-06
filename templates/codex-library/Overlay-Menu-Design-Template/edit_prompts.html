@@ -1,0 +1,105 @@
+{% extends "codex-library/Overlay-Menu-Design-Template/main-design-template.html" %}
+{% block title %}Edit Gemini Prompts{% endblock %}
+
+{% block content %}
+<style>
+    /* These styles are specific to the admin page. 
+       For a real application, it's best to move these to a separate CSS file 
+       (e.g., static/css/admin.css) and link it in the main.html template. */
+    .admin-container {
+        padding: 2rem;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .admin-section {
+        margin-top: 2rem;
+    }
+    .admin-section textarea {
+        width: 100%;
+        min-height: 250px;
+        padding: 1rem;
+        font-size: 1rem;
+        background-color: var(--color-card-bg);
+        border: 1px solid var(--color-header-border);
+        color: var(--color-text);
+    }
+    .admin-actions {
+        margin-top: 1rem;
+        display: flex;
+        gap: 1rem;
+    }
+    .btn {
+        background-color: var(--color-btn-bg);
+        color: var(--color-btn-text);
+        padding: 0.75rem 1.5rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .btn-primary {
+        background-color: var(--color-hover);
+    }
+    .btn:hover {
+        opacity: 0.8;
+    }
+    #status-message {
+        margin-top: 1rem;
+        font-weight: bold;
+        color: var(--color-hover);
+    }
+</style>
+
+<div class="admin-container">
+    <h1>Admin: Edit Gemini Prompts</h1>
+    <p>Modify the instructions sent to the AI for generating content. Use <code>{ART_TITLE}</code> as a placeholder for the artwork's title.</p>
+    
+    <div class="admin-section">
+        <h2>Generate Description Prompt</h2>
+        <p>This prompt is used when you click "✨ Generate Description".</p>
+        <textarea id="description-prompt-textarea"></textarea>
+        <div class="admin-actions">
+            <button id="save-prompt-btn" class="btn btn-primary">Save Prompt</button>
+            <button id="reset-prompt-btn" class="btn">Reset to Default</button>
+        </div>
+        <p id="status-message"></p>
+    </div>
+</div>
+
+<script>
+    // This script block should ideally be in a separate JS file and linked.
+    document.addEventListener('DOMContentLoaded', () => {
+        const promptTextarea = document.getElementById('description-prompt-textarea');
+        const saveBtn = document.getElementById('save-prompt-btn');
+        const resetBtn = document.getElementById('reset-prompt-btn');
+        const statusMessage = document.getElementById('status-message');
+
+        const storageKey = 'geminiDescriptionPrompt';
+        const defaultPrompt = `Act as an expert art critic. Write an evocative and compelling gallery description for a piece of art titled "{ART_TITLE}". Focus on the potential materials, the mood it evokes, and the ideal setting for it. Make it about 150 words.`;
+
+        // Load the prompt from localStorage or use the default
+        const loadPrompt = () => {
+            const savedPrompt = localStorage.getItem(storageKey);
+            promptTextarea.value = savedPrompt || defaultPrompt;
+        };
+
+        // Save the prompt to localStorage
+        saveBtn.addEventListener('click', () => {
+            localStorage.setItem(storageKey, promptTextarea.value);
+            statusMessage.textContent = 'Prompt saved successfully!';
+            setTimeout(() => { statusMessage.textContent = ''; }, 3000);
+        });
+
+        // Reset the prompt to default
+        resetBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset to the default prompt?')) {
+                localStorage.removeItem(storageKey);
+                loadPrompt();
+                statusMessage.textContent = 'Prompt reset to default.';
+                setTimeout(() => { statusMessage.textContent = ''; }, 3000);
+            }
+        });
+        
+        // Initial load
+        loadPrompt();
+    });
+</script>
+{% endblock %}

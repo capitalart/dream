@@ -1,0 +1,13 @@
+{% extends "main.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<h1>Admin Dashboard</h1>
+<div class="security-panel">
+  <ul>
+    <li><a href="{{ url_for('admin.security_page') }}">Security Settings</a></li>
+    <li><a href="{{ url_for('admin.manage_users') }}">User Management</a></li>
+  </ul>
+  <p class="warning" style="color:red" aria-live="polite" role="alert"{% if openai_configured %} hidden{% endif %}>OpenAI API Key missing!</p>
+  <p class="warning" style="color:red" aria-live="polite" role="alert"{% if google_configured %} hidden{% endif %}>Google API Key missing!</p>
+</div>
+{% endblock %}

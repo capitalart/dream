@@ -10,4 +10,4 @@ tests/test_restore_integrity.py .                                        [ 45%]
 tests/test_security_layer.py ..                                          [ 63%]
 tests/test_validate_sku_integrity.py ....                                [100%]
 
-============================== 11 passed in 5.04s ==============================
+============================== 11 passed in 5.38s ==============================

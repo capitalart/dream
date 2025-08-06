@@ -1,0 +1,85 @@
+{% extends "main.html" %}
+{% block title %}Coordinate Generator Admin{% endblock %}
+{% block content %}
+<div class="container">
+    <h1>Mockup Coordinate Generator</h1>
+    <p>This tool automatically scans your mockup images to find the transparent artwork area and generate the necessary coordinate files for the composite generator.</p>
+
+    <section class="admin-section">
+        <h2>1. Find Mockups Needing Coordinates</h2>
+        <p>Click the button below to scan for mockups that are missing their coordinate files.</p>
+        <button id="scan-btn" class="btn btn-primary">Scan for Missing Files</button>
+        <div id="scan-results" class="log-box" style="margin-top: 1rem; display: none;"></div>
+    </section>
+
+    <section class="admin-section">
+        <h2>2. Run the Automated Generator</h2>
+        <p>Click the button below to run the automated generator. The script will process all mockups and create the missing files. You can see the live progress below.</p>
+        <button id="run-btn" class="btn btn-primary">Generate All Coordinates</button>
+        <pre id="run-log" class="log-box" style="margin-top: 1rem; display: none;"></pre>
+    </section>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const scanBtn = document.getElementById('scan-btn');
+    const scanResults = document.getElementById('scan-results');
+    const runBtn = document.getElementById('run-btn');
+    const runLog = document.getElementById('run-log');
+
+    scanBtn.addEventListener('click', async () => {
+        scanBtn.textContent = 'Scanning...';
+        scanBtn.disabled = true;
+        scanResults.style.display = 'block';
+        scanResults.innerHTML = '<div class="spinner"></div>';
+
+        try {
+            const response = await fetch("{{ url_for('coordinate_admin.scan_for_missing_coordinates') }}");
+            const data = await response.json();
+
+            if (data.missing_files && data.missing_files.length > 0) {
+                let html = '<h3>The following mockups need coordinates:</h3><ul>';
+                data.missing_files.forEach(file => { html += `<li>${file}</li>`; });
+                html += '</ul>';
+                scanResults.innerHTML = html;
+            } else {
+                scanResults.innerHTML = '<p>✅ Great job! All mockups have their coordinate files.</p>';
+            }
+        } catch (err) {
+            scanResults.innerHTML = '<p class="error">Error: Could not scan for files.</p>';
+        } finally {
+            scanBtn.textContent = 'Scan for Missing Files';
+            scanBtn.disabled = false;
+        }
+    });
+    
+    runBtn.addEventListener('click', () => {
+        runBtn.textContent = 'Running...';
+        runBtn.disabled = true;
+        runLog.style.display = 'block';
+        runLog.textContent = 'Starting generator... Please wait.\n\n';
+
+        const eventSource = new EventSource("{{ url_for('coordinate_admin.run_generator') }}");
+
+        eventSource.onmessage = function(event) {
+            if (event.data === "---SCRIPT FINISHED---") {
+                runLog.textContent += "\n🏁 Process complete. You can now close this page.";
+                eventSource.close();
+                runBtn.textContent = 'Generate All Coordinates';
+                runBtn.disabled = false;
+            } else {
+                runLog.textContent += event.data + '\n';
+                runLog.scrollTop = runLog.scrollHeight; // Auto-scroll
+            }
+        };
+
+        eventSource.onerror = function() {
+            runLog.textContent += "\n❌ Connection to server lost. Process may have been interrupted.";
+            eventSource.close();
+            runBtn.textContent = 'Generate All Coordinates';
+            runBtn.disabled = false;
+        };
+    });
+});
+</script>
+{% endblock %}

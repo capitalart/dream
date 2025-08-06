@@ -1,0 +1,304 @@
+{# templates/edit_listing.html #}
+{# ====================================================================================
+  TEMPLATE: edit_listing.html
+  PURPOSE: Edit existing artwork listing, preview mockups, update metadata, finalise
+  STRUCTURE: Structured by Robbie Mode™ - Clear Sectioning and Sub-Sectioning
+==================================================================================== #}
+
+{% extends "main.html" %}
+{% block title %}Edit Listing{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  {# -------------------------------
+     SECTION 0: HIDDEN TEST MARKER
+  ------------------------------- #}
+  <div id="edit-listing-marker" style="display: none;">Edit Listing Page</div>
+
+  {# ---------------------------
+     SECTION 1: HEADER & HERO UI
+  ---------------------------- #}
+  <div class="home-hero">
+    <h1>
+      <img
+        src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}"
+        class="hero-step-icon"
+        alt="Step 3: Edit Listing"
+      />
+      Edit Listing
+    </h1>
+  </div>
+  
+  {# -------------------------------
+     SECTION 2: FLASH MESSAGE BLOCK
+  ------------------------------- #}
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-message-block">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {# ================================================================
+     SECTION 3: REVIEW ARTWORK GRID - TWO COLUMNS (Mockups + Form)
+  ================================================================ #}
+  <div class="review-artwork-grid row">
+
+    {# ---------------------------------------------------------
+       SUBSECTION 3.1: COLUMN LEFT — MOCKUPS + THUMBNAIL PREVIEW
+    ---------------------------------------------------------- #}
+    <div class="col col-6 mockup-col">
+      <div class="main-thumb">
+        {# Sub-subsection: Determine Thumbnail URL based on artwork state #}
+        {% if is_locked_in_vault %}
+          {% set thumb_img_url = url_for('artwork.locked_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-THUMB.jpg') %}
+          {% set analyse_img_url = url_for('artwork.locked_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-ANALYSE.jpg') %}
+        {% elif finalised %}
+          {% set thumb_img_url = url_for('artwork.finalised_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-THUMB.jpg') %}
+          {% set analyse_img_url = url_for('artwork.finalised_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-ANALYSE.jpg') %}
+        {% else %}
+          {% set thumb_img_url = url_for('artwork.processed_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-THUMB.jpg') %}
+          {% set analyse_img_url = url_for('artwork.processed_image', filename=seo_folder ~ '/' ~ seo_folder ~ '-ANALYSE.jpg') %}
+        {% endif %}
+        
+        <a href="#" class="main-thumb-link" data-img="{{ analyse_img_url }}?t={{ cache_ts }}">
+          <img src="{{ thumb_img_url }}?t={{ cache_ts }}" class="main-artwork-thumb" alt="Main artwork thumbnail for {{ seo_folder }}">
+        </a>
+        <div class="thumb-note">Click thumbnail for full size</div>
+      </div>
+
+      {# Subsection: Mockup Preview Thumbnails #}
+      <h3>Preview Mockups</h3>
+      <div class="mockup-preview-grid">
+        {% for m in mockups %}
+          <div class="mockup-card" id="mockup-card-{{ m.index }}">
+            {% if m.exists and m.thumb_exists %}
+              {# Sub-subsection: Load mockup thumb and full mockup image depending on state #}
+              {% if is_locked_in_vault %}
+                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=m.thumb_rel) %}
+                {% set full_url = url_for('artwork.locked_image', filename=m.path_rel) %}
+              {% elif finalised %}
+                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=m.thumb_rel) %}
+                {% set full_url = url_for('artwork.finalised_image', filename=m.path_rel) %}
+              {% else %}
+                {% set thumb_url = url_for('artwork.serve_mockup_thumb', filepath=m.thumb_rel) %}
+                {% set full_url = url_for('artwork.processed_image', filename=m.path_rel) %}
+              {% endif %}
+
+              <a href="{{ full_url ~ '?t=' ~ cache_ts }}" class="mockup-img-link" id="mockup-link-{{ m.index }}" data-img="{{ full_url ~ '?t=' ~ cache_ts }}">
+                <img id="mockup-img-{{ m.index }}" src="{{ thumb_url ~ '?t=' ~ cache_ts }}" data-fallback="{{ full_url ~ '?t=' ~ cache_ts }}" class="mockup-thumb-img" alt="Mockup preview {{ loop.index }}">
+                <div class="mockup-overlay">
+                  <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="spinner-icon" alt="Loading...">
+                </div>
+              </a>
+              <div class="thumb-note">Click to preview full-size</div>
+            {% else %}
+              <img src="{{ url_for('static', filename='img/default-mockup.jpg') }}" class="mockup-thumb-img" alt="Default mockup placeholder">
+              <div class="thumb-note">Mockup not found</div>
+            {% endif %}
+
+            {# Sub-subsection: Swap Mockup Category Controls #}
+            {% if categories %}
+              <div class="swap-controls">
+                <select name="new_category" aria-label="Swap mockup category for slot {{ m.index }}">
+                  {% for c in categories %}
+                    <option value="{{ c }}" {% if c == m.category %}selected{% endif %}>{{ c }}</option>
+                  {% endfor %}
+                </select>
+                <div class="swap-btn-container">
+                  <button type="button" class="btn btn-sm swap-btn" data-index="{{ m.index }}">Swap</button>
+                </div>
+              </div>
+            {% endif %}
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {# -------------------------------------------------------
+       SUBSECTION 3.2: COLUMN RIGHT — LISTING EDIT FORM & ACTIONS
+    -------------------------------------------------------- #}
+    <div class="col col-6 edit-listing-col">
+      
+      {# Status Banner #}
+      <p class="status-line {% if finalised %}status-finalised{% else %}status-pending{% endif %}">
+        Status: This artwork is {% if finalised %}<strong>finalised</strong>{% else %}<em>NOT yet finalised</em>{% endif %}
+        {% if locked %}<span class="locked-badge">Locked</span>{% endif %}
+      </p>
+
+      {# Form Errors #}
+      {% if errors %}
+        <div class="flash-error"><ul>{% for e in errors %}<li>{{ e }}</li>{% endfor %}</ul></div>
+      {% endif %}
+
+      {# Listing Edit Form Starts #}
+      <form role="form" id="edit-form" method="POST" autocomplete="off">
+        <label for="title-input">Title:</label>
+        <textarea name="title" id="title-input" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.title|e }}</textarea>
+
+        <label for="description-input">Description:</label>
+        <textarea name="description" id="description-input" rows="12" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.description|e }}</textarea>
+
+        {# AI Rewording Tool #}
+        <div class="artwork-info-card" id="generic-text-reworder">
+          <h2>Generic Text Rewording</h2>
+          <p class="help-text">Use AI to rephrase the generic text block to make it unique for this listing.</p>
+          {# FIX: Changed label and made textarea editable #}
+          <label for="generic-text-input">Generic Text:</label>
+          <textarea id="generic-text-input" rows="6" class="long-field">{{ artwork.generic_text|e }}</textarea>
+          <div class="button-row">
+            <button type="button" id="reword-openai-btn" class="btn btn-secondary" data-provider="openai" {% if not openai_configured %}disabled title="OpenAI API not configured"{% endif %}>Reword with OpenAI</button>
+            <button type="button" id="reword-gemini-btn" class="btn btn-secondary" data-provider="gemini" {% if not google_configured %}disabled title="Google API not configured"{% endif %}>Reword with Gemini</button>
+          </div>
+          <div id="reword-spinner" style="display: none; text-align: center; margin-top: 1rem;"><span class="spinner"></span> Rewording...</div>
+        </div>
+
+        <label for="tags-input">Tags (comma-separated):</label>
+        <textarea name="tags" id="tags-input" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.tags_str|e }}</textarea>
+
+        <label for="materials-input">Materials (comma-separated):</label>
+        <textarea name="materials" id="materials-input" rows="2" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.materials_str|e }}</textarea>
+
+        {# Colour Selectors #}
+        <div class="row-inline">
+          <div class="form-col">
+            <label for="primary_colour-select">Primary Colour:</label>
+            <select name="primary_colour" id="primary_colour-select" class="long-field" {% if not editable %}disabled{% endif %}>
+              {% for col in colour_options %}
+                <option value="{{ col }}" {% if artwork.primary_colour==col %}selected{% endif %}>{{ col }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-col">
+            <label for="secondary_colour-select">Secondary Colour:</label>
+            <select name="secondary_colour" id="secondary_colour-select" class="long-field" {% if not editable %}disabled{% endif %}>
+              {% for col in colour_options %}
+                <option value="{{ col }}" {% if artwork.secondary_colour==col %}selected{% endif %}>{{ col }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <label for="seo_filename-input">SEO Filename:</label>
+        <input type="text" id="seo_filename-input" class="long-field" name="seo_filename" value="{{ artwork.seo_filename|e }}" {% if not editable %}disabled{% endif %}>
+
+        <div class="price-sku-row">
+          <div>
+            <label for="price-input">Price:</label>
+            <input type="text" id="price-input" name="price" value="{{ artwork.price|e }}" class="long-field" {% if not editable %}disabled{% endif %}>
+          </div>
+          <div>
+            <label for="sku-input">SKU:</label>
+            <input type="text" id="sku-input" value="{{ artwork.sku|e }}" class="long-field" readonly disabled>
+          </div>
+        </div>
+        
+        <div class="button-row" style="justify-content: flex-end; margin-top: 0; margin-bottom: 0.5rem;">
+            <button type="button" id="update-links-btn" class="btn btn-sm btn-secondary" style="width: auto; min-width: 150px;">Update Image URLs</button>
+        </div>
+        <label for="images-input">Image URLs (one per line):</label>
+        <textarea name="images" id="images-input" rows="5" class="long-field" {% if not editable %}disabled{% endif %}>{{ artwork.images|e }}</textarea>
+      </form>
+
+      {# Action Buttons: Save / Lock / Unlock / Finalise / Analyse / Reset SKU / Delete #}
+      <div class="edit-actions-col">
+        <button form="edit-form" type="submit" name="action" value="save" class="btn btn-primary wide-btn" {% if not editable %}disabled{% endif %}>Save Changes</button>
+
+        {% if finalised and not locked %}
+          <form method="post" action="{{ url_for('artwork.lock_listing', aspect=aspect, filename=filename) }}" class="action-form">
+            <button type="submit" class="btn btn-primary wide-btn">Lock Listing</button>
+          </form>
+        {% elif locked %}
+          <div class="artwork-info-card">
+            <h3 style="margin-top: 0;">Unlock for Editing</h3>
+            <p class="help-text">Unlocking allows edits and re-syncs to Sellbrite. Files remain in the vault to preserve URLs.</p>
+            <form method="post" action="{{ url_for('artwork.unlock_listing', aspect=aspect, filename=filename) }}" class="action-form">
+              <label for="confirm-unlock-input">Type UNLOCK to confirm:</label>
+              <input type="text" id="confirm-unlock-input" name="confirm_unlock" class="long-field" required pattern="UNLOCK" oninput="this.form.elements.unlock_submit.disabled = this.value !== 'UNLOCK'">
+              <button type="submit" name="unlock_submit" class="btn btn-primary wide-btn" disabled>Unlock</button>
+            </form>
+          </div>
+        {% endif %}
+
+        {% if not finalised %}
+          <form method="post" action="{{ url_for('artwork.finalise_artwork', seo_folder=seo_folder) }}" class="action-form">
+            <button type="submit" class="btn btn-success wide-btn">✅ Finalise Artwork</button>
+          </form>
+        {% elif finalised and not locked %}
+          <form method="post" action="{{ url_for('artwork.lock_it_in', seo_folder=seo_folder) }}" class="action-form">
+            <button type="submit" class="btn btn-primary wide-btn">🔒 Lock It In</button>
+          </form>
+        {% endif %}
+
+        <form method="POST" action="{{ url_for('artwork.analyze_artwork', aspect=aspect, filename=filename) }}" class="action-form analyze-form">
+          <select name="provider" class="long-field">
+            <option value="openai">OpenAI</option>
+            <option value="google">Google</option>
+          </select>
+          <button type="submit" class="btn btn-secondary wide-btn" {% if locked %}disabled{% endif %}>Re-analyse Artwork</button>
+        </form>
+
+        <form method="post" action="{{ url_for('artwork.reset_sku', aspect=aspect, filename=filename) }}" class="action-form">
+          <button type="submit" class="btn btn-secondary wide-btn" {% if locked %}disabled{% endif %}>Reset SKU</button>
+        </form>
+
+        <form method="post" action="{{ url_for('artwork.delete_artwork', seo_folder=seo_folder) }}" class="action-form" onsubmit="return confirm('Delete this artwork and all files? This cannot be undone.');">
+          <button type="submit" class="btn btn-danger wide-btn" {% if not editable %}disabled{% endif %}>Delete Artwork</button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  {# ---------------------------------------------------------
+     SECTION 3.3: SELLBRITE EXPORT PREVIEW
+  --------------------------------------------------------- #}
+  <div class="sellbrite-preview">
+    <h2>Sellbrite Export Details</h2>
+    <div class="two-column-layout">
+      <div class="column">
+        <strong>Title:</strong> {{ artwork.title }}<br>
+        <strong>SKU:</strong> {{ artwork.sku }}<br>
+        <strong>SEO Slug:</strong> {{ artwork.seo_slug }}<br>
+        <strong>Description:</strong><br>{{ artwork.description }}<br>
+        <strong>Generic Text:</strong><br>{{ artwork.generic_description }}
+      </div>
+      <div class="column">
+        <strong>Tags:</strong> {{ artwork.tags | join(', ') }}<br>
+        <strong>Materials:</strong> {{ artwork.materials | join(', ') }}<br>
+        <strong>Colours:</strong> {{ artwork.primary_colour }}, {{ artwork.secondary_colour }}<br>
+        <strong>Dimensions:</strong> {{ artwork.dimensions }}<br>
+        <strong>Size:</strong> {{ artwork.size }}<br><br>
+        <strong>Public Image URLs:</strong><br>
+        <textarea class="full-width" rows="8" readonly>{{ public_image_urls | join('\n') }}</textarea>
+      </div>
+    </div>
+  </div>
+
+  {# -------------------------------
+     SECTION 4: MODAL - MOCKUP CAROUSEL
+  ------------------------------- #}
+  <div id="mockup-carousel" class="modal-bg" tabindex="-1">
+    <button id="carousel-close" class="modal-close" aria-label="Close">&times;</button>
+    <button id="carousel-prev" class="carousel-nav" aria-label="Previous">&#10094;</button>
+    <div class="modal-img"><img id="carousel-img" src="" alt="Mockup Preview" /></div>
+    <button id="carousel-next" class="carousel-nav" aria-label="Next">&#10095;</button>
+  </div>
+
+</div>
+
+{# --------------------------
+   SECTION 5: PAGE SCRIPTS
+--------------------------- #}
+<script>
+  window.EDIT_INFO = {
+    seoFolder: '{{ seo_folder }}',
+    aspect: '{{ aspect }}'
+  };
+</script>
+<script src="{{ url_for('static', filename='js/edit_listing.js') }}"></script>
+{% endblock %}

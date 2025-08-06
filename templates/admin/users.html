@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+{% block title %}User Admin{% endblock %}
+{% block content %}
+<h1>User Administration</h1>
+<div class="security-panel">
+  <form method="post" style="margin-bottom:1em;">
+    <input type="text" name="username" placeholder="Username" required>
+    <input type="password" name="password" placeholder="Password" required>
+    <select name="role">
+      <option value="viewer">viewer</option>
+      <option value="editor">editor</option>
+      <option value="admin">admin</option>
+    </select>
+    <button type="submit" name="action" value="add" class="btn btn-primary">Add User</button>
+  </form>
+  <table class="exports-table">
+    <tr><th>User</th><th>Role</th><th></th></tr>
+    {% for u in users %}
+    <tr>
+      <td>{{ u.username }}</td>
+      <td>{{ u.role }}</td>
+      <td>
+        {% if u.username != config.ADMIN_USERNAME %}
+        <button form="del-{{ loop.index }}" class="btn btn-danger" type="submit">Delete</button>
+        <form id="del-{{ loop.index }}" method="post" style="display:none;">
+          <input type="hidden" name="username" value="{{ u.username }}">
+          <input type="hidden" name="action" value="delete">
+        </form>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

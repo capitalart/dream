@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        const savedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+        document.documentElement.classList.add('theme-' + theme);
+    </script>
+    <title>{% block title %}ArtNarrator{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    
+</head>
+<body data-analysis-status-url="{{ url_for('artwork.analysis_status') }}" data-openai-ok="{{ 'true' if openai_configured else 'false' }}" data-google-ok="{{ 'true' if google_configured else 'false' }}">
+    <header class="site-header">
+        <div class="header-left">
+            <a href="{{ url_for('artwork.home') }}" class="site-logo">
+                <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon icon">ArtNarrator
+            </a>
+        </div>
+        <div class="header-center">
+            <button id="menu-toggle" class="menu-toggle-btn" aria-label="Open menu">
+                Menu
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/></svg>
+            </button>
+        </div>
+        <div class="header-right">
+            <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+                <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.106a.75.75 0 011.06-1.06l1.591 1.59a.75.75 0 01-1.06 1.06l-1.59-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.894 17.894a.75.75 0 01-1.06 1.06l-1.59-1.591a.75.75 0 111.06-1.06l1.59 1.59zM12 18.75a.75.75 0 01-.75.75v2.25a.75.75 0 011.5 0V19.5a.75.75 0 01-.75-.75zM6.106 18.894a.75.75 0 01-1.06-1.06l1.59-1.59a.75.75 0 011.06 1.06l-1.59 1.59zM3.75 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H4.5a.75.75 0 01-.75-.75zM6.106 5.046a.75.75 0 011.06 1.06l-1.59 1.591a.75.75 0 01-1.06-1.06l1.59-1.59z"/></svg>
+                <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69a.75.75 0 001.981.981A10.503 10.503 0 0118 18a10.5 10.5 0 01-10.5-10.5c0-1.25.22-2.454.622-3.574a.75.75 0 01.806-.162z" clip-rule="evenodd"/></svg>
+            </button>
+        </div>
+    </header>
+
+    <div id="overlay-menu" class="overlay-menu">
+        <div class="overlay-header">
+            <div class="header-left">
+                <a href="{{ url_for('artwork.home') }}" class="site-logo">
+                    <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon icon">ArtNarrator
+                </a>
+            </div>
+            <div class="header-center">
+                <button id="menu-close" class="menu-close-btn" aria-label="Close menu">
+                    Close
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.78 11.78a.75.75 0 0 1-1.06 0L10 8.06l-3.72 3.72a.75.75 0 1 1-1.06-1.06l4.25-4.25a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06Z" clip-rule="evenodd"/></svg>
+                </button>
+            </div>
+            <div class="header-right"></div>
+        </div>
+        <nav class="overlay-nav">
+            <div class="nav-column">
+                <h3>Artwork &amp; Gallery</h3>
+                <ul>
+                    <li><a href="{{ url_for('artwork.upload_artwork') }}">Upload Artwork</a></li>
+                    <li><a href="{{ url_for('artwork.artworks') }}">All Artworks</a></li>
+                    <li><a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a></li>
+                    <li><a href="{{ url_for('artwork.locked_gallery') }}">Locked</a></li>
+                </ul>
+            </div>
+            <div class="nav-column">
+                <h3>Workflow &amp; Tools</h3>
+                <ul>
+                    <li><a href="{{ url_for('artwork.select') }}">Composites Preview</a></li>
+                    <li><a href="{{ url_for('mockup_admin.dashboard') }}">Mockup Admin</a></li>
+                    <li><a href="{{ url_for('coordinate_admin.dashboard') }}">Coordinate Generator</a></li>
+                    <li><a href="{{ url_for('artwork.select') }}">Mockup Selector</a></li>
+                </ul>
+            </div>
+            <div class="nav-column">
+                <h3>Exports &amp; Admin</h3>
+                <ul>
+                    <li><a href="{{ url_for('exports.sellbrite_management') }}">Sellbrite Management</a></li>
+                    <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+                    <li><a href="{{ url_for('admin.security_page') }}">Admin Security</a></li>
+                    <li><a href="{{ url_for('gdws_admin.editor') }}">Description Editor (GDWS)</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <main>
+        <div class="container">
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="flash">
+                        {% for m in messages %}{{ m }}{% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <div id="gemini-modal" class="modal-bg">
+        <div class="modal-box">
+            <button class="modal-close">&times;</button>
+            <h3 id="gemini-modal-title">AI Generation</h3>
+            <div id="gemini-modal-body" class="modal-status"></div>
+            <div class="modal-actions">
+                <button id="gemini-copy-btn" class="btn btn-secondary">Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="analysis-modal" class="modal-bg" role="dialog" aria-modal="true">
+    <div class="modal-box" tabindex="-1">
+        <button id="analysis-close" class="modal-close" aria-label="Close">&times;</button>
+        <img src="{{ url_for('static', filename='icons/svg/light/arrows-clockwise-light.svg') }}" class="modal-icon spinning" alt="Processing...">
+        <h3>Analyzing Artwork...</h3>
+        <div class="modal-timer" id="analysis-timer">0s</div>
+        <div id="analysis-status" class="modal-status" aria-live="polite">Starting...</div>
+        <div class="modal-progress" aria-label="Analysis progress bar container">
+        <div id="analysis-bar" class="modal-progress-bar" role="progressbar" aria-valuenow="0" aria-label="Analysis progress"></div>
+        </div>
+        <div class="modal-friendly-text">
+        Grab a coffee while AI works its magic!<br>
+        It usually only takes a minute or two!
+        </div>
+        <img src="{{ url_for('static', filename='icons/svg/light/coffee-light.svg') }}" class="coffee-icon icon" alt="Coffee break">
+    </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-grid">
+            <div class="footer-column">
+                <h4>Navigate</h4>
+                <ul>
+                    <li><a href="{{ url_for('artwork.home') }}">Home</a></li>
+                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Artwork &amp; Gallery</h4>
+                <ul>
+                    <li><a href="{{ url_for('artwork.upload_artwork') }}">Upload Artwork</a></li>
+                    <li><a href="{{ url_for('artwork.artworks') }}">Artworks</a></li>
+                    <li><a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a></li>
+                    <li><a href="{{ url_for('artwork.locked_gallery') }}">Locked</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Workflow &amp; Tools</h4>
+                <ul>
+                    <li><a href="{{ url_for('artwork.select') }}">Composites Preview</a></li>
+                    <li><a href="{{ url_for('artwork.select') }}">Mockups</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Exports &amp; Admin</h4>
+                <ul>
+                    <li><a href="{{ url_for('exports.sellbrite_management') }}">Sellbrite Management</a></li>
+                    <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+                    <li><a href="{{ url_for('admin.security_page') }}">Admin Security</a></li>
+                    <li><a href="{{ url_for('gdws_admin.editor') }}">Description Editor (GDWS)</a></li>
+                </ul>
+                {# Removed broken menu link: Admin Users (no such route exists) #}
+            </div>
+        </div>
+        <div class="copyright-bar">
+            © Copyright 2025 ART Narrator All rights reserved | <a href="https://artnarrator.com">artnarrator.com</a> designed and built by Robin Custance.
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main-overlay-test.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/analysis-modal.js') }}"></script>
+</body>
+</html>

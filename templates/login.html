@@ -1,0 +1,24 @@
+{% extends "main.html" %}
+{% block title %}Login{% endblock %}
+{% block content %}
+<div class="container">
+  <h1>Login</h1>
+  {% with msgs = get_flashed_messages(with_categories=true) %}
+    {% if msgs %}
+      <div class="flash">
+        <img src="{{ url_for('static', filename='icons/svg/light/warning-circle-light.svg') }}" alt="!" style="width:20px;margin-right:6px;vertical-align:middle;">
+        {% for cat, msg in msgs %}
+          {{ msg }}
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+  <form method="post" class="login-form">
+    <label for="username">Username</label>
+    <input id="username" name="username" type="text" required>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" required>
+    <button type="submit" class="btn btn-primary wide-btn">Login</button>
+  </form>
+</div>
+{% endblock %}

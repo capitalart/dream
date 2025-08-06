@@ -1,0 +1,45 @@
+{% extends "main.html" %}
+{% block title %}Security Settings{% endblock %}
+{% block content %}
+<h1>Site Security</h1>
+<div class="security-panel">
+  <p>Login required: <strong>{{ 'ON' if login_required else 'OFF' }}</strong></p>
+  <p>Active devices: {{ active }}/{{ max_sessions }}</p>
+  {% if remaining %}
+  <p>Login will re-enable in {{ remaining }} minute{{ 's' if remaining != 1 else '' }}.</p>
+  {% endif %}
+  <form method="post">
+    {% if login_required %}
+      <label for="minutes">Disable for:</label>
+      <select name="minutes" id="minutes">
+        <option value="5">5 min</option>
+        <option value="20">20 min</option>
+        <option value="60">1 hr</option>
+        <option value="120">2 hr</option>
+      </select>
+      <button type="submit" name="action" value="disable" class="btn btn-primary">Disable Login</button>
+    {% else %}
+      <button type="submit" name="action" value="enable" class="btn btn-primary">Re-enable Now</button>
+    {% endif %}
+  </form>
+  <hr>
+  <p>No-cache headers: <strong>{{ 'ON' if no_cache else 'OFF' }}</strong></p>
+  {% if cache_remaining %}
+  <p>No-cache expires in {{ cache_remaining }} minute{{ 's' if cache_remaining != 1 else '' }}.</p>
+  {% endif %}
+  <form method="post">
+    {% if no_cache %}
+      <button type="submit" name="action" value="nocache_off" class="btn btn-primary">Disable No-Cache</button>
+    {% else %}
+      <label for="minutes">Enable for:</label>
+      <select name="minutes" id="minutes">
+        <option value="5">5 min</option>
+        <option value="20">20 min</option>
+        <option value="60">1 hr</option>
+        <option value="120">2 hr</option>
+      </select>
+      <button type="submit" name="action" value="nocache_on" class="btn btn-primary">Enable No-Cache</button>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}
