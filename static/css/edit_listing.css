@@ -1,0 +1,126 @@
+/* --- [ edit_listing.css] --- */
+.action-form {
+  width: 100%;
+}
+.form-col {
+  flex: 1;
+}
+.swap-btn-container {
+  position: relative;
+  width: 100%; /* Make container take full width */
+}
+.swap-spinner {
+  display: none;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  border-top-color: #333;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+.theme-dark .swap-spinner {
+  border-top-color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.swapping .swap-btn {
+  color: transparent;
+}
+.swapping .swap-spinner {
+  display: block;
+}
+
+/* --- NEW STYLES FOR STACKED LAYOUT --- */
+.swap-controls {
+  display: flex;
+  flex-direction: column; /* Stack elements vertically */
+  align-items: stretch;   /* Make children take full width */
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  width: 100%;
+}
+
+.swap-controls select,
+.swap-controls .swap-btn {
+  width: 100%; /* Ensure both take full width of the container */
+  height: 38px;
+  box-sizing: border-box;
+}
+
+.swap-controls select {
+  padding: 0.4em 0.6em;
+  font-size: 0.9em;
+  border: 1px solid var(--card-border);
+  background-color: var(--color-card-bg);
+  color: var(--color-text);
+  border-radius: 0;
+}
+
+.thumb-note {
+  font-size: 0.85em; /* Adjusted for better fit */
+  color: rgba(0, 0, 0, 0.65); /* Muted dark color for light mode */
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.theme-dark .thumb-note {
+  color: rgba(255, 255, 255, 0.65); /* Muted light color for dark mode */
+}
+
+/* --- OpenAI Analysis Details Table --- */
+.openai-details {
+  margin-top: 2rem;
+  background-color:#dbdbdb;
+  padding: .7rem;
+  border-top: 1px solid var(--card-border);
+}
+
+.openai-analysis-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85em;
+  margin-bottom: 1rem;
+  table-layout: fixed; /* Ensures column widths are respected */
+}
+
+.openai-analysis-table thead th {
+  font-size: 1.1em;
+  font-weight: 600;
+  padding: 0.8em 0.5em;
+  text-align: left;
+  background-color: var(--color-card-bg);
+  border-bottom: 2px solid var(--card-border);
+}
+
+.openai-analysis-table tbody th,
+.openai-analysis-table tbody td {
+  padding: 0.6em 0.5em;
+  vertical-align: top;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.openai-analysis-table tbody th {
+  font-weight: 600;
+  text-align: left;
+  width: 30%;
+  color: var(--color-text);
+  opacity: 0.8;
+  word-break: break-word; /* Allow labels to wrap if needed */
+}
+
+.openai-analysis-table tbody td {
+  width: 70%;
+  text-align: left;
+  word-break: break-all; /* Crucial for long file paths */
+}
+
+.openai-analysis-table tbody tr:nth-of-type(even) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.theme-dark .openai-analysis-table tbody tr:nth-of-type(even) {
+  background-color: rgba(255, 255, 255, 0.04);
+}

@@ -1,0 +1,59 @@
+{# Use blueprint-prefixed endpoints like 'artwork.home' in url_for #}
+{% extends "main.html" %}
+{% block title %}ArtNarrator Home{% endblock %}
+{% block content %}
+<div class="container">
+
+<!-- ========== [IN.1] Home Hero Section ========== -->
+<div class="home-hero">
+  <h1><img src="{{ url_for('static', filename='logos/logo-vector.svg') }}" alt="" class="artnarrator-logo"/>Welcome to ArtNarrator Listing Machine</h1>
+  <p class="home-intro">
+    G’day! Start in the Artwork section, analyze new pieces, review your AI-generated listings and mockups, and prep everything for marketplace export—all streamlined for you.
+  </p>
+</div>
+
+<!-- ========== [IN.2] Home Quick Actions ========== -->
+<div class="workflow-row">
+  <a href="{{ url_for('artwork.upload_artwork') }}" class="workflow-btn">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-one-light.svg') }}" class="step-btn-icon" alt="Step 1" />
+    Upload Artwork
+  </a>
+  <a href="{{ url_for('artwork.artworks') }}" class="workflow-btn">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-two-light.svg') }}" class="step-btn-icon" alt="Step 2" />
+    Artwork<br>Select to Analyze
+  </a>
+  {% if latest_artwork %}
+    <a href="{{ url_for('artwork.edit_listing', aspect=latest_artwork.aspect, filename=latest_artwork.filename) }}" class="workflow-btn">
+      <img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="step-btn-icon" alt="Step 3" />
+      Edit Review<br>and Finalise Artwork
+    </a>
+  {% else %}
+    <span class="workflow-btn disabled">
+      <img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="step-btn-icon" alt="Step 3" />
+      Edit Review<br>and Finalise Artwork
+    </span>
+  {% endif %}
+  <a href="{{ url_for('artwork.finalised_gallery') }}" class="workflow-btn">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-four-light.svg') }}" class="step-btn-icon" alt="Step 4" />
+    Finalised Gallery<br>(Select to List)
+  </a>
+  <span class="workflow-btn disabled">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-five-light.svg') }}" class="step-btn-icon" alt="Step 5" />
+    List Artwork<br>(Export to Sellbrite)
+  </span>
+</div>
+
+<!-- ========== [IN.3] How It Works Section ========== -->
+<section class="how-it-works">
+  <h2>How It Works</h2>
+  <ol>
+    <li><b>Upload:</b> Chuck your artwork into the gallery (easy drag & drop).</li>
+    <li><b>Analyze:</b> Let the AI do its magic—SEO, titles, pro description, the lot.</li>
+    <li><b>Edit & Finalise:</b> Quick review and tweak, fix anything you like.</li>
+    <li><b>Mockups:</b> Instantly see your art in bedrooms, offices, nurseries—looks a million bucks.</li>
+    <li><b>Final Gallery:</b> See all your finished work, ready for showtime.</li>
+    <li><b>Export:</b> Coming soon! Blast your art onto Sellbrite and more with one click.</li>
+  </ol>
+</section>
+</div>
+{% endblock %}

@@ -1,0 +1,43 @@
+/* --- Page Layout --- */
+  .gdws-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-items: flex-start;
+  }
+  .gdws-main-content {
+    flex: 1;
+    min-width: 60%;
+  }
+  .gdws-sidebar {
+    width: 280px;
+    position: sticky;
+    top: 100px; /* Adjust if your header height changes */
+    padding: 1.5rem;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--card-border);
+  }
+  .gdws-sidebar h3 {
+    margin-top: 0;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+  .gdws-sidebar button {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  /* --- Block Styles --- */
+  .paragraph-block { background-color: var(--color-card-bg); border: 1px solid var(--card-border); padding: 1.5rem; margin-bottom: 1.5rem; cursor: grab; }
+  .paragraph-block:active { cursor: grabbing; }
+  .paragraph-block h3, .paragraph-block .block-title { margin-top: 0; font-size: 1.2em; }
+  .paragraph-block .block-title { width: 100%; padding: 0.5rem; border: 1px solid transparent; background-color: transparent; font-family: inherit; font-weight: bold; }
+  .paragraph-block .block-title:focus { border-color: var(--card-border); background-color: var(--color-background); }
+  .paragraph-block textarea { width: 100%; min-height: 150px; background-color: var(--color-background); color: var(--color-text); border: 1px solid var(--card-border); padding: 0.5rem; }
+  .block-actions { margin-top: 1rem; display: flex; gap: 1rem; justify-content: space-between; align-items: center; flex-wrap: wrap; }
+  .title-actions { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+  .btn-regenerate-title { font-size: 0.8em; padding: 0.3em 0.6em; min-width: auto; }
+  .sortable-ghost { opacity: 0.4; background: #888; border: 2px dashed var(--color-accent); } /* Style for drag placeholder */
+  .pinned { background-color: #f0f0f0; border-left: 4px solid #007bff; cursor: not-allowed; }
+  .theme-dark .pinned { background-color: #2a2a2a; border-left-color: #4e9fef; }
+  .instructions-modal { display: none; }

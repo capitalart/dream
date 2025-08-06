@@ -1,0 +1,285 @@
+/* ========================================================
+   buttons.css – All Buttons, Workflow Buttons & Actions
+   Monochrome, strong hover, square corners, theme aware
+   ======================================================== */
+
+/* ========================================================
+   Theme Variables for Buttons (Place in your root CSS file)
+   ======================================================== */
+
+:root {
+  --btn-primary-bg: #111111;
+  --btn-primary-text: #ffffff;
+  --btn-primary-hover-bg: #ffffff;
+  --btn-primary-hover-text: #111111;
+  --btn-primary-hover-shadow: 0 0 0 3px #1112;
+
+  --btn-secondary-bg: #f5f5f5;
+  --btn-secondary-text: #111111;
+  --btn-secondary-hover-bg: #111111;
+  --btn-secondary-hover-text: #ffffff;
+  --btn-secondary-hover-shadow: 0 0 0 3px #3332;
+
+  --btn-danger-bg: #444444;
+  --btn-danger-text: #ffffff;
+  --btn-danger-hover-bg: #ffffff;
+  --btn-danger-hover-text: #c8252d;
+  --btn-danger-hover-shadow: 0 0 0 3px #c8252d44;
+
+  --btn-disabled-bg: #bbbbbb;
+  --btn-disabled-text: #eeeeee;
+
+  --btn-workflow-bg: #ededed;
+  --btn-workflow-text: #1a1a1a;
+  --btn-workflow-hover-bg: #222222;
+  --btn-workflow-hover-text: #ffffff;
+  --btn-workflow-hover-shadow: 0 0 0 3px #2222;
+  --btn-workflow-border: #bbbbbb;
+}
+
+.theme-dark {
+  --btn-primary-bg: #ffffff;
+  --btn-primary-text: #111111;
+  --btn-primary-hover-bg: #111111;
+  --btn-primary-hover-text: #ffffff;
+  --btn-primary-hover-shadow: 0 0 0 3px #fff2;
+
+  --btn-secondary-bg: #222222;
+  --btn-secondary-text: #ffffff;
+  --btn-secondary-hover-bg: #ffffff;
+  --btn-secondary-hover-text: #222222;
+  --btn-secondary-hover-shadow: 0 0 0 3px #fff2;
+
+  --btn-danger-bg: #888888;
+  --btn-danger-text: #ffffff;
+  --btn-danger-hover-bg: #ffffff;
+  --btn-danger-hover-text: #c8252d;
+  --btn-danger-hover-shadow: 0 0 0 3px #c8252d44;
+
+  --btn-disabled-bg: #444444;
+  --btn-disabled-text: #bbbbbb;
+
+  --btn-workflow-bg: #1a1a1a;
+  --btn-workflow-text: #ffffff;
+  --btn-workflow-hover-bg: #ffffff;
+  --btn-workflow-hover-text: #111111;
+  --btn-workflow-hover-shadow: 0 0 0 3px #fff2;
+  --btn-workflow-border: #444444;
+}
+
+/* ========================================================
+   Base Button Styles (Square Corners, Strong Contrast)
+   ======================================================== */
+
+.btn,
+.btn-primary,
+.btn-secondary,
+.btn-danger,
+.btn-sm,
+.wide-btn,
+.upload-btn-large,
+.art-btn {
+  font-family: var(--font-primary, monospace);
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, box-shadow 0.12s, outline 0.12s;
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  font-size: 1em;
+  border-radius: 0;
+  min-width: 120px;
+  box-shadow: 0 1px 5px 0 #1111;
+}
+
+.btn, .btn-primary, .btn-secondary, .btn-danger {
+  width: 90%;
+  margin: 10px auto;
+  padding: .55em 1.3em;
+  font-size: 18px;
+  align-self: center;
+  font-weight: 600;
+}
+
+.btn-sm { font-size: 0.96em; padding: 0.45em 1em; }
+.wide-btn { width: 100%; font-size: 1.12em; font-weight: bold; padding: 1em 0; }
+
+/* ========================================================
+   Button Types
+   ======================================================== */
+
+/* -- Primary Button -- */
+.btn-primary, .btn:not(.btn-secondary):not(.btn-danger) {
+  background: var(--btn-primary-bg);
+  color: var(--btn-primary-text);
+}
+.btn-primary:hover, .btn-primary:focus,
+.btn:not(.btn-secondary):not(.btn-danger):hover,
+.btn:not(.btn-secondary):not(.btn-danger):focus {
+  background: var(--btn-primary-hover-bg);
+  color: var(--btn-primary-hover-text);
+  box-shadow: var(--btn-primary-hover-shadow);
+  outline: 2px solid var(--btn-primary-hover-bg);
+}
+
+/* -- Secondary Button -- */
+.btn-secondary {
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1.2px solid var(--btn-workflow-border, #bbbbbb);
+}
+.btn-secondary:hover,
+.btn-secondary:focus {
+  background: var(--btn-secondary-hover-bg);
+  color: var(--btn-secondary-hover-text);
+  border-color: #111111;
+  box-shadow: var(--btn-secondary-hover-shadow);
+  outline: 2px solid var(--btn-secondary-hover-bg);
+}
+
+/* -- Danger Button -- */
+.btn-danger {
+  background: var(--btn-danger-bg);
+  color: var(--btn-danger-text);
+}
+.btn-danger:hover, .btn-danger:focus {
+  background: var(--btn-danger-hover-bg);
+  color: var(--btn-danger-hover-text);
+  box-shadow: var(--btn-danger-hover-shadow);
+  outline: 2px solid #c8252d;
+}
+
+/* -- Disabled State -- */
+.btn:disabled,
+button:disabled,
+.btn.disabled,
+.btn-primary:disabled,
+.btn-secondary:disabled,
+.btn-danger:disabled {
+  background: var(--btn-disabled-bg);
+  color: var(--btn-disabled-text);
+  cursor: not-allowed;
+  opacity: 0.62;
+  filter: grayscale(35%);
+  box-shadow: none;
+  outline: none;
+}
+
+/* -- Active State (All) -- */
+.btn:active, .btn-primary:active, .btn-secondary:active, .btn-danger:active {
+  filter: brightness(0.96) saturate(110%);
+}
+
+/* ========================================================
+   Workflow Buttons (Solid & Card, Square Corners)
+   ======================================================== */
+
+.workflow-btn {
+  font-family: var(--font-primary, monospace);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 1.11em;
+  font-weight: 600;
+  padding: 18px 32px;
+  background: var(--btn-workflow-bg);
+  color: var(--btn-workflow-text);
+  border: 1.2px solid var(--btn-workflow-border, #bbbbbb);
+  border-radius: 0;
+  min-width: 220px;
+  margin: 0 16px 0 0;
+  transition: background 0.15s, color 0.15s, box-shadow 0.12s, outline 0.12s;
+}
+.workflow-btn:hover:not(.disabled),
+.workflow-btn:focus:not(.disabled) {
+  background: var(--btn-workflow-hover-bg);
+  color: var(--btn-workflow-hover-text);
+  border-color: #111111;
+  box-shadow: var(--btn-workflow-hover-shadow);
+  outline: 2px solid var(--btn-workflow-hover-bg);
+}
+.workflow-btn.disabled,
+.workflow-btn[disabled] {
+  background: var(--btn-disabled-bg);
+  color: var(--btn-disabled-text);
+  pointer-events: none;
+  opacity: 0.65;
+  filter: grayscale(0.35);
+  outline: none;
+}
+
+/* Card-style for workflow row */
+.workflow-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  align-items: stretch;
+  margin: 2.5rem 0 3rem 0;
+}
+.workflow-row .workflow-btn {
+  flex: 1 1 200px;
+  flex-direction: column;
+  gap: 1.2rem;
+  font-size: 1.06em;
+  text-align: center;
+  min-width: 180px;
+  max-width: 270px;
+  padding: 1.7em 1.2em 1.5em 1.2em;
+  box-shadow: 0 2px 10px 0 #1111;
+  margin: 0;
+  border-radius: 0;
+}
+
+/* Responsive Buttons */
+@media (max-width: 1200px) {
+  .workflow-row { gap: 1.2rem; }
+  .workflow-row .workflow-btn { font-size: 1em; min-width: 130px; max-width: 210px; padding: 1em 0.8em; }
+}
+@media (max-width: 800px) {
+  .workflow-row { gap: 0.7rem; }
+  .workflow-row .workflow-btn { font-size: 0.95em; min-width: 45vw; max-width: 95vw; padding: 0.9em 0.5em 1em 0.5em; margin-bottom: 0.5em; }
+}
+@media (max-width: 500px) {
+  .workflow-row { flex-direction: column; gap: 0.5rem; }
+  .workflow-row .workflow-btn { min-width: 98vw; max-width: 100vw; padding: 0.6em 0.2em 0.8em 0.2em; font-size: 0.88em;}
+}
+
+/* ========================================================
+   Art Actions/Rows
+   ======================================================== */
+.button-row, .final-actions, .edit-actions {
+  display: flex; justify-content: center; align-items: center;
+  gap: 10px; margin-top: 20px; flex-wrap: wrap;
+}
+.button-row form, .final-actions form, .edit-actions form { margin: 0; }
+.art-btn {
+  font-weight: 500; height: var(--button-height, 48px); min-width: 100px;
+  border-radius: 0;
+  font-size: 1em; display: flex; align-items: center; justify-content: center;
+  background: var(--btn-secondary-bg);
+  color: var(--btn-secondary-text);
+  border: 1.2px solid var(--btn-workflow-border, #bbbbbb);
+  transition: background 0.13s, color 0.13s, border 0.13s, outline 0.13s;
+}
+.art-btn:not(:disabled):hover,
+.art-btn:not(:disabled):focus {
+  background: var(--btn-secondary-hover-bg);
+  color: var(--btn-secondary-hover-text);
+  border-color: #111111;
+  box-shadow: var(--btn-secondary-hover-shadow);
+  outline: 2px solid var(--btn-secondary-hover-bg);
+}
+.art-btn.delete,
+.art-btn.delete:not(:disabled):hover {
+  background: var(--btn-danger-bg);
+  color: var(--btn-danger-text) !important;
+  border: none;
+}
+.art-btn:disabled, .art-btn.disabled {
+  background: var(--btn-disabled-bg); color: var(--btn-disabled-text);
+  cursor: not-allowed; border: none; outline: none;
+}
+
+/* --- End of File --- */

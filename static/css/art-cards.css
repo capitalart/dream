@@ -1,0 +1,172 @@
+/* ========================================================
+   art-cards.css – Art Cards, Galleries, Thumbnails, Previews
+   Updated 2025-07-24: responsive edit listing thumbnails
+   ======================================================== */
+
+/* === Cards & Art Galleries === */
+.artwork-info-card { background: var(--color-background); border: 1.5px solid #e0e0e0; box-shadow: 0 2px 8px #0001; padding: 1.5em 2em; margin: 0 auto 1.7em auto; max-width: 570px;}
+.artwork-info-card h2 { font-size: 1.21em; font-weight: bold; margin-bottom: 0.6em; }
+.gallery-section { margin: 2.5em auto 3.5em auto; max-width: 1250px; padding: 0 1em;}
+.artwork-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2.4em; margin-bottom: 2em;}
+.gallery-card { position: relative; background: var(--card-bg); border: 1px solid var(--card-border, #000); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; transition: box-shadow 0.18s, transform 0.12s; min-height: 365px; padding: 10px; overflow: hidden;}
+.gallery-card:hover { box-shadow: 0 4px 16px #0002; transform: translateY(-4px) scale(1.013);}
+.card-thumb { width: 100%; background: none; text-align: center; padding: 22px 0 7px 0; }
+.card-img-top { max-width: 94%; max-height: 210px; object-fit: cover; box-shadow: 0 1px 7px #0001; background: var(--color-background);}
+.card-details { flex: 1 1 auto; width: 100%; text-align: center; padding: 12px 13px 20px 13px; display: flex; flex-direction: column; gap: 10px;}
+.card-title { font-size: 0.9em; font-weight: 400; line-height: 1.2; color: var(--main-txt); min-height: 3em; margin-bottom: 7px;}
+.card-details .btn { margin-top: 7px; width: 90%; min-width: 90px;}
+.finalised-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.6em; margin-top: 1.5em; justify-content: center;}
+.final-card { background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow); padding: 10px; display: flex; flex-direction: column; max-width: 350px; margin: 0 auto;}
+.final-actions, .edit-actions { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: auto;}
+.edit-actions { margin-top: 1em;}
+.final-actions .btn, .edit-actions .btn { flex: 1 1 auto; min-width: 100px; width: auto; margin-top: 0; }
+.desc-snippet { font-size: 0.92em; line-height: 1.3; margin: 4px 0 8px 0; }
+.finalised-badge { font-size: 0.9em; color: #d40000; align-self: center; padding: 4px 8px; }
+.locked-badge { font-size: 0.9em; color: #0066aa; padding: 2px 6px; border: 1px solid #0066aa; margin-left: 6px;}
+.main-artwork-thumb {
+  max-width: 100%;
+  max-height: 500px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto 0.6em auto;
+  border-radius: 6px;
+  box-shadow: 0 2px 12px #0002;
+}
+
+.mockup-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px;
+}
+.mockup-card {
+  background: var(--color-card-bg);
+  padding: 11px 7px;
+  text-align: center;
+  border: none;
+  border-radius: 4px;
+  transition: box-shadow 0.15s;
+}
+.mockup-card:hover {
+  box-shadow: 0 4px 14px #0002;
+}
+
+.mockup-thumb-img {
+  width: 100%;
+  height: 225px;
+  object-fit: contain;
+  border: none;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.09);
+  background: var(--color-card-bg);
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+.mockup-thumb-img:focus { outline: 2.5px solid var(--accent);}
+.mockup-number { font-size: 0.96em; margin-bottom: 6px;}
+.missing-img { width: 100%; padding: 20px 0; background: var(--color-background); color: #777; font-size: 0.9em;}
+.mini-mockup-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; margin-top: 6px;}
+.mini-mockup-grid img { width: 100%; max-height: 120px; object-fit: contain; border-radius: 4px; box-shadow: 0 1px 4px #0001;}
+.mockup-thumb-img.selected, .card-img-top.selected, .gallery-thumb.selected { outline: 3px solid #e76a25 !important; outline-offset: 1.5px; }
+
+/* Overlay for per-card progress */
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.theme-dark .card-overlay { background: rgba(0, 0, 0, 0.65); color: #fff; }
+.card-overlay.hidden { display: none; }
+.spinner {
+  width: 18px;
+  height: 18px;
+  border: none;
+  border-top-color: #333;
+  border-radius: 50%;
+  margin-right: 8px;
+  animation: spin 0.8s linear infinite;
+}
+
+.category-badge.uncategorised {
+  color: #e10000; /* A strong red color */
+  font-weight: bold;
+}
+
+.theme-dark .category-badge.uncategorised {
+  color: #ff5c5c; /* A lighter red for dark mode */
+}
+
+/* --- Mockup Swapping Overlay --- */
+
+/* Add relative positioning to the link to contain the overlay */
+.mockup-img-link {
+  position: relative;
+  display: block;
+}
+
+.mockup-overlay {
+  position: absolute;
+  inset: 0; /* A shorthand for top, right, bottom, left = 0 */
+  background-color: rgba(0, 0, 0, 0.5); /* 50% opaque dark background */
+  display: none; /* Hide the overlay by default */
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px; /* Match the card's border radius */
+}
+
+/* Show the overlay when the card is in a swapping state */
+.mockup-card.swapping .mockup-overlay {
+  display: flex;
+}
+
+.mockup-overlay .spinner-icon {
+  width: 48px;
+  height: 48px;
+  animation: spin 1.5s linear infinite;
+}
+
+/* Invert icon color for dark theme */
+.mockup-overlay .spinner-icon {
+  filter: invert(1);
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+.status-icon {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  font-size: 1.4em;
+}
+
+/* Gallery view toggles */
+.view-toggle { margin-top: 0.5em;}
+.view-toggle button { margin-right: 0.5em;}
+.finalised-grid.list-view { display: block; }
+.finalised-grid.list-view .final-card { flex-direction: row; max-width: none; margin-bottom: 1em;}
+.finalised-grid.list-view .card-thumb { width: 150px; margin-right: 1em; }
+
+/* Responsive Art Cards */
+@media (max-width: 900px) {
+  .artwork-grid { gap: 1.3em; }
+  .card-thumb { padding: 12px 0 4px 0;}
+  .card-title { font-size: 1em; }
+  .finalised-grid { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
+}
+@media (max-width: 800px) {
+  .main-artwork-thumb { max-height: 50vh; }
+  .mockup-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(45%, 1fr));
+    gap: 12px;
+  }
+  .mockup-card { width: 100%; }
+  .mini-mockup-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 500px) {
+  .mockup-preview-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 10px;
+  }
+}
