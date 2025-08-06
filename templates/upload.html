@@ -3,7 +3,7 @@
 {% block content %}
 <h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-one-light.svg') }}" class="hero-step-icon" alt="Step 1: Upload" />Upload New Artwork</h1>
 <p class="page-description">Add images to start the creative workflow.</p>
-<div class="main-content">
+<section class="main-content">
   <form id="upload-form" method="post" enctype="multipart/form-data">
     <input id="file-input" type="file" name="images" accept="image/*" multiple hidden>
     <div id="dropzone" class="upload-dropzone">
@@ -11,7 +11,7 @@
     </div>
     <ul id="upload-list" class="upload-list"></ul>
   </form>
-</div>
+</section>
 
 <div id="upload-modal" class="modal-bg" role="dialog" aria-modal="true">
   <div class="modal-box" tabindex="-1">

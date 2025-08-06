@@ -142,6 +142,10 @@
 #carousel-prev { left: 0.5rem; }
 #carousel-next { right: 0.5rem; }
 
+@media (max-width: 767px) {
+  .modal-box { padding: 1.5rem; max-width: 90%; }
+}
+
 /* --- Gemini Modal --- */
 
 .gemini-modal {
