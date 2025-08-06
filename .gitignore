@@ -12,3 +12,4 @@ backups/
 logs/backup-restore-*.md
 logs/backup-cron-*.log
 manifest-*.txt
+.config/rclone/rclone.conf
