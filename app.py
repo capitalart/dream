@@ -25,6 +25,9 @@ from config import configure_logging
 from routes import bp as routes_bp
 from routes.home_routes import bp as home_bp
 from routes.admin_routes import bp as admin_bp
+from routes.finalise_routes import bp as finalise_bp
+from routes.exports_routes import bp as exports_bp
+from routes.analyze_routes import bp as analyze_bp
 
 
 login_manager = LoginManager()
@@ -111,6 +114,9 @@ def create_app() -> Flask:
     app.register_blueprint(home_bp)
     app.register_blueprint(routes_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(finalise_bp)
+    app.register_blueprint(exports_bp)
+    app.register_blueprint(analyze_bp)
     return app
 
 

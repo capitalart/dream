@@ -39,8 +39,3 @@ def mockups(slug: str) -> tuple[dict, int]:
     return {"mockups": files}, 200
 
 
-from .analyze_routes import bp as analyze_bp
-from .finalise_routes import bp as finalise_bp
-
-bp.register_blueprint(analyze_bp)
-bp.register_blueprint(finalise_bp)

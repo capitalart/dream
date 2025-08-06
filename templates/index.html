@@ -23,7 +23,7 @@
     Artwork<br>Select to Analyze
   </a>
   {% if latest_artwork %}
-    <a href="{{ url_for('finalise.edit_listing', slug=latest_artwork.slug) }}" class="workflow-btn">
+    <a href="{{ url_for('finalise.review', slug=latest_artwork.slug) }}" class="workflow-btn">
       <img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="step-btn-icon" alt="Step 3" />
       Edit Review<br>and Finalise Artwork
     </a>
