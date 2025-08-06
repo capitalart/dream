@@ -37,6 +37,11 @@ git_pull_safe() {
 
 git_push_safe() {
     echo "📤 Preparing to push changes..."
+    if ! run_tests; then
+        echo "❌ QA checks failed. Push aborted."
+        log_action "❌ Git push aborted: QA failed"
+        return 1
+    fi
     git add .
     git commit -m "🔄 Auto commit via toolkit on $TIMESTAMP" || echo "ℹ️ Nothing to commit."
     git push && log_action "✅ Git push successful"
@@ -46,13 +51,31 @@ git_push_safe() {
 # QA / QC / TESTING
 # ============================================================================
 run_tests() {
-    echo "🧪 Running test suite..."
+    echo "🧪 Running full QA suite..."
+    local status=0
     if command -v pytest >/dev/null 2>&1; then
-        pytest --maxfail=3 --disable-warnings | tee "$LOG_DIR/test-output-$TIMESTAMP.log"
+        pytest --maxfail=3 --disable-warnings | tee "$LOG_DIR/test-output-$TIMESTAMP.log" || status=1
         log_action "🧪 Test run complete: test-output-$TIMESTAMP.log"
     else
-        echo "❌ pytest not found. Skipping tests."
+        echo "❌ pytest not found."
+        status=1
     fi
+
+    python tools/validate_sku_integrity.py | tee "$LOG_DIR/sku-validate-$TIMESTAMP.log" || status=1
+
+    pip_outdated_check
+
+    # File permission audit (world-writable files)
+    find "$ROOT_DIR" -type f -perm -0002 -not -path "*/venv/*" > "$LOG_DIR/perm-audit-$TIMESTAMP.log"
+    if [[ -s "$LOG_DIR/perm-audit-$TIMESTAMP.log" ]]; then
+        echo "⚠️ World-writable files detected (see perm-audit-$TIMESTAMP.log)"
+    fi
+
+    if [[ $status -ne 0 ]]; then
+        log_action "❌ QA suite failed"
+        return 1
+    fi
+    log_action "✅ QA suite passed"
 }
 
 # ============================================================================
@@ -60,10 +83,26 @@ run_tests() {
 # ============================================================================
 system_health_check() {
     echo "🩺 Checking system health..."
-    echo "Disk usage:" && df -h | tee -a "$LOG_DIR/health-check-$TIMESTAMP.md"
-    echo -e "\nMemory usage:" && free -h | tee -a "$LOG_DIR/health-check-$TIMESTAMP.md"
-    echo -e "\nRunning services:" && systemctl list-units --type=service --state=running | tee -a "$LOG_DIR/health-check-$TIMESTAMP.md"
-    log_action "🩺 System health report saved: health-check-$TIMESTAMP.md"
+    local report="$LOG_DIR/health-check-$TIMESTAMP.md"
+    echo "Disk usage:" | tee "$report"
+    df -h | tee -a "$report"
+    echo -e "\nMemory usage:" | tee -a "$report"
+    free -h | tee -a "$report"
+    echo -e "\n.env check:" | tee -a "$report"
+    [[ -f "$ROOT_DIR/.env" ]] && echo ".env present" | tee -a "$report" || echo ".env missing" | tee -a "$report"
+    echo -e "\nRunning services:" | tee -a "$report"
+    systemctl list-units --type=service --state=running | tee -a "$report"
+    echo -e "\nPip outdated packages:" | tee -a "$report"
+    pip_outdated_check | tee -a "$report"
+    log_action "🩺 System health report saved: $(basename "$report")"
+}
+
+# ============================================================================
+# Pip Outdated Checker
+# ============================================================================
+pip_outdated_check() {
+    echo "📦 Checking for outdated Python packages..."
+    pip list --outdated || true
 }
 
 # ============================================================================
@@ -94,6 +133,11 @@ run_code_stacker() {
 # BACKUP: Create
 # ============================================================================
 run_full_backup() {
+    if ! run_tests; then
+        echo "❌ QA checks failed. Backup aborted."
+        log_action "❌ Backup aborted: QA failed"
+        return 1
+    fi
     mkdir -p "$BACKUP_DIR"
     local archive_name="dream-backup-$TIMESTAMP.tar"
     local archive_path="$BACKUP_DIR/$archive_name"
@@ -136,18 +180,30 @@ upload_to_gdrive() {
 # ============================================================================
 restore_from_backup() {
     local archive="$1"
+    local mode="$2"
     [[ "$archive" == "latest" ]] && archive=$(ls -1t "$BACKUP_DIR"/dream-backup-*.tar.gz | head -n1)
     [[ ! -f "$archive" ]] && echo "❌ Archive not found." && return
 
     echo "🛠️ Restoring from $archive"
-    read -p "Proceed with restore? This will overwrite files. (y/N): " confirm
-    [[ "$confirm" != "y" && "$confirm" != "Y" ]] && echo "❌ Cancelled." && return
+    if [[ "$mode" != "--auto" ]]; then
+        read -p "Proceed with restore? This will overwrite files. (y/N): " confirm
+        [[ "$confirm" != "y" && "$confirm" != "Y" ]] && echo "❌ Cancelled." && return
+    fi
 
     tar -xzf "$archive" --exclude='master-artwork-paths.json'
-    read -p "Restore master-artwork-paths.json? (y/N): " mconfirm
-    [[ "$mconfirm" == "y" || "$mconfirm" == "Y" ]] && tar -xzf "$archive" master-artwork-paths.json
+    if [[ "$mode" != "--auto" ]]; then
+        read -p "Restore master-artwork-paths.json? (y/N): " mconfirm
+        [[ "$mconfirm" == "y" || "$mconfirm" == "Y" ]] && tar -xzf "$archive" master-artwork-paths.json
+    else
+        tar -xzf "$archive" master-artwork-paths.json || true
+    fi
 
     python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && deactivate
+    if python tools/validate_sku_integrity.py; then
+        echo "SKU integrity check passed"
+    else
+        echo "⚠️ SKU integrity issues detected"
+    fi
     [[ -f ".env" ]] && echo ".env OK ✅" || echo "⚠️ .env missing"
     log_action "🔁 Restore completed from $archive"
 }
@@ -183,8 +239,8 @@ main_menu() {
         echo -e "\n🌟 Project Toolkit – DreamArtMachine"
         echo "[1] Git PULL / Sync from GitHub"
         echo "[2] Git PUSH / Commit & Push to GitHub"
-        echo "[3] Run Full QA, QC, & Testing (via pytest)"
-        echo "[4] System Health Check"
+        echo "[3] Run Full QA, QC, & Testing (via pytest + SKU checks)"
+        echo "[4] System Health Check (disk, RAM, .env, pip outdated)"
         echo "[5] Backup Management"
         echo "[6] Export Log Snapshot (last 60 min)"
         echo "[7] Run Code Stacker Tool"
@@ -215,6 +271,7 @@ case "$1" in
         ;;
     --list-backups) ls -1t "$BACKUP_DIR"/dream-backup-*.tar.gz ;;
     --restore-latest) restore_from_backup latest ;;
+    --restore-latest-auto) restore_from_backup latest --auto ;;
     --code-stacker) run_code_stacker ;;
     --run-tests) run_tests ;;
     *) main_menu ;;
