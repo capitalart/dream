@@ -35,7 +35,10 @@ class User(UserMixin):
         self.username = username
 
 
-USERS = {"admin": {"password": "password"}}
+USERS = {
+    "robbie": {"password": "Kanga123!"},
+    "backup": {"password": "DreamArt@2025"}
+}
 
 
 @login_manager.user_loader
