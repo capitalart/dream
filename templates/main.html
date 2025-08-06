@@ -13,10 +13,10 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     
 </head>
-<body data-analysis-status-url="{{ url_for('artwork.analysis_status') }}" data-openai-ok="{{ 'true' if openai_configured else 'false' }}" data-google-ok="{{ 'true' if google_configured else 'false' }}">
+<body data-analysis-status-url="" data-openai-ok="{{ 'true' if openai_configured else 'false' }}" data-google-ok="{{ 'true' if google_configured else 'false' }}">
     <header class="site-header">
         <div class="header-left">
-            <a href="{{ url_for('artwork.home') }}" class="site-logo">
+            <a href="{{ url_for('home.home') }}" class="site-logo">
                 <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon icon">ArtNarrator
             </a>
         </div>
@@ -37,7 +37,7 @@
     <div id="overlay-menu" class="overlay-menu">
         <div class="overlay-header">
             <div class="header-left">
-                <a href="{{ url_for('artwork.home') }}" class="site-logo">
+                <a href="{{ url_for('home.home') }}" class="site-logo">
                     <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon icon">ArtNarrator
                 </a>
             </div>
@@ -53,29 +53,29 @@
             <div class="nav-column">
                 <h3>Artwork &amp; Gallery</h3>
                 <ul>
-                    <li><a href="{{ url_for('artwork.upload_artwork') }}">Upload Artwork</a></li>
-                    <li><a href="{{ url_for('artwork.artworks') }}">All Artworks</a></li>
-                    <li><a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a></li>
-                    <li><a href="{{ url_for('artwork.locked_gallery') }}">Locked</a></li>
+                    <li><a href="{{ '#' }}">Upload Artwork</a></li>
+                    <li><a href="{{ '#' }}">All Artworks</a></li>
+                    <li><a href="{{ '#' }}">Finalised</a></li>
+                    <li><a href="{{ '#' }}">Locked</a></li>
                 </ul>
             </div>
             <div class="nav-column">
                 <h3>Workflow &amp; Tools</h3>
                 <ul>
-                    <li><a href="{{ url_for('artwork.select') }}">Composites Preview</a></li>
-                    <li><a href="{{ url_for('mockup_admin.dashboard') }}">Mockup Admin</a></li>
-                    <li><a href="{{ url_for('coordinate_admin.dashboard') }}">Coordinate Generator</a></li>
-                    <li><a href="{{ url_for('artwork.select') }}">Mockup Selector</a></li>
+                    <li><a href="{{ '#' }}">Composites Preview</a></li>
+                    <li><a href="{{ '#' }}">Mockup Admin</a></li>
+                    <li><a href="{{ '#' }}">Coordinate Generator</a></li>
+                    <li><a href="{{ '#' }}">Mockup Selector</a></li>
                 </ul>
             </div>
             <div class="nav-column">
                 <h3>Exports &amp; Admin</h3>
                 <ul>
-                    <li><a href="{{ url_for('exports.sellbrite_management') }}">Sellbrite Management</a></li>
-                    <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
-                    <li><a href="{{ url_for('admin.security_page') }}">Admin Security</a></li>
-                    <li><a href="{{ url_for('gdws_admin.editor') }}">Description Editor (GDWS)</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li><a href="{{ '#' }}">Sellbrite Management</a></li>
+                    <li><a href="{{ '#' }}">Admin Dashboard</a></li>
+                    <li><a href="{{ '#' }}">Admin Security</a></li>
+                    <li><a href="{{ '#' }}">Description Editor (GDWS)</a></li>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
                 </ul>
             </div>
         </nav>
@@ -128,33 +128,33 @@
             <div class="footer-column">
                 <h4>Navigate</h4>
                 <ul>
-                    <li><a href="{{ url_for('artwork.home') }}">Home</a></li>
-                    <li><a href="{{ url_for('auth.login') }}">Login</a></li>
+                    <li><a href="{{ url_for('home.home') }}">Home</a></li>
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
                 </ul>
             </div>
             <div class="footer-column">
                 <h4>Artwork &amp; Gallery</h4>
                 <ul>
-                    <li><a href="{{ url_for('artwork.upload_artwork') }}">Upload Artwork</a></li>
-                    <li><a href="{{ url_for('artwork.artworks') }}">Artworks</a></li>
-                    <li><a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a></li>
-                    <li><a href="{{ url_for('artwork.locked_gallery') }}">Locked</a></li>
+                    <li><a href="{{ '#' }}">Upload Artwork</a></li>
+                    <li><a href="{{ '#' }}">Artworks</a></li>
+                    <li><a href="{{ '#' }}">Finalised</a></li>
+                    <li><a href="{{ '#' }}">Locked</a></li>
                 </ul>
             </div>
             <div class="footer-column">
                 <h4>Workflow &amp; Tools</h4>
                 <ul>
-                    <li><a href="{{ url_for('artwork.select') }}">Composites Preview</a></li>
-                    <li><a href="{{ url_for('artwork.select') }}">Mockups</a></li>
+                    <li><a href="{{ '#' }}">Composites Preview</a></li>
+                    <li><a href="{{ '#' }}">Mockups</a></li>
                 </ul>
             </div>
             <div class="footer-column">
                 <h4>Exports &amp; Admin</h4>
                 <ul>
-                    <li><a href="{{ url_for('exports.sellbrite_management') }}">Sellbrite Management</a></li>
-                    <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
-                    <li><a href="{{ url_for('admin.security_page') }}">Admin Security</a></li>
-                    <li><a href="{{ url_for('gdws_admin.editor') }}">Description Editor (GDWS)</a></li>
+                    <li><a href="{{ '#' }}">Sellbrite Management</a></li>
+                    <li><a href="{{ '#' }}">Admin Dashboard</a></li>
+                    <li><a href="{{ '#' }}">Admin Security</a></li>
+                    <li><a href="{{ '#' }}">Description Editor (GDWS)</a></li>
                 </ul>
                 {# Removed broken menu link: Admin Users (no such route exists) #}
             </div>

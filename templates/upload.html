@@ -1,10 +1,9 @@
 {% extends "main.html" %}
 {% block title %}Upload Artwork{% endblock %}
 {% block content %}
-<div class="container">
-  <div class="home-hero" >
-    <h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-one-light.svg') }}" class="hero-step-icon" alt="Step 1: Upload" />Upload New Artwork</h1>
-  </div>
+<h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-one-light.svg') }}" class="hero-step-icon" alt="Step 1: Upload" />Upload New Artwork</h1>
+<p class="page-description">Add images to start the creative workflow.</p>
+<div class="main-content">
   <form id="upload-form" method="post" enctype="multipart/form-data">
     <input id="file-input" type="file" name="images" accept="image/*" multiple hidden>
     <div id="dropzone" class="upload-dropzone">
@@ -26,5 +25,7 @@
   </div>
 </div>
 
+{% endblock %}
+{% block scripts %}
 <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
 {% endblock %}

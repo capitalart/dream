@@ -1,48 +1,34 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Edit {{ slug }}</title>
-  <style>
-    body { font-family: Arial, sans-serif; margin: 2rem; }
-    form { max-width: 800px; }
-    label { display: block; margin-top: 1rem; }
-    .mockups { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 2rem; }
-    .mockups img { width: 100%; height: auto; }
-    button { margin-top: 1.5rem; padding: 0.5rem 1rem; }
-  </style>
-</head>
-<body>
-  <h1>Edit Listing: {{ slug }}</h1>
-  <img src="/finalised-artwork/{{ slug }}/{{ slug }}.jpg" alt="{{ slug }}" style="max-width:400px;display:block;margin-bottom:1rem;">
+{% extends "main.html" %}
+{% block title %}Edit Listing: {{ slug }}{% endblock %}
+{% block content %}
+<h1>Edit Listing: {{ slug }}</h1>
+<p class="page-description">Update artwork details and regenerate mockups before finalising.</p>
+<div class="main-content">
+  <img src="{{ url_for('artwork.finalised_image', filename=slug ~ '/' ~ slug ~ '.jpg') }}" alt="{{ slug }}" class="review-main-img" style="max-width:400px;display:block;margin-bottom:1rem;">
   <form method="post" action="{{ url_for('finalise.finalise', slug=slug) }}">
-    <label>Title
-      <input type="text" name="title" value="{{ title }}" required>
-    </label>
-    <label>Description
-      <textarea name="description" rows="5" required>{{ description }}</textarea>
-    </label>
-    <label>Primary Colour
-      <select name="primary_colour" required>
-        {% for colour in colours %}
-        <option value="{{ colour }}" {% if colour == primary_colour %}selected{% endif %}>{{ colour }}</option>
-        {% endfor %}
-      </select>
-    </label>
-    <label>Secondary Colour
-      <select name="secondary_colour" required>
-        {% for colour in colours %}
-        <option value="{{ colour }}" {% if colour == secondary_colour %}selected{% endif %}>{{ colour }}</option>
-        {% endfor %}
-      </select>
-    </label>
+    <label for="title-input">Title</label>
+    <input type="text" id="title-input" name="title" value="{{ title }}" required>
+    <label for="description-input">Description</label>
+    <textarea id="description-input" name="description" rows="5" required>{{ description }}</textarea>
+    <label for="primary-colour">Primary Colour</label>
+    <select id="primary-colour" name="primary_colour" required>
+      {% for colour in colours %}
+      <option value="{{ colour }}" {% if colour == primary_colour %}selected{% endif %}>{{ colour }}</option>
+      {% endfor %}
+    </select>
+    <label for="secondary-colour">Secondary Colour</label>
+    <select id="secondary-colour" name="secondary_colour" required>
+      {% for colour in colours %}
+      <option value="{{ colour }}" {% if colour == secondary_colour %}selected{% endif %}>{{ colour }}</option>
+      {% endfor %}
+    </select>
     <div class="mockups">
       {% for i in range(1, 10) %}
-      <img src="/finalised-artwork/{{ slug }}/{{ slug }}-MU-{{ '%02d' % i }}.jpg" alt="Mockup {{ i }}">
+      <img src="{{ url_for('artwork.finalised_image', filename=slug ~ '/' ~ slug ~ '-MU-' ~ '%02d'|format(i) ~ '.jpg') }}" alt="Mockup {{ i }}">
       {% endfor %}
     </div>
-    <button type="submit" name="action" value="finalise">Finalise Listing</button>
-    <button type="submit" name="action" value="regenerate">Regenerate Mockups</button>
+    <button type="submit" name="action" value="finalise" class="btn btn-primary">Finalise Listing</button>
+    <button type="submit" name="action" value="regenerate" class="btn btn-secondary">Regenerate Mockups</button>
   </form>
-</body>
-</html>
+</div>
+{% endblock %}

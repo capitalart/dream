@@ -2,12 +2,9 @@
 {% extends "main.html" %}
 {% block title %}Artwork | ArtNarrator{% endblock %}
 {% block content %}
-<div class="container">
-
-<div class="home-hero" >
-  <h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-two-light.svg') }}" class="hero-step-icon" alt="Step 2: Artwork" />Artwork</h1>
-</div>
-
+<h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-two-light.svg') }}" class="hero-step-icon" alt="Step 2: Artwork" />Artwork</h1>
+<p class="page-description">Manage artwork through the analysis pipeline.</p>
+<div class="main-content">
 <div class="gallery-section">
 
   {% if ready_artworks %}
@@ -106,7 +103,8 @@
   {% endif %}
 
 </div>
-
 </div>
+{% endblock %}
+{% block scripts %}
 <script src="{{ url_for('static', filename='js/artworks.js') }}"></script>
 {% endblock %}
