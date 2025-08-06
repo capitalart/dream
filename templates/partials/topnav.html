@@ -1,15 +1,15 @@
 <header class="site-header">
   <div class="nav-row1 container">
-    <a href="{{ url_for('artwork.home') }}" class="logo">
+    <a href="{{ url_for('home.home') }}" class="logo">
       <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon icon" width="35"/>
       ArtNarrator
     </a>
     <nav role="navigation" class="main-nav">
-      <a href="{{ url_for('artwork.upload_artwork') }}">Upload</a>
-      <a href="{{ url_for('artwork.artworks') }}">Artwork</a>
-      <a href="{{ url_for('artwork.finalised_gallery') }}">Finalised</a>
-      <a href="{{ url_for('artwork.locked_gallery') }}">Locked</a>
-      <a href="{{ url_for('exports.sellbrite_management') }}">Exports</a>
+      <a href="{{ url_for('home.upload') }}">Upload</a>
+      <a href="{{ url_for('home.artworks') }}">Artwork</a>
+      <a href="{{ url_for('home.finalised') }}">Finalised</a>
+      <a href="#">Locked</a>
+      <a href="#">Exports</a>
     </nav>
     <div class="user-links">
       {% if session.get('logged_in') %}
