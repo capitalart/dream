@@ -38,6 +38,12 @@ def _load_metadata(slug: str) -> Dict[str, str]:
 @bp.route("/edit-listing/<slug>", methods=["GET"])
 def edit_listing(slug: str):
     slug = sanitize_slug(slug)
+    return render_template("edit_listing.html", slug=slug)
+
+
+@bp.route("/review/<slug>", methods=["GET"])
+def review(slug: str):
+    slug = sanitize_slug(slug)
     metadata = _load_metadata(slug)
     return render_template(
         "review_artwork.html",
@@ -54,7 +60,7 @@ def finalise(slug: str):
     if action == "regenerate":
         regenerate_mockups(slug)
         logger.info("Regenerated mockups for %s", slug)
-        return redirect(url_for("finalise.edit_listing", slug=slug))
+        return redirect(url_for("finalise.review", slug=slug))
 
     metadata = {
         "title": request.form.get("title", ""),
@@ -67,4 +73,4 @@ def finalise(slug: str):
     except FileNotFoundError:
         logger.error("Finalisation failed for %s", slug)
         return {"error": "required files missing"}, 400
-    return redirect(url_for("finalise.edit_listing", slug=slug))
+    return redirect(url_for("finalise.review", slug=slug))
