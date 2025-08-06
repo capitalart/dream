@@ -9,26 +9,23 @@
 {% block title %}Edit Listing{% endblock %}
 
 {% block content %}
-<div class="container">
+<div id="edit-listing-marker" style="display: none;">Edit Listing Page</div>
 
-  {# -------------------------------
-     SECTION 0: HIDDEN TEST MARKER
-  ------------------------------- #}
-  <div id="edit-listing-marker" style="display: none;">Edit Listing Page</div>
-
-  {# ---------------------------
-     SECTION 1: HEADER & HERO UI
+{# ---------------------------
+   SECTION 1: HEADER & HERO UI
   ---------------------------- #}
-  <div class="home-hero">
-    <h1>
-      <img
-        src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}"
-        class="hero-step-icon"
-        alt="Step 3: Edit Listing"
-      />
-      Edit Listing
-    </h1>
-  </div>
+<div class="home-hero">
+  <h1>
+    <img
+      src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}"
+      class="hero-step-icon"
+      alt="Step 3: Edit Listing"
+    />
+    Edit Listing
+  </h1>
+</div>
+<p class="page-description">Review metadata, preview mockups and finalise your artwork.</p>
+<div class="main-content">
   
   {# -------------------------------
      SECTION 2: FLASH MESSAGE BLOCK
@@ -291,9 +288,8 @@
 
 </div>
 
-{# --------------------------
-   SECTION 5: PAGE SCRIPTS
---------------------------- #}
+{% endblock %}
+{% block scripts %}
 <script>
   window.EDIT_INFO = {
     seoFolder: '{{ seo_folder }}',

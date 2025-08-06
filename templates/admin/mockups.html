@@ -1,9 +1,9 @@
 {% extends "main.html" %}
 {% block title %}Mockup Admin{% endblock %}
 {% block content %}
-<div class="container">
-    <h1>Mockup Admin Dashboard</h1>
-    <p>Upload new blank mockups, create categories, and use AI to automatically sort them.</p>
+<h1>Mockup Admin Dashboard</h1>
+<p class="page-description">Upload new blank mockups, create categories, and use AI to automatically sort them.</p>
+<div class="main-content">
 
     <div class="controls-bar">
         <div class="form-group">
@@ -105,9 +105,9 @@
         <a href="{{ url_for('mockup_admin.dashboard', aspect=current_aspect, page=page+1, per_page=per_page, category=category_filter, sort=sort_by) }}" class="btn btn-secondary">Next &raquo;</a>
         {% endif %}
     </nav>
-</div>
+  </div>
 
-<div id="upload-modal" class="analysis-modal"></div>
+  <div id="upload-modal" class="analysis-modal"></div>
 <div id="image-modal" class="modal-bg" style="display: none;"><span class="modal-close">&times;</span><img src="" alt="Full size mockup" class="modal-img"></div>
 <div id="duplicates-modal" class="analysis-modal" style="display: none;">
     <div class="analysis-box">
@@ -118,5 +118,7 @@
     </div>
 </div>
 
+{% endblock %}
+{% block scripts %}
 <script src="{{ url_for('static', filename='js/mockup-admin.js') }}"></script>
 {% endblock %}
