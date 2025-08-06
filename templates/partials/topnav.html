@@ -1,48 +1,19 @@
-<header class="site-header">
-  <div class="nav-row1 container">
-    <a href="{{ url_for('home.home') }}" class="logo">
-      <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon icon" />
-      ArtNarrator
+<header class="site-header header-grid">
+  <div class="header-left">
+    <a href="{{ url_for('home.home') }}" class="site-logo">
+      <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon icon">ArtNarrator
     </a>
-    <nav role="navigation" class="main-nav">
-      <a href="{{ url_for('home.upload') }}">Upload</a>
-      <a href="{{ url_for('home.artworks') }}">Artwork</a>
-      <a href="{{ url_for('home.finalised') }}">Finalised</a>
-      <a href="#">Locked</a>
-      <a href="#">Exports</a>
-    </nav>
-    <div class="user-links">
-      {% if session.get('logged_in') %}
-        <span class="user-name">{{ session.get('username') }}</span>
-        <a href="{{ url_for('auth.logout') }}">Logout</a>
-      {% endif %}
-    </div>
-    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
-      <svg id="icon-sun" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" aria-hidden="true">
-        <path d="M128 40v-24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
-        <circle cx="128" cy="128" r="56" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
-        <path d="M64 64L48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
-        <path d="M64 192L48 208" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
-        <path d="M192 64l16-16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
-        <path d="M192 192l16 16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
-        <path d="M40 128H16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
-        <path d="M128 216v24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
-        <path d="M216 128h24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
-      </svg>
-      <svg id="icon-moon" class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="24" height="24" aria-hidden="true">
-        <path d="M108.11 28.11A96.09 96.09 0 00227.89 147.89 96 96 0 11108.11 28.11z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="12"/>
-      </svg>
+  </div>
+  <div class="header-center">
+    <button id="menu-toggle" class="menu-toggle-btn" aria-label="Open menu">
+      Menu
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd"/></svg>
     </button>
   </div>
-  <div class="nav-row2 container">
-    <nav role="navigation" class="secondary-nav">
-      {% if session.get('username') == 'robbie' %}
-        <a href="{{ url_for('admin.dashboard') }}">Admin</a>
-      {% endif %}
-      <a href="/gdws">GDWS</a>
-      <a href="/udwa">UDWA</a>
-      <a href="/art-prompts">Art Prompts</a>
-      <a href="/mockups">Mockups</a>
-    </nav>
+  <div class="header-right">
+    <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle theme">
+      <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.106a.75.75 0 011.06-1.06l1.591 1.59a.75.75 0 01-1.06 1.06l-1.59-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.894 17.894a.75.75 0 01-1.06 1.06l-1.59-1.591a.75.75 0 111.06-1.06l1.59 1.59zM12 18.75a.75.75 0 01-.75.75v2.25a.75.75 0 011.5 0V19.5a.75.75 0 01-.75-.75zM6.106 18.894a.75.75 0 01-1.06-1.06l1.59-1.59a.75.75 0 011.06 1.06l-1.59 1.59zM3.75 12a.75.75 0 01.75-.75h2.25a.75.75 0 010 1.5H4.5a.75.75 0 01-.75-.75zM6.106 5.046a.75.75 0 011.06 1.06l-1.59 1.591a.75.75 0 01-1.06-1.06l1.59-1.59z"/></svg>
+      <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69a.75.75 0 001.981.981A10.503 10.503 0 0118 18a10.5 10.5 0 01-10.5-10.5c0-1.25.22-2.454.622-3.574a.75.75 0 01.806-.162z" clip-rule="evenodd"/></svg>
+    </button>
   </div>
 </header>

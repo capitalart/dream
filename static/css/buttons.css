@@ -242,8 +242,14 @@ button:disabled,
   .workflow-row .workflow-btn { font-size: 0.95em; min-width: 45vw; max-width: 95vw; padding: 0.9em 0.5em 1em 0.5em; margin-bottom: 0.5em; }
 }
 @media (max-width: 767px) {
-  .workflow-row { flex-direction: column; gap: 0.5rem; }
-  .workflow-row .workflow-btn { min-width: 98vw; max-width: 100vw; padding: 0.6em 0.2em 0.8em 0.2em; font-size: 0.88em;}
+  .workflow-row { flex-direction: column; gap: 0.5rem; margin-top: 4rem; }
+  .workflow-row .workflow-btn {
+    min-width: 98vw;
+    max-width: 100vw;
+    padding: 0.8em 0.4em;
+    font-size: 1.2rem;
+    min-height: 180px;
+  }
 }
 
 /* ========================================================

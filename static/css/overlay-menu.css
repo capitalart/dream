@@ -14,7 +14,7 @@
   overflow-y: auto; color: #111111;
 }
 .overlay-menu.is-active { opacity: 1; visibility: visible; transform: translateY(0);}
-.overlay-header { flex-shrink: 0; position: sticky; top: 0; background-color: var(--color-overlay-bg);}
+.overlay-header { flex-shrink: 0; position: sticky; top: 0; background-color: var(--color-overlay-bg);} 
 .overlay-nav {
   display: grid; grid-template-columns: repeat(3, 1fr);
   flex-grow: 1; padding: 4rem 2rem; gap: 2rem;
