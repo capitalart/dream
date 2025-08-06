@@ -1,4 +1,5 @@
 """Flask application for DreamArtMachine with basic authentication."""
+
 from __future__ import annotations
 
 import os
@@ -6,9 +7,10 @@ import os
 from flask import (
     Flask,
     redirect,
-    render_template_string,
+    render_template,
     request,
     url_for,
+    flash,
 )
 from flask_login import (
     LoginManager,
@@ -22,6 +24,7 @@ from flask_login import (
 from config import configure_logging
 from routes import bp as routes_bp
 from routes.home_routes import bp as home_bp
+from routes.admin_routes import bp as admin_bp
 
 
 login_manager = LoginManager()
@@ -36,10 +39,7 @@ class User(UserMixin):
         self.username = username
 
 
-USERS = {
-    "robbie": {"password": "Kanga123!"},
-    "backup": {"password": "DreamArt@2025"}
-}
+USERS = {"robbie": {"password": "Kanga123!"}, "backup": {"password": "DreamArt@2025"}}
 
 
 @login_manager.user_loader
@@ -79,10 +79,8 @@ def create_app() -> Flask:
             if user and user["password"] == password:
                 login_user(User(username))
                 return redirect(url_for("home.home"))
-        return render_template_string(
-            "<form method='post'><input name='username'><input name='password'"
-            " type='password'><button type='submit'>Login</button></form>"
-        )
+            flash("Invalid credentials", "error")
+        return render_template("login.html")
 
     @app.route("/logout")
     @login_required
@@ -90,10 +88,7 @@ def create_app() -> Flask:
         logout_user()
         return redirect(url_for("login"))
 
-    @app.route("/artworks")
-    @login_required
-    def artworks():
-        return {"artworks": []}, 200
+    # Artwork listing handled in home blueprint
 
     @app.route("/healthz")
     @login_required
@@ -105,8 +100,17 @@ def create_app() -> Flask:
     def whoami() -> tuple[str, int]:
         return f"Logged in as: {current_user.username}", 200
 
+    @app.errorhandler(404)
+    def not_found(_e):
+        return render_template("404.html"), 404
+
+    @app.errorhandler(500)
+    def server_error(_e):
+        return render_template("500.html"), 500
+
     app.register_blueprint(home_bp)
     app.register_blueprint(routes_bp)
+    app.register_blueprint(admin_bp)
     return app
 
 
