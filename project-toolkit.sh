@@ -190,7 +190,7 @@ restore_from_backup() {
         [[ "$confirm" != "y" && "$confirm" != "Y" ]] && echo "❌ Cancelled." && return
     fi
 
-    tar -xzf "$archive" --exclude='master-artwork-paths.json'
+    tar -xzf "$archive" --exclude='master-artwork-paths.json' --exclude='.env'
     if [[ "$mode" != "--auto" ]]; then
         read -p "Restore master-artwork-paths.json? (y/N): " mconfirm
         [[ "$mconfirm" == "y" || "$mconfirm" == "Y" ]] && tar -xzf "$archive" master-artwork-paths.json
@@ -198,13 +198,35 @@ restore_from_backup() {
         tar -xzf "$archive" master-artwork-paths.json || true
     fi
 
+    if tar -tzf "$archive" .env >/dev/null 2>&1; then
+        tar -xzf "$archive" .env
+        echo ".env restored"
+    else
+        echo "⚠️ .env not in archive"
+        echo "# placeholder" > .env.template
+    fi
+
     python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && deactivate
-    if python tools/validate_sku_integrity.py; then
+    local report="$LOG_DIR/restore-check-$(date +%Y-%m-%d).md"
+    if python tools/validate_sku_integrity.py | tee "$report"; then
         echo "SKU integrity check passed"
     else
-        echo "⚠️ SKU integrity issues detected"
+        echo "⚠️ SKU integrity issues detected" | tee -a "$report"
     fi
-    [[ -f ".env" ]] && echo ".env OK ✅" || echo "⚠️ .env missing"
+    if command -v pytest >/dev/null 2>&1; then
+        pytest >> "$report" 2>&1 || true
+    fi
+    local slug_count=$(find art-processing/processed-artwork -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
+    echo "Restored slugs: $slug_count" >> "$report"
+    python - <<'PY' >> "$report" 2>&1
+from dotenv import load_dotenv
+load_dotenv();print("dotenv loaded")
+PY
+    if [[ -f ".env" ]]; then
+        echo ".env OK ✅" | tee -a "$report"
+    else
+        echo "⚠️ .env missing" | tee -a "$report"
+    fi
     log_action "🔁 Restore completed from $archive"
 }
 
@@ -274,5 +296,11 @@ case "$1" in
     --restore-latest-auto) restore_from_backup latest --auto ;;
     --code-stacker) run_code_stacker ;;
     --run-tests) run_tests ;;
+    --validate-skus) python tools/validate_sku_integrity.py ;;
+    --run-pip-check) pip_outdated_check ;;
+    --repair-orphans)
+        shift
+        python tools/repair_orphan_skus.py "$@"
+        ;;
     *) main_menu ;;
 esac
