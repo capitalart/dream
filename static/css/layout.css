@@ -23,22 +23,18 @@
   .mockup-col, .edit-listing-col { width: 100%; max-width: none;}
 }
 
-/* Responsive Header & Footer */
+/* Responsive Header */
 @media (max-width: 767px) {
-  .site-header { flex-wrap: wrap; padding: 0.5rem 1rem; }
-  .header-left, .header-right { flex: 1 0 100%; justify-content: center; }
-  .header-center { order: 3; margin-top: 0.5rem; }
-  .footer-grid { grid-template-columns: 1fr; padding: 0 1rem; }
+  .header-grid {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0.5rem 1rem;
+  }
+  .header-grid .header-left { grid-column: 1; }
+  .header-grid .header-center { grid-column: 2; justify-self: center; }
+  .header-grid .header-right { grid-column: 3; justify-self: end; }
   .site-footer { min-height: 20rem; }
-}
-@media (min-width: 768px) and (max-width: 1023px) {
-  .footer-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (min-width: 1024px) and (max-width: 1439px) {
-  .footer-grid { grid-template-columns: repeat(3, 1fr); }
-}
-@media (min-width: 1440px) {
-  .footer-grid { grid-template-columns: repeat(4, 1fr); }
 }
 
 /* ===== Simple Flexbox Grid System for ArtNarrator ===== */
@@ -143,8 +139,8 @@
 
 .footer-grid {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 2rem;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
         max-width: 75rem;
         width: 100%;
         margin: 0 auto;
@@ -160,14 +156,17 @@
 }
 
 .footer-column ul {
-	display: flex;
-	flex-direction: column;
-	gap: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
 }
 
 .footer-column a {
-	opacity: 0.9;
-	transition: opacity 0.3s;
+        opacity: 0.9;
+        transition: opacity 0.3s;
+        line-height: 1.6;
+        padding-bottom: 0.5rem;
+        display: inline-block;
 }
 .footer-column a:hover {
 	opacity: 1;

@@ -10,3 +10,6 @@
 @import url('edit_listing.css');
 @import url('404.css');
 
+:target {
+  scroll-margin-top: 5rem;
+}

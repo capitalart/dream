@@ -14,7 +14,7 @@
     
 </head>
 <body data-analysis-status-url="" data-openai-ok="{{ 'true' if openai_configured else 'false' }}" data-google-ok="{{ 'true' if google_configured else 'false' }}">
-    <header class="site-header">
+    <header class="site-header header-grid">
         <div class="header-left">
             <a href="{{ url_for('home.home') }}" class="site-logo">
                 <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon icon">ArtNarrator
@@ -35,7 +35,7 @@
     </header>
 
     <div id="overlay-menu" class="overlay-menu">
-        <div class="overlay-header">
+        <div class="overlay-header header-grid">
             <div class="header-left">
                 <a href="{{ url_for('home.home') }}" class="site-logo">
                     <img src="{{ url_for('static', filename='icons/svg/light/palette-light.svg') }}" alt="" class="logo-icon icon">ArtNarrator
