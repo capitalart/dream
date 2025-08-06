@@ -1,0 +1,13 @@
+[Unit]
+Description=Gunicorn instance to serve DreamArtMachine
+After=network.target
+
+[Service]
+User=dream
+Group=www-data
+WorkingDirectory=/home/dream
+Environment="PATH=/home/dream/venv/bin"
+ExecStart=/home/dream/venv/bin/gunicorn -w 4 -b 127.0.0.1:8070 app:app
+
+[Install]
+WantedBy=multi-user.target
