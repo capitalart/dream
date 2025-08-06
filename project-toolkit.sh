@@ -266,6 +266,7 @@ main_menu() {
         echo "[5] Backup Management"
         echo "[6] Export Log Snapshot (last 60 min)"
         echo "[7] Run Code Stacker Tool"
+        echo "[8] Safe Stash → Git Pull → Reapply (optional)"
         echo "[0] Exit"
         read -p "Choose: " opt
         case "$opt" in
@@ -276,11 +277,48 @@ main_menu() {
             5) backup_menu ;;
             6) export_logs_snapshot ;;
             7) run_code_stacker ;;
+            8)
+                echo "🟡 Checking for local changes..."
+                if git diff --quiet && git diff --cached --quiet; then
+                    echo "✅ No local changes to stash."
+                else
+                    STASH_MSG="Toolkit auto-stash $(date '+%Y-%m-%d %H:%M:%S')"
+                    git stash push -m "$STASH_MSG"
+                    echo "🧾 Local changes stashed: '$STASH_MSG'"
+                    log_action "🟡 Git stash created before pull."
+                fi
+
+                echo "🔄 Pulling latest changes from GitHub..."
+                if git pull; then
+                    echo "✅ Git pull successful."
+                    log_action "✅ Git pull completed with stash safety."
+                else
+                    echo "❌ Git pull failed."
+                    log_action "❌ Git pull failed after stash."
+                    return 1
+                fi
+
+                echo ""
+                read -p "🔁 Reapply stashed changes now? (y/N): " confirm
+                if [[ "$confirm" =~ ^[Yy]$ ]]; then
+                    if git stash pop; then
+                        echo "✅ Stash reapplied successfully."
+                        log_action "🔁 Git stash popped after pull."
+                    else
+                        echo "⚠️ Merge conflicts may have occurred when applying the stash."
+                        log_action "⚠️ Git stash pop had conflicts."
+                    fi
+                else
+                    echo "📦 Stash saved. You can reapply later using: git stash pop"
+                    log_action "📦 Stash retained for manual pop."
+                fi
+                ;;
             0) echo "👋 Bye legend!"; exit 0 ;;
             *) echo "❌ Invalid option." ;;
         esac
     done
 }
+
 
 # ============================================================================
 # CLI SHORTCUTS
