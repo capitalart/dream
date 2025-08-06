@@ -3,8 +3,8 @@
 {% block content %}
 <h1>Edit Listing: {{ slug }}</h1>
 <p class="page-description">Update artwork details and regenerate mockups before finalising.</p>
-<div class="main-content">
-  <img src="{{ url_for('static', filename='finalised-artwork/' ~ slug ~ '/' ~ slug ~ '.jpg') }}" alt="{{ slug }}" class="review-main-img" style="max-width:400px;display:block;margin-bottom:1rem;">
+<section class="main-content">
+  <img src="{{ url_for('static', filename='finalised-artwork/' ~ slug ~ '/' ~ slug ~ '.jpg') }}" alt="{{ slug }}" class="review-main-img">
   <form method="post" action="{{ url_for('finalise.finalise', slug=slug) }}">
     <label for="title-input">Title</label>
     <input type="text" id="title-input" name="title" value="{{ title }}" required>
@@ -30,7 +30,7 @@
     <button type="submit" name="action" value="finalise" class="btn btn-primary">Finalise Listing</button>
     <button type="submit" name="action" value="regenerate" class="btn btn-secondary">Regenerate Mockups</button>
   </form>
-</div>
+</section>
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/edit_listing.js') }}"></script>

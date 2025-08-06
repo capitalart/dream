@@ -124,3 +124,11 @@
 .theme-dark .openai-analysis-table tbody tr:nth-of-type(even) {
   background-color: rgba(255, 255, 255, 0.04);
 }
+
+@media (max-width: 767px) {
+  .openai-analysis-table thead th,
+  .openai-analysis-table tbody th,
+  .openai-analysis-table tbody td {
+    font-size: 0.8em;
+  }
+}
