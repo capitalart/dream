@@ -1,16 +1,106 @@
-"""Flask application for DreamArtMachine."""
+"""Flask application for DreamArtMachine with basic authentication."""
 from __future__ import annotations
 
-from flask import Flask
+import os
+
+from flask import (
+    Flask,
+    redirect,
+    render_template_string,
+    request,
+    url_for,
+)
+from flask_login import (
+    LoginManager,
+    UserMixin,
+    current_user,
+    login_required,
+    login_user,
+    logout_user,
+)
 
 from config import configure_logging
 from routes import bp as routes_bp
 
 
+login_manager = LoginManager()
+login_manager.login_view = "login"
+
+
+class User(UserMixin):
+    """Minimal user model for authentication."""
+
+    def __init__(self, username: str):
+        self.id = username
+        self.username = username
+
+
+USERS = {"admin": {"password": "password"}}
+
+
+@login_manager.user_loader
+def load_user(user_id: str) -> User | None:  # pragma: no cover - simple loader
+    user = USERS.get(user_id)
+    return User(user_id) if user else None
+
+
 def create_app() -> Flask:
-    """Application factory."""
+    """Application factory with security settings and login enforcement."""
     configure_logging()
     app = Flask(__name__)
+    app.config.update(
+        SECRET_KEY=os.environ.get("SECRET_KEY", "dev"),
+        SESSION_COOKIE_SECURE=True,
+        SESSION_COOKIE_HTTPONLY=True,
+        REMEMBER_COOKIE_SECURE=True,
+        PREFERRED_URL_SCHEME="https",
+    )
+    login_manager.init_app(app)
+
+    @app.before_request
+    def require_login() -> None:
+        """Redirect users to login page if not authenticated."""
+        exempt = {"login", "static"}
+        if request.endpoint in exempt or request.path == "/favicon.ico":
+            return
+        if not current_user.is_authenticated:
+            return redirect(url_for("login"))
+
+    @app.route("/login", methods=["GET", "POST"])
+    def login():
+        if request.method == "POST":
+            username = request.form.get("username", "")
+            password = request.form.get("password", "")
+            user = USERS.get(username)
+            if user and user["password"] == password:
+                login_user(User(username))
+                return redirect(url_for("artworks"))
+        return render_template_string(
+            "<form method='post'><input name='username'><input name='password'"
+            " type='password'><button type='submit'>Login</button></form>"
+        )
+
+    @app.route("/logout")
+    @login_required
+    def logout():
+        logout_user()
+        return redirect(url_for("login"))
+
+    @app.route("/artworks")
+    @login_required
+    def artworks():
+        return {"artworks": []}, 200
+
+    @app.route("/healthz")
+    @login_required
+    def health_check() -> tuple[str, int]:
+        return "OK", 200
+
+    @app.route("/whoami")
+    @login_required
+    def whoami() -> tuple[str, int]:
+        return f"Logged in as: {current_user.username}", 200
+
     app.register_blueprint(routes_bp)
     return app
 
