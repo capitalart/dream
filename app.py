@@ -21,6 +21,7 @@ from flask_login import (
 
 from config import configure_logging
 from routes import bp as routes_bp
+from routes.home_routes import bp as home_bp
 
 
 login_manager = LoginManager()
@@ -77,7 +78,7 @@ def create_app() -> Flask:
             user = USERS.get(username)
             if user and user["password"] == password:
                 login_user(User(username))
-                return redirect(url_for("artworks"))
+                return redirect(url_for("home.home"))
         return render_template_string(
             "<form method='post'><input name='username'><input name='password'"
             " type='password'><button type='submit'>Login</button></form>"
@@ -104,6 +105,7 @@ def create_app() -> Flask:
     def whoami() -> tuple[str, int]:
         return f"Logged in as: {current_user.username}", 200
 
+    app.register_blueprint(home_bp)
     app.register_blueprint(routes_bp)
     return app
 

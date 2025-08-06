@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Home | DreamArtMachine{% endblock %}
+{% block content %}
+<div class="home-hero">
+  <h1><img src="{{ url_for('static', filename='logos/logo-vector.svg') }}" alt="" class="artnarrator-logo"/>Welcome to DreamArtMachine</h1>
+  <p class="home-intro">Create, analyse and prepare your art for sale with integrated AI tools.</p>
+</div>
+
+<div class="workflow-row">
+  <a href="#" class="workflow-btn">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-one-light.svg') }}" class="step-btn-icon" alt="Step 1" />
+    Upload Artwork
+  </a>
+  <a href="#" class="workflow-btn">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-two-light.svg') }}" class="step-btn-icon" alt="Step 2" />
+    Analyze
+  </a>
+  <a href="#" class="workflow-btn">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-three-light.svg') }}" class="step-btn-icon" alt="Step 3" />
+    Finalise
+  </a>
+  <a href="#" class="workflow-btn">
+    <img src="{{ url_for('static', filename='icons/svg/light/number-circle-four-light.svg') }}" class="step-btn-icon" alt="Step 4" />
+    Export
+  </a>
+</div>
+
+<section class="how-it-works">
+  <h2>How It Works</h2>
+  <ol>
+    <li><b>Upload:</b> Drag and drop your artwork.</li>
+    <li><b>Analyze:</b> Let the AI generate titles and descriptions.</li>
+    <li><b>Finalise:</b> Review and tweak the details.</li>
+    <li><b>Export:</b> Prepare files for marketplace listing.</li>
+  </ol>
+</section>
+{% endblock %}
