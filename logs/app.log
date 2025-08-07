@@ -86,3 +86,4 @@ Traceback (most recent call last):
   File "/home/dream/venv/lib/python3.11/site-packages/werkzeug/routing/map.py", line 924, in build
     raise BuildError(endpoint, values, method, self)
 werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'finalise.finalise' with values ['slug']. Did you mean 'routes.finalise.finalise' instead?
+2025-08-07 15:00:23,004 ERROR routes.home_routes: Failed to collect unanalysed artworks: Invalid pattern: '**' can only be an entire path component

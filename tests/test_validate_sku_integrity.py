@@ -11,7 +11,7 @@ from tools.validate_sku_integrity import check_unanalysed, check_processed
 def test_missing_thumb(tmp_path):
     root = tmp_path / "unanalysed-artwork" / "image"
     root.mkdir(parents=True)
-    sku = "ARTNARRATOR-00001"
+    sku = "RJC-00001"
     (root / "image.jpg").write_text("data")
     (root / f"{sku}-ANALYSE.jpg").write_text("data")
     (root / f"{sku}-QC.json").write_text("{}")
@@ -22,7 +22,7 @@ def test_missing_thumb(tmp_path):
 def test_all_files_present(tmp_path):
     root = tmp_path / "unanalysed-artwork" / "image"
     root.mkdir(parents=True)
-    sku = "ARTNARRATOR-00002"
+    sku = "RJC-00002"
     (root / "image.jpg").write_text("data")
     (root / f"{sku}-ANALYSE.jpg").write_text("data")
     (root / f"{sku}-THUMB.jpg").write_text("data")
@@ -35,7 +35,7 @@ def test_processed_missing_final_json(tmp_path):
     base = tmp_path / "processed-artwork" / "slug"
     thumbs = base / "THUMBS"
     thumbs.mkdir(parents=True)
-    sku = "ARTNARRATOR-12345"
+    sku = "RJC-12345"
     slug = base.name
     (base / f"{slug}-{sku}.jpg").write_text("data")
     (base / f"{slug}-{sku}-THUMB.jpg").write_text("data")
@@ -52,7 +52,7 @@ def test_processed_complete(tmp_path):
     base = tmp_path / "processed-artwork" / "slug2"
     thumbs = base / "THUMBS"
     thumbs.mkdir(parents=True)
-    sku = "ARTNARRATOR-56789"
+    sku = "R-56789"
     slug = base.name
     (base / f"{slug}-{sku}.jpg").write_text("data")
     (base / f"{slug}-{sku}-THUMB.jpg").write_text("data")

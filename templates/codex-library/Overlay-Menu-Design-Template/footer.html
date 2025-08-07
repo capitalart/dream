@@ -1,0 +1,39 @@
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-column">
+      <h4>Navigate</h4>
+      <ul>
+        <li><a href="{{ url_for('home.home') }}">Home</a></li>
+        <li><a href="{{ url_for('login') }}">Login</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Artwork &amp; Gallery</h4>
+      <ul>
+        <li><a href="{{ url_for('artwork.upload_artwork') }}">Upload Artwork</a></li>
+        <li><a href="{{ url_for('home.artworks') }}">Artworks</a></li>
+        <li><a href="{{ url_for('home.finalised') }}">Finalised</a></li>
+        <li><a href="#">Locked</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Workflow &amp; Tools</h4>
+      <ul>
+        <li><a href="#">Composites Preview</a></li>
+        <li><a href="#">Mockups</a></li>
+      </ul>
+    </div>
+    <div class="footer-column">
+      <h4>Exports &amp; Admin</h4>
+      <ul>
+        <li><a href="#">Sellbrite Management</a></li>
+        <li><a href="{{ url_for('admin.dashboard') }}">Admin Dashboard</a></li>
+        <li><a href="{{ url_for('admin.security_page') }}">Admin Security</a></li>
+        <li><a href="#">Description Editor (GDWS)</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="copyright-bar">
+    © Copyright 2025 ART Narrator All rights reserved | <a href="https://dreamartmachine.com">DreamArtMachine.com</a> designed and built by Robin Custance.
+  </div>
+</footer>

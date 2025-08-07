@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =============================
-# DreamArtMachine/ArtNarrator
+# DreamArtMachine
 # code-stacker.sh
 # ./code-stacker.sh
 # Gathers and combines code from project, EXCLUDING 'file-storage/' and any files inside it.
@@ -11,10 +11,10 @@ now=$(date "+%a-%d-%B-%Y-%I-%M-%p" | tr '[:lower:]' '[:upper:]')
 
 # --- Folders and files to process
 root_folders="descriptions routes scripts settings static/css static/js templates tests utils"
-root_files="CHANGELOG.md CODEX-README.md README.md app.py artnarrator-report.sh config.py cron-backup.sh generate_folder_tree.py git-update-pull.sh git-update-push.sh package-lock.json requirements.txt"
+root_files="CHANGELOG.md CODEX-README.md README.md app.py config.py cron-backup.sh generate_folder_tree.py git-update-pull.sh git-update-push.sh package-lock.json requirements.txt"
 
 # --- List of files now ONLY in file-storage (not in project root)
-excluded_files="artnarrator.py codex-merge.sh mockup_categoriser.py run_codex_patch.py smart_sign_artwork.py smart_sign_test01.py sort_and_prepare_midjourney_images.py"
+excluded_files="codex-merge.sh mockup_categoriser.py run_codex_patch.py smart_sign_artwork.py smart_sign_test01.py sort_and_prepare_midjourney_images.py"
 
 # --- Full code stack (main project code)
 out1="code-stacks/full-code-stack/code-stack-${now}.md"

@@ -1,5 +1,5 @@
 /* ================================
-   ArtNarrator Upload JS (XMLHttpRequest for Progress)
+   DreamArtMachine Upload JS (XMLHttpRequest for Progress)
    ================================ */
 
 document.addEventListener('DOMContentLoaded', () => {

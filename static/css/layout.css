@@ -37,7 +37,7 @@
   .site-footer { min-height: 20rem; }
 }
 
-/* ===== Simple Flexbox Grid System for ArtNarrator ===== */
+/* ===== Simple Flexbox Grid System for DreamArtMachine ===== */
 
 /* MODIFIED: This rule now correctly calculates a 50% width while accounting for the container's gap. */
 .col-6 {

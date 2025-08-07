@@ -28,7 +28,7 @@ MOCKUPS_DIR = INPUTS_DIR / "mockups"
 MASTER_ARTWORK_PATHS_FILE = BASE_DIR / "master-artwork-paths.json"
 # SKU tracking
 SKU_TRACKER = BASE_DIR / "sku_tracker.json"
-SKU_PREFIX = "ARTNARRATOR"
+SKU_PREFIX = "RJC"
 SKU_DIGITS = 5
 
 # Ensure required directories exist

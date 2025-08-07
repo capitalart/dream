@@ -11,7 +11,7 @@ def test_restore_integrity(tmp_path):
     (root / ".env").write_text("TEST=1")
     unanalysed = root / "art-processing" / "unanalysed-artwork" / "img"
     unanalysed.mkdir(parents=True)
-    sku1 = "ARTNARRATOR-00001"
+    sku1 = "RJC-00001"
     (unanalysed / "img.jpg").write_text("x")
     (unanalysed / f"{sku1}-THUMB.jpg").write_text("x")
     (unanalysed / f"{sku1}-ANALYSE.jpg").write_text("x")
@@ -20,7 +20,7 @@ def test_restore_integrity(tmp_path):
     processed = root / "art-processing" / "processed-artwork" / "slug"
     thumbs = processed / "THUMBS"
     thumbs.mkdir(parents=True)
-    sku2 = "ARTNARRATOR-12345"
+    sku2 = "RJC-12345"
     slug = processed.name
     (processed / f"{slug}-{sku2}.jpg").write_text("x")
     (processed / f"{slug}-{sku2}-THUMB.jpg").write_text("x")
