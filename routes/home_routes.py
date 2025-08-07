@@ -6,6 +6,7 @@ from flask_login import login_required
 import os
 import config
 from routes import utils as routes_utils
+from datetime import datetime
 
 bp = Blueprint("home", __name__)
 
@@ -33,6 +34,10 @@ def home() -> str:
 def artworks() -> str:
     """List all unanalysed artworks ready for processing."""
     artworks = routes_utils.get_all_unanalysed_artworks()
+    for art in artworks:
+        art["upload_date"] = datetime.fromtimestamp(art["timestamp"]).strftime(
+            "%Y-%m-%d"
+        )
     return render_template(
         "artworks.html",
         artworks=artworks,

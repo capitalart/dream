@@ -7,10 +7,11 @@
   {% if artworks %}
   <div class="gallery-grid">
     {% for art in artworks %}
-    <div class="gallery-card" data-filename="{{ art.filename }}" data-aspect="{{ art.aspect }}">
-      <img src="{{ get_artwork_image_url('unanalysed', art.filename) }}" alt="{{ art.slug }}" class="card-img-top">
+    <div class="gallery-card" data-analyse="{{ art.analyse }}" data-aspect="{{ art.aspect }}" data-sku="{{ art.sku }}">
+      <img src="{{ get_artwork_image_url('unanalysed', art.thumb) }}" alt="{{ art.slug }}" class="card-img-top">
       <div class="card-body">
-        <h3 class="card-title">{{ art.slug }}</h3>
+        <h3 class="card-title">{{ art.filename }}</h3>
+        <div class="card-meta">SKU: {{ art.sku }}<br>Uploaded: {{ art.upload_date }}</div>
         <button class="btn btn-primary btn-analyze" data-provider="openai">Analyze</button>
       </div>
       <div class="card-overlay hidden"></div>
