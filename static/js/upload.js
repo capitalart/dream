@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return new Promise((resolve, reject) => {
       const xhr = new XMLHttpRequest();
       const formData = new FormData();
-      formData.append('images', file);
+      formData.append('file', file);
 
       xhr.upload.addEventListener('progress', e => {
         if (e.lengthComputable) {
@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Redirect after all files are processed
     modal.classList.remove('active');
-    window.location.href = '/artworks';
+    window.location.href = '/upload';
   }
 
   if (dropzone) {

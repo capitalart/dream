@@ -5,13 +5,23 @@
 <p class="page-description">Add images to start the creative workflow.</p>
 <section class="main-content">
   <form id="upload-form" method="post" enctype="multipart/form-data">
-    <input id="file-input" type="file" name="images" accept="image/*" multiple hidden>
+    <input id="file-input" type="file" name="file" accept="image/*" multiple hidden>
     <div id="dropzone" class="upload-dropzone">
       Drag & Drop images here or click to choose files
     </div>
     <ul id="upload-list" class="upload-list"></ul>
   </form>
 </section>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <ul class="flash-messages">
+      {% for category, msg in messages %}
+        <li class="flash {{ category }}">{{ msg }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
 
 <div id="upload-modal" class="modal-bg" role="dialog" aria-modal="true">
   <div class="modal-box" tabindex="-1">

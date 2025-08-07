@@ -24,6 +24,7 @@ from flask_login import (
 from config import configure_logging
 from routes import bp as routes_bp
 from routes.home_routes import bp as home_bp
+from routes.artwork_routes import bp as artwork_bp
 from routes.admin_routes import bp as admin_bp
 from routes.finalise_routes import bp as finalise_bp
 from routes.exports_routes import bp as exports_bp
@@ -112,6 +113,7 @@ def create_app() -> Flask:
         return render_template("500.html"), 500
 
     app.register_blueprint(home_bp)
+    app.register_blueprint(artwork_bp)
     app.register_blueprint(routes_bp)
     app.register_blueprint(admin_bp)
     app.register_blueprint(finalise_bp)
