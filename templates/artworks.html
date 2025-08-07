@@ -8,8 +8,8 @@
   <div class="gallery-grid">
     {% for art in artworks %}
     <div class="gallery-card" data-analyse="{{ art.analyse or '' }}" data-aspect="{{ art.aspect }}" data-sku="{{ art.sku }}">
-      {% if art.thumb %}
-      <img src="{{ get_artwork_image_url('unanalysed', art.thumb) }}" alt="{{ art.slug }}" class="card-img-top">
+      {% if art.thumb_path %}
+      <img src="{{ get_artwork_image_url('unanalysed', art.thumb_path) }}" alt="{{ art.slug }}" class="card-img-top">
       {% else %}
       <div class="card-img-top placeholder">No thumbnail</div>
       {% endif %}
