@@ -69,13 +69,17 @@
 
 
 /* === Header === */
-.site-header, .overlay-header {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 1rem 1rem;
-	width: 100%;
-	background-color: var(--header-bg);
+.site-header,
+.overlay-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1rem;
+        width: 100vw;
+        margin: 0 auto;
+        left: 0;
+        right: 0;
+        background-color: var(--header-bg);
 }
 
 .site-header {
@@ -135,13 +139,18 @@
         flex-direction: column;
         justify-content: center;
         border-top: 1px solid var(--color-footer-border);
+        width: 100vw;
+        margin-left: 0;
+        margin-right: 0;
+        left: 0;
+        right: 0;
 }
 
 .footer-grid {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
         gap: 1rem;
-        max-width: 75rem;
+        max-width: 2400px;
         width: 100%;
         margin: 0 auto;
         padding: 0 2rem;
