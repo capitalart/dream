@@ -22,6 +22,7 @@ from flask_login import (
 )
 
 from config import configure_logging
+import init.image_config  # noqa: F401
 from routes import bp as routes_bp
 from routes.home_routes import bp as home_bp
 from routes.artwork_routes import bp as artwork_bp
