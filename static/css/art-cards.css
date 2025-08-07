@@ -12,6 +12,17 @@
 .gallery-card:hover { box-shadow: 0 0.25rem 1rem #0002; transform: translateY(-0.25rem) scale(1.013);}
 .card-thumb { width: 100%; background: none; text-align: center; padding: 1.375rem 0 0.4375rem 0; }
 .card-img-top { max-width: 94%; max-height: 13.125rem; object-fit: cover; box-shadow: 0 0.0625rem 0.4375rem #0001; background: var(--color-background);}
+.card-img-top.placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 94%;
+  max-width: 94%;
+  height: 13.125rem;
+  max-height: 13.125rem;
+  background: var(--color-card-bg);
+  color: var(--color-text);
+}
 .card-details { flex: 1 1 auto; width: 100%; text-align: center; padding: 0.75rem 0.8125rem 1.25rem 0.8125rem; display: flex; flex-direction: column; gap: 0.625rem;}
 .card-title { font-size: 0.9em; font-weight: 400; line-height: 1.2; color: var(--main-txt); min-height: 3em; margin-bottom: 0.4375rem;}
 .card-details .btn { margin-top: 0.4375rem; width: 90%; min-width: 5.625rem;}

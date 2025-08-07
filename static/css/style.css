@@ -86,7 +86,7 @@ main { flex-grow: 1; }
   max-width: 2400px;
   width: 100%;
   margin: 0 auto;
-  padding: .25rem 2rem 2rem 2rem;
+  padding: 0 2rem;
   box-sizing: border-box;
 }
 
@@ -112,15 +112,6 @@ textarea, input[type="text"], input[type="email"], input[type="password"], selec
 @media (min-width: 768px) and (max-width: 1023px) {
   .container { padding: 1.5rem 1rem; }
 }
-/* Laptops */
-@media (min-width: 1024px) and (max-width: 1439px) {
-  .container { max-width: 94vw; }
-}
-/* Standard Desktops */
-@media (min-width: 1440px) and (max-width: 2399px) {
-  .container { max-width: 90vw; }
-}
-/* Ultra-Wide Monitors */
 @media (min-width: 2400px) {
   .container { max-width: 2400px; }
 }

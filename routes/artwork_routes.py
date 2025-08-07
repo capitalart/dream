@@ -1,6 +1,12 @@
 from __future__ import annotations
 
 
+"""Artwork upload and serving routes.
+
+This module handles incoming uploads, derivative generation and the serving of
+images at various stages of the workflow.
+"""
+
 from pathlib import Path
 
 from flask import (
@@ -18,7 +24,6 @@ from werkzeug.utils import secure_filename, safe_join
 
 import json
 import os
-from pathlib import Path
 from typing import List
 
 from PIL import Image
@@ -138,7 +143,7 @@ def upload_artwork():
             qc_path = target_dir / f"{sku}-QC.json"
             _write_json(qc_path, meta)
             flash(f"✅ Uploaded: {filename} as {sku}", "success")
-        return redirect(url_for("artwork.upload_artwork"))
+        return redirect(url_for("home.artworks"))
 
     return render_template(
         "upload.html",

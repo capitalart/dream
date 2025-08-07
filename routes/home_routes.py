@@ -1,14 +1,23 @@
+"""Home and gallery routes.
+
+Provides landing pages and the unanalysed artwork gallery.
+"""
+
 from __future__ import annotations
+
+import logging
+import os
+from datetime import datetime
 
 from flask import Blueprint, redirect, render_template, url_for
 from flask_login import login_required
 
-import os
 import config
 from routes import utils as routes_utils
-from datetime import datetime
 
 bp = Blueprint("home", __name__)
+
+logger = logging.getLogger(__name__)
 
 
 @bp.route("/")
@@ -33,11 +42,17 @@ def home() -> str:
 @login_required
 def artworks() -> str:
     """List all unanalysed artworks ready for processing."""
-    artworks = routes_utils.get_all_unanalysed_artworks()
+    try:
+        artworks = routes_utils.get_all_unanalysed_artworks()
+    except Exception as exc:  # pragma: no cover - defensive coding
+        logger.error("Failed to collect unanalysed artworks: %s", exc)
+        artworks = []
+
     for art in artworks:
         art["upload_date"] = datetime.fromtimestamp(art["timestamp"]).strftime(
             "%Y-%m-%d"
         )
+
     return render_template(
         "artworks.html",
         artworks=artworks,
