@@ -1,0 +1,19 @@
+{
+  "sku": "RJC-00004",
+  "original_filename": "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1.jpg",
+  "slug": "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1",
+  "thumb_path": "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1/RJC-00004-THUMB.jpg",
+  "analyse_path": "native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1/RJC-00004-ANALYSE.jpg",
+  "qc": {
+    "width": 3040,
+    "height": 3800,
+    "mode": "RGB",
+    "dominant_colours": [
+      "#d27309",
+      "#d17409",
+      "#d17509",
+      "#d27409",
+      "#d97c09"
+    ]
+  }
+}

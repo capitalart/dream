@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.2, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/dream
+plugins: anyio-4.10.0
+collected 12 items
+
+tests/test_homepage.py ...                                               [ 25%]
+tests/test_image_config.py .                                             [ 33%]
+tests/test_pip_outdated.py .                                             [ 41%]
+tests/test_restore_integrity.py .                                        [ 50%]
+tests/test_security_layer.py ..                                          [ 66%]
+tests/test_validate_sku_integrity.py ....                                [100%]
+
+============================== 12 passed in 5.17s ==============================
