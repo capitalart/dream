@@ -1,24 +1,18 @@
 """HTTP route definitions for DreamArtMachine."""
+
 from __future__ import annotations
 
-from flask import Blueprint, request
+from flask import Blueprint
 from werkzeug.utils import secure_filename
 
-from config import UNANALYSED_ARTWORK_DIR, FINALISED_ARTWORK_DIR, sanitize_slug, mockup_path
+from config import (
+    UNANALYSED_ARTWORK_DIR,
+    FINALISED_ARTWORK_DIR,
+    sanitize_slug,
+    mockup_path,
+)
 
 bp = Blueprint("routes", __name__)
-
-
-@bp.route("/upload", methods=["POST"])
-def upload() -> tuple[dict, int]:
-    file = request.files.get("file")
-    if not file or not file.filename:
-        return {"error": "no file provided"}, 400
-    filename = secure_filename(file.filename)
-    destination = UNANALYSED_ARTWORK_DIR / filename
-    destination.parent.mkdir(parents=True, exist_ok=True)
-    file.save(destination)
-    return {"filename": filename}, 201
 
 
 @bp.route("/analyze/<provider>/<filename>", methods=["POST"])
@@ -37,5 +31,3 @@ def mockups(slug: str) -> tuple[dict, int]:
     slug_dir.mkdir(parents=True, exist_ok=True)
     files = [str(mockup_path(slug, i)) for i in range(1, 10)]
     return {"mockups": files}, 200
-
-

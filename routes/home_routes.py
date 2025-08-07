@@ -22,13 +22,6 @@ def home() -> str:
     return render_template("home.html")
 
 
-@bp.route("/upload")
-@login_required
-def upload() -> str:
-    """Render the artwork upload page."""
-    return render_template("upload.html")
-
-
 @bp.route("/artworks")
 @login_required
 def artworks() -> str:
