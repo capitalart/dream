@@ -1,9 +1,7 @@
-"""Blueprint for artwork analysis routes."""
-from __future__ import annotations
-
 import logging
 
-from flask import Blueprint, request
+from flask import Blueprint, jsonify, request, url_for
+from flask_login import login_required
 from werkzeug.utils import secure_filename
 
 from services.artwork_analysis_service import analyze_artwork
@@ -23,8 +21,6 @@ def process_analysis_vision() -> tuple[dict, int]:
     filename = secure_filename(filename)
     try:
         slug = analyze_artwork(filename)
-        # Automatically generate mockup composites once analysis has
-        # completed successfully.
         generate_mockups(slug)
     except FileNotFoundError:
         logger.error("File not found during analysis: %s", filename)
@@ -32,3 +28,25 @@ def process_analysis_vision() -> tuple[dict, int]:
 
     return {"slug": slug, "status": "complete"}, 200
 
+
+# ==========================================================================
+# New Analyze Route
+# ==========================================================================
+@bp.route("/analyze/<aspect>/<filename>", methods=["POST"])
+@login_required
+def analyze_route(aspect: str, filename: str):
+    """Analyse an uploaded artwork and return redirect info."""
+    safe_name = secure_filename(filename)
+    provider = request.form.get("provider", "openai").lower()
+    try:
+        slug = analyze_artwork(safe_name)
+        generate_mockups(slug)
+    except FileNotFoundError:
+        logger.error("File not found during analysis: %s", safe_name)
+        return jsonify({"error": "file not found"}), 404
+    redirect_url = url_for(
+        "artwork.edit_listing", aspect=aspect, filename=f"{slug}.jpg"
+    )
+    return jsonify(
+        {"success": True, "provider": provider, "redirect_url": redirect_url}
+    )
