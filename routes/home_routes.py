@@ -1,9 +1,11 @@
-"""Homepage routes for DreamArtMachine."""
-
 from __future__ import annotations
 
 from flask import Blueprint, redirect, render_template, url_for
 from flask_login import login_required
+
+import os
+import config
+from routes import utils as routes_utils
 
 bp = Blueprint("home", __name__)
 
@@ -19,18 +21,33 @@ def root() -> "Response":
 @login_required
 def home() -> str:
     """Render the application homepage."""
-    return render_template("home.html")
+    return render_template(
+        "home.html",
+        openai_configured=bool(os.getenv("OPENAI_API_KEY")),
+        google_configured=bool(os.getenv("GOOGLE_API_KEY")),
+    )
 
 
 @bp.route("/artworks")
 @login_required
 def artworks() -> str:
-    """Render the artworks listing page."""
-    return render_template("artworks.html")
+    """List all unanalysed artworks ready for processing."""
+    artworks = routes_utils.get_all_unanalysed_artworks()
+    return render_template(
+        "artworks.html",
+        artworks=artworks,
+        openai_configured=bool(os.getenv("OPENAI_API_KEY")),
+        google_configured=bool(os.getenv("GOOGLE_API_KEY")),
+        get_artwork_image_url=routes_utils.get_artwork_image_url,
+    )
 
 
 @bp.route("/finalised")
 @login_required
 def finalised() -> str:
     """Render the finalised artworks page."""
-    return render_template("finalised.html")
+    return render_template(
+        "finalised.html",
+        openai_configured=bool(os.getenv("OPENAI_API_KEY")),
+        google_configured=bool(os.getenv("GOOGLE_API_KEY")),
+    )
