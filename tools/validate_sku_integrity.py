@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-SKU_PATTERN = re.compile(r"RJC-[A-Za-z0-9]+")
+SKU_PATTERN = re.compile(r"[A-Z]+-\d+")
 
 
 def _extract_sku(name: str) -> str | None:
@@ -31,22 +31,27 @@ def check_unanalysed(base: Path) -> list[str]:
         logging.debug("Unanalysed directory %s does not exist", base)
         return errors
 
-    for file in base.iterdir():
-        if not file.is_file() or file.suffix.lower() != ".jpg":
+    for folder in base.iterdir():
+        if not folder.is_dir():
             continue
-        if file.name.endswith("-THUMB.jpg") or file.name.endswith("-ANALYSE.jpg"):
+        qc = next(folder.glob("*-QC.json"), None)
+        if not qc:
+            errors.append(f"Missing QC JSON in {folder.name}")
             continue
-        stem = file.stem
-        sku = _extract_sku(stem)
-        thumb = base / f"{stem}-THUMB.jpg"
-        analyse = base / f"{stem}-ANALYSE.jpg"
-        qc = base / f"{stem}.json"
+        sku = _extract_sku(qc.name) or folder.name
+        stem = qc.stem.replace("-QC", "")
+        thumb = folder / f"{stem}-THUMB.jpg"
+        analyse = folder / f"{stem}-ANALYSE.jpg"
+        original = next(
+            (p for p in folder.iterdir() if p.is_file() and p.suffix.lower() in {".jpg", ".jpeg", ".png"} and sku not in p.name),
+            None,
+        )
+        if not original:
+            errors.append(f"Missing original for {sku}")
         if not thumb.exists():
-            errors.append(f"Missing THUMB for {sku or stem}")
+            errors.append(f"Missing THUMB for {sku}")
         if not analyse.exists():
-            errors.append(f"Missing ANALYSE for {sku or stem}")
-        if not qc.exists():
-            errors.append(f"Missing QC JSON for {sku or stem}")
+            errors.append(f"Missing ANALYSE for {sku}")
     return errors
 
 
@@ -73,8 +78,8 @@ def check_processed(base: Path) -> list[str]:
         main = folder / f"{slug}-{sku}.jpg"
         thumb = folder / f"{slug}-{sku}-THUMB.jpg"
         analyse = folder / f"{slug}-{sku}-ANALYSE.jpg"
-        qc = folder / f"{slug}-{sku}.json"
-        final_json = folder / f"final-{slug}-{sku}.json"
+        qc = folder / f"{sku}-QC.json"
+        final_json = folder / f"{sku}-FINAL.json"
         thumb_dir = folder / "THUMBS"
         required = [
             (main, "Main"),

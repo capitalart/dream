@@ -5,7 +5,6 @@ from __future__ import annotations
 # ==========================================================================
 # 1. Imports
 # ==========================================================================
-from dataclasses import dataclass
 import json
 import logging
 from pathlib import Path
@@ -23,32 +22,7 @@ _ALLOWED_EXTS = {".jpg", ".jpeg", ".png"}
 
 
 # ==========================================================================
-# 2. Data Structures
-# ==========================================================================
-@dataclass
-class Artwork:
-    """Represents a discovered artwork file."""
-
-    filename: str
-    slug: str
-    path: Path
-    aspect: str
-    timestamp: float
-    status: str = "unanalysed"
-
-    def to_dict(self) -> Dict[str, Any]:
-        return {
-            "filename": self.filename,
-            "slug": self.slug,
-            "path": str(self.path),
-            "aspect": self.aspect,
-            "timestamp": self.timestamp,
-            "status": self.status,
-        }
-
-
-# ==========================================================================
-# 3. Artwork Discovery & Registry
+# 2. Artwork Discovery & Registry
 # ==========================================================================
 def _aspect_from_image(path: Path) -> str:
     """Return a simple aspect label for the given image path."""
@@ -78,27 +52,54 @@ def _aspect_from_image(path: Path) -> str:
 
 
 def get_all_unanalysed_artworks() -> List[Dict[str, Any]]:
-    """Return metadata for all images awaiting analysis.
-
-    Scans :data:`config.UNANALYSED_ARTWORK_DIR` for image files and returns
-    a list of dictionaries containing filename, slug, timestamp, and aspect
-    ratio label.
-    """
-    artworks: List[Artwork] = []
+    """Return metadata for artworks awaiting analysis."""
     directory = config.UNANALYSED_ARTWORK_DIR
+    processed_dir = config.PROCESSED_ARTWORK_DIR
     if not directory.exists():
         logger.debug("Unanalysed directory missing: %s", directory)
         return []
 
-    for file in sorted(directory.iterdir()):
-        if file.suffix.lower() not in _ALLOWED_EXTS or not file.is_file():
+    artworks: List[Dict[str, Any]] = []
+    for folder in sorted(directory.iterdir()):
+        if not folder.is_dir():
             continue
-        slug = file.stem
-        aspect = _aspect_from_image(file)
-        ts = file.stat().st_mtime
-        artworks.append(Artwork(file.name, slug, file, aspect, ts))
-
-    return [a.to_dict() for a in artworks]
+        qc_file = next(folder.glob("*-QC.json"), None)
+        if not qc_file:
+            continue
+        try:
+            data = json.loads(qc_file.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            logger.warning("Invalid QC JSON: %s", qc_file)
+            continue
+        sku = data.get("sku")
+        thumb_rel = data.get("thumb_path")
+        analyse_rel = data.get("analyse_path")
+        original_name = data.get("original_filename")
+        if not (sku and thumb_rel and analyse_rel and original_name):
+            continue
+        original = folder / original_name
+        thumb = directory / thumb_rel
+        analyse = directory / analyse_rel
+        if not (original.exists() and thumb.exists() and analyse.exists()):
+            logger.debug("Skipping incomplete artwork in %s", folder)
+            continue
+        if sku and any(processed_dir.glob(f"*/**{sku}*")):
+            # already processed
+            continue
+        aspect = _aspect_from_image(analyse)
+        ts = original.stat().st_mtime
+        artworks.append(
+            {
+                "filename": original_name,
+                "slug": data.get("slug", folder.name),
+                "sku": sku,
+                "thumb": thumb_rel,
+                "analyse": analyse_rel,
+                "aspect": aspect,
+                "timestamp": ts,
+            }
+        )
+    return artworks
 
 
 def register_artwork_in_master(slug: str, path: Path) -> None:
