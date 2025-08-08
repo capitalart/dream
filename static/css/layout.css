@@ -92,6 +92,11 @@
 	color: var(--color-text); /* Ensure header text/icons match theme */
 }
 
+/* FIX: Added padding-top to the main content area */
+main {
+    padding-top: 2rem;
+}
+
 .header-left, .header-right {
 	flex: 1;
 }

@@ -7,7 +7,10 @@
 .artwork-info-card { background: var(--color-background); border: 0.09375rem solid #e0e0e0; box-shadow: 0 0.125rem 0.5rem #0001; padding: 1.5em 2em; margin: 0 auto 1.7em auto; max-width: 35.625rem;}
 .artwork-info-card h2 { font-size: 1.21em; font-weight: bold; margin-bottom: 0.6em; }
 .gallery-section { margin: 2.5em auto 3.5em auto; max-width: 78.125rem; padding: 0 1em;}
-.artwork-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(17.5rem, 1fr)); gap: 2.4em; margin-bottom: 2em;}
+
+/* FIX: Adjusted the minmax value to better achieve a 5-column layout on wide screens */
+.artwork-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1.5em; margin-bottom: 2em;}
+
 .gallery-card { position: relative; background: var(--card-bg); border: 0.0625rem solid var(--card-border, #000); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; transition: box-shadow 0.18s, transform 0.12s; min-height: 22.8125rem; padding: 0.625rem; overflow: hidden;}
 .gallery-card:hover { box-shadow: 0 0.25rem 1rem #0002; transform: translateY(-0.25rem) scale(1.013);}
 .card-thumb { width: 100%; background: none; text-align: center; padding: 1.375rem 0 0.4375rem 0; }

@@ -20,12 +20,16 @@ BASE_DIR = Path(os.getenv("DREAM_HOME", "/home/dream")).resolve()
 # Core folder structure
 ART_PROCESSING_DIR = BASE_DIR / "art-processing"
 UNANALYSED_ARTWORK_DIR = ART_PROCESSING_DIR / "unanalysed-artwork"
-PROCESSED_ARTWORK_DIR = BASE_DIR / "processed-artwork"
-FINALISED_ARTWORK_DIR = BASE_DIR / "finalised-artwork"
+
+# CORRECTED: These folders should be inside the ART_PROCESSING_DIR
+PROCESSED_ARTWORK_DIR = ART_PROCESSING_DIR / "processed-artwork"
+FINALISED_ARTWORK_DIR = ART_PROCESSING_DIR / "finalised-artwork"
+
 LOG_DIR = BASE_DIR / "logs"
 INPUTS_DIR = BASE_DIR / "inputs"
 MOCKUPS_DIR = INPUTS_DIR / "mockups"
 MASTER_ARTWORK_PATHS_FILE = BASE_DIR / "master-artwork-paths.json"
+
 # SKU tracking
 SKU_TRACKER = BASE_DIR / "sku_tracker.json"
 SKU_PREFIX = "RJC"

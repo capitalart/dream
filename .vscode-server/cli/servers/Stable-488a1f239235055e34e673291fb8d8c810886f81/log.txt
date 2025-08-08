@@ -5,73 +5,42 @@
 * the Visual Studio Code Server License Terms (https://aka.ms/vscode-server-license) and
 * the Microsoft Privacy Statement (https://privacy.microsoft.com/en-US/privacystatement).
 *
-Server bound to /tmp/code-009e6f36-5309-4aac-accd-ab2b8bf4c283
-Extension host agent listening on /tmp/code-009e6f36-5309-4aac-accd-ab2b8bf4c283
+Server bound to /tmp/code-52b17182-b953-4ad3-b9c6-95c7e25d64ae
+Extension host agent listening on /tmp/code-52b17182-b953-4ad3-b9c6-95c7e25d64ae
 
-[20:02:29] 
-
-
+[12:08:10] 
 
 
-[20:02:29] Extension host agent started.
-[20:02:29] Started initializing default profile extensions in extensions installation folder. file:///home/dream/.vscode-server/extensions
-[20:02:29] Completed initializing default profile extensions in extensions installation folder. file:///home/dream/.vscode-server/extensions
-[20:02:30] [<unknown>][7f8fb02e][ExtensionHostConnection] New connection established.
-[20:02:30] [<unknown>][6e525887][ManagementConnection] New connection established.
-[20:02:30] [<unknown>][7f8fb02e][ExtensionHostConnection] <13223> Launched Extension Host Process.
-[20:02:43] Downloaded extension to file:///home/dream/.vscode-server/data/CachedExtensionVSIXs/3174814d-b59a-48ba-a9fd-753138565efc
-[20:02:43] Installing extension: github.copilot-chat {
-  isApplicationScoped: false,
-  profileLocation: xr {
-    scheme: 'file',
-    authority: '',
-    path: '/home/dream/.vscode-server/extensions/extensions.json',
-    query: '',
-    fragment: '',
-    _formatted: 'file:///home/dream/.vscode-server/extensions/extensions.json',
-    _fsPath: '/home/dream/.vscode-server/extensions/extensions.json'
-  },
-  productVersion: { version: '1.102.3', date: '2025-07-29T03:00:23.339Z' }
-}
-[20:02:44] Getting Manifest... github.copilot
-[20:02:44] Installing extension: github.copilot {
-  isApplicationScoped: false,
-  profileLocation: xr {
-    scheme: 'file',
-    authority: '',
-    path: '/home/dream/.vscode-server/extensions/extensions.json',
-    query: '',
-    fragment: '',
-    _formatted: 'file:///home/dream/.vscode-server/extensions/extensions.json',
-    _fsPath: '/home/dream/.vscode-server/extensions/extensions.json'
-  },
-  productVersion: { version: '1.102.3', date: '2025-07-29T03:00:23.339Z' },
+
+
+[12:08:10] Extension host agent started.
+[12:08:10] [/home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0]: Extension is not compatible with Code 1.102.3. Extension requires: ^1.103.0-20250728.
+[12:08:10] [/home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0]: Extension is not compatible with Code 1.102.3. Extension requires: ^1.103.0-20250728.
+[12:08:10] Marked extension as removed github.copilot-chat-0.30.0
+[12:08:11] [<unknown>][3d5d4592][ManagementConnection] New connection established.
+[12:08:11] [<unknown>][3378e864][ExtensionHostConnection] New connection established.
+[12:08:11] [<unknown>][3378e864][ExtensionHostConnection] <71748> Launched Extension Host Process.
+[12:08:51] Getting Manifest... github.copilot-chat
+[12:08:51] Installing extension: github.copilot-chat {
+  productVersion: { version: '1.103.0', date: '1970-01-01T00:00:00.000Z' },
   pinned: false,
-  installGivenVersion: false,
-  context: { dependecyOrPackExtensionInstall: true }
+  operation: 3,
+  isApplicationScoped: false,
+  donotVerifySignature: false,
+  context: { clientTargetPlatform: 'darwin-x64' },
+  profileLocation: xr {
+    scheme: 'file',
+    authority: '',
+    path: '/home/dream/.vscode-server/extensions/extensions.json',
+    query: '',
+    fragment: '',
+    _formatted: 'file:///home/dream/.vscode-server/extensions/extensions.json',
+    _fsPath: '/home/dream/.vscode-server/extensions/extensions.json'
+  }
 }
-[20:02:44] Extracted extension to file:///home/dream/.vscode-server/extensions/github.copilot-chat-0.29.1: github.copilot-chat
-[20:02:44] Renamed to /home/dream/.vscode-server/extensions/github.copilot-chat-0.29.1
-[20:02:46] Extension signature verification result for github.copilot: Success. Internal Code: 0. Executed: true. Duration: 1467ms.
-[20:02:46] Extracted extension to file:///home/dream/.vscode-server/extensions/github.copilot-1.350.0: github.copilot
-[20:02:46] Renamed to /home/dream/.vscode-server/extensions/github.copilot-1.350.0
-[20:02:46] Extension installed successfully: github.copilot-chat file:///home/dream/.vscode-server/extensions/extensions.json
-[20:02:46] Extension installed successfully: github.copilot file:///home/dream/.vscode-server/extensions/extensions.json
-[20:02:52] [<unknown>][6e525887][ManagementConnection] The client has disconnected gracefully, so the connection will be disposed.
-[20:02:52] [<unknown>][7f8fb02e][ExtensionHostConnection] <13223> Extension Host Process exited with code: 0, signal: null.
-Cancelling previous shutdown timeout
-[20:02:52] Cancelling previous shutdown timeout
-Last EH closed, waiting before shutting down
-[20:02:52] Last EH closed, waiting before shutting down
-[20:02:54] [<unknown>][b8c289e2][ManagementConnection] New connection established.
-[20:02:54] [<unknown>][69b4986d][ExtensionHostConnection] New connection established.
-[20:02:54] [<unknown>][69b4986d][ExtensionHostConnection] <13343> Launched Extension Host Process.
-[20:03:54] [<unknown>][b8c289e2][ManagementConnection] The client has disconnected gracefully, so the connection will be disposed.
-[20:03:54] [<unknown>][69b4986d][ExtensionHostConnection] <13343> Extension Host Process exited with code: 0, signal: null.
-Cancelling previous shutdown timeout
-[20:03:54] Cancelling previous shutdown timeout
-Last EH closed, waiting before shutting down
-[20:03:54] Last EH closed, waiting before shutting down
-[20:04:05] [<unknown>][ea89b0a3][ManagementConnection] New connection established.
-[20:04:05] [<unknown>][3ec91066][ExtensionHostConnection] New connection established.
-[20:04:05] [<unknown>][3ec91066][ExtensionHostConnection] <14294> Launched Extension Host Process.
+[12:08:51] Removed the extension from removed list: github.copilot-chat
+[12:08:51] [/home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0]: Extension is not compatible with Code 1.102.3. Extension requires: ^1.103.0-20250728.
+[12:08:51] [/home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0]: Extension is not compatible with Code 1.102.3. Extension requires: ^1.103.0-20250728.
+[12:08:51] Error while installing the extension github.copilot-chat Cannot read the extension from /home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0 file:///home/dream/.vscode-server/extensions/extensions.json
+New EH opened, aborting shutdown
+[12:13:10] New EH opened, aborting shutdown

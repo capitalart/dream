@@ -1,344 +1,446 @@
 #!/bin/bash
-set -e
+# ============================================================================
+# 🛠️ DreamArtMachine | Unified Project Toolkit – v3.1 (Run Code Stacker + Solid Backups)
+# ============================================================================
+# Central CLI for deploy, QA, backups (with hardcoded excludes + dry-run),
+# health checks, logs, and developer tools.
+# ============================================================================
+
+set -euo pipefail
 
 # ============================================================================
-# 🛠️ DreamArtMachine | Unified Project Toolkit – Git, Backup, QA, GDrive, Logs
+# 1) CONFIG & PATHS
 # ============================================================================
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BACKUP_DIR="$ROOT_DIR/backups"
+
+# Put backups OUTSIDE the source tree to prevent “backup-ception”
+BACKUP_DIR="/backups"
 LOG_DIR="$ROOT_DIR/logs"
-INCLUDE_FILE="$ROOT_DIR/backup_includes.txt"
-EXTRA_FILE="$ROOT_DIR/files-to-backup.txt"
-EXCLUDE_FILE="$ROOT_DIR/backup_excludes.txt"
+VENV_DIR="$ROOT_DIR/venv"
+STACKER_SCRIPT="$ROOT_DIR/code-stacker.sh"
+
+GUNICORN_SERVICE="dreamartmachine.service"
+NGINX_SERVICE="nginx.service"
+
 REMOTE_NAME="gdrive"
 RCLONE_FOLDER="DreamArtMachine-Backups"
-STACKER_SCRIPT="$ROOT_DIR/code-stacker.sh"
-TIMESTAMP=$(date +%Y-%m-%d-%H-%M-%S)
 
-DEFAULT_EXCLUDES=(".git" "*.pyc" "__pycache__" ".env" ".DS_Store" "venv" "backups")
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M-%S")
+
+if [[ -t 1 ]]; then
+    C_RESET='\033[0m'
+    C_RED='\033[0;31m'
+    C_GREEN='\033[0;32m'
+    C_YELLOW='\033[0;33m'
+    C_BLUE='\033[0;34m'
+    C_CYAN='\033[0;36m'
+else
+    C_RESET=''; C_RED=''; C_GREEN=''; C_YELLOW=''; C_BLUE=''; C_CYAN=''
+fi
 
 mkdir -p "$LOG_DIR"
+# Ensure backup dir exists and is writable by current user
+if [[ ! -d "$BACKUP_DIR" ]]; then
+    if sudo mkdir -p "$BACKUP_DIR"; then
+        sudo chown "$(id -u)":"$(id -g)" "$BACKUP_DIR" || true
+    fi
+fi
 
+# ============================================================================
+# 2) LOGGING & UTILS
+# ============================================================================
 log_action() {
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_DIR/toolkit-actions-$TIMESTAMP.log"
+    local message="$1"
+    local log_file="$LOG_DIR/toolkit-actions-$(date +%Y-%m-%d).log"
+    echo "[$(date '+%Y-%m-%d %H:%M:%S')] ${message}" >> "$log_file"
+}
+
+print_success() { echo -e "${C_GREEN}✅ $1${C_RESET}"; }
+print_error()   { echo -e "${C_RED}❌ $1${C_RESET}"; }
+print_warning() { echo -e "${C_YELLOW}⚠️ $1${C_RESET}"; }
+print_info()    { echo -e "${C_CYAN}ℹ️ $1${C_RESET}"; }
+
+check_venv() {
+    if [[ -z "${VIRTUAL_ENV-}" ]]; then
+        print_error "Virtual environment is not activated."
+        print_warning "Run: source venv/bin/activate"
+        return 1
+    fi
 }
 
 # ============================================================================
-# GIT ACTIONS
+# 3) SERVICES
 # ============================================================================
-git_pull_safe() {
-    echo "🔄 Pulling latest changes..."
-    if [[ -n "$(git status --porcelain)" ]]; then
-        git stash push -m "Auto stash before pull"
-        log_action "🟡 Local changes stashed before pull"
+restart_service() {
+    local service_name="$1"
+    print_info "Restarting ${service_name}..."
+    if sudo systemctl restart "$service_name"; then
+        print_success "${service_name} restarted."
+        log_action "Service restarted: ${service_name}"
+    else
+        print_error "Failed to restart ${service_name}"
+        print_info  "Check: journalctl -u ${service_name} --no-pager"
+        log_action "Service restart FAILED: ${service_name}"
     fi
-    git pull && log_action "✅ Git pull successful"
+}
+
+reboot_server() {
+    print_warning "This will reboot the entire server."
+    read -p "Are you sure? (y/N): " confirm
+    if [[ "$confirm" =~ ^[Yy]$ ]]; then
+        log_action "🚨 REBOOT triggered from toolkit"
+        sudo reboot
+    else
+        print_info "Reboot cancelled."
+    fi
+}
+
+# ============================================================================
+# 4) GIT
+# ============================================================================
+git_pull_and_restart() {
+    print_info "Git pull (auto-stash if needed)..."
+    if [[ -n "$(git status --porcelain)" ]]; then
+        git stash push -m "Auto stash by toolkit before pull on $(date)"
+        log_action "Local changes stashed before pull"
+    fi
+
+    if git pull; then
+        log_action "Git pull OK"
+        print_success "Pulled latest. Running QA..."
+        if run_tests; then
+            print_success "QA passed. Restarting app..."
+            restart_service "$GUNICORN_SERVICE"
+        else
+            print_error "QA failed. App NOT restarted."
+            log_action "PULL FAILED QA"
+        fi
+    else
+        print_error "Git pull failed."
+        log_action "Git pull FAILED"
+    fi
 }
 
 git_push_safe() {
-    echo "📤 Preparing to push changes..."
+    print_info "Running QA before push..."
     if ! run_tests; then
-        echo "❌ QA checks failed. Push aborted."
-        log_action "❌ Git push aborted: QA failed"
+        print_error "QA failed. Push aborted."
+        log_action "Push aborted (QA failed)"
         return 1
     fi
     git add .
-    git commit -m "🔄 Auto commit via toolkit on $TIMESTAMP" || echo "ℹ️ Nothing to commit."
-    git push && log_action "✅ Git push successful"
+    git commit -m "🔄 Auto-commit via toolkit on $(date)" || print_info "Nothing to commit."
+    if git push; then
+        print_success "Pushed to remote."
+        log_action "Git push OK"
+    else
+        print_error "Git push failed."
+        log_action "Git push FAILED"
+    fi
 }
 
 # ============================================================================
-# QA / QC / TESTING
+# 5) BACKUP / RESTORE
 # ============================================================================
-run_tests() {
-    echo "🧪 Running full QA suite..."
-    local status=0
-    if command -v pytest >/dev/null 2>&1; then
-        pytest --maxfail=3 --disable-warnings | tee "$LOG_DIR/test-output-$TIMESTAMP.log" || status=1
-        log_action "🧪 Test run complete: test-output-$TIMESTAMP.log"
+
+# Hardcoded excludes – no txt file needed
+EXCLUDES=(
+  --exclude=.vscode-server
+  --exclude=.venv
+  --exclude=venv
+  --exclude=.cache
+  --exclude=__pycache__
+  --exclude=*.log
+  --exclude=*.tmp
+  --exclude=*.pyc
+  --exclude=node_modules
+  --exclude=.DS_Store
+  --exclude=art-processing
+  --exclude=inputs
+  --exclude=outputs
+  # NOTE: No need to exclude backups now (archive is outside $ROOT_DIR)
+)
+
+backup_dry_run() {
+    print_info "Dry-run: listing what WOULD be backed up (no file created)..."
+    local dry_log="$LOG_DIR/backup-dryrun-$TIMESTAMP.log"
+    # -c (create), -v (verbose), to /dev/null, list files that would be added
+    if tar -cvf /dev/null "${EXCLUDES[@]}" -C "$ROOT_DIR" . | tee "$dry_log"; then
+        print_success "Dry-run complete. Log: $dry_log"
+        log_action "Backup dry-run saved: $(basename "$dry_log")"
     else
-        echo "❌ pytest not found."
-        status=1
+        print_error "Dry-run failed."
+    fi
+}
+
+run_full_backup() {
+    local archive_name="dream-backup-${TIMESTAMP}.tar.gz"
+    local archive_path="${BACKUP_DIR}/${archive_name}"
+
+    print_info "Creating backup at: ${archive_path}"
+    # Create gz archive with excludes; archive root is $ROOT_DIR
+    if tar -czvf "$archive_path" "${EXCLUDES[@]}" -C "$ROOT_DIR" . > "$BACKUP_DIR/backup-$TIMESTAMP.log" 2>&1; then
+        print_success "Local backup created: ${archive_path}"
+        log_action "Backup created: ${archive_name}"
+    else
+        print_error "Backup failed. Check log: $BACKUP_DIR/backup-$TIMESTAMP.log"
+        return 1
     fi
 
-    python tools/validate_sku_integrity.py | tee "$LOG_DIR/sku-validate-$TIMESTAMP.log" || status=1
+    # Keep only last 7 backups
+    ls -tp "$BACKUP_DIR"/dream-backup-*.tar.gz 2>/dev/null | grep -v '/$' | tail -n +8 | xargs -r rm -- || true
+}
 
-    pip_outdated_check
+upload_to_gdrive() {
+    local archive_path="$1"
+    if [[ ! -f "$archive_path" ]]; then
+        print_error "Archive not found: $archive_path"
+        return 1
+    fi
+    print_info "Uploading to Google Drive ($REMOTE_NAME:$RCLONE_FOLDER)..."
+    if rclone copy --progress "$archive_path" "$REMOTE_NAME:$RCLONE_FOLDER"; then
+        print_success "Uploaded: $(basename "$archive_path")"
+        log_action "GDrive upload OK: $(basename "$archive_path")"
+    else
+        print_error "GDrive upload failed."
+        log_action "GDrive upload FAILED: $(basename "$archive_path")"
+        return 1
+    fi
+}
 
-    # File permission audit (world-writable files)
-    find "$ROOT_DIR" -type f -perm -0002 -not -path "*/venv/*" > "$LOG_DIR/perm-audit-$TIMESTAMP.log"
-    if [[ -s "$LOG_DIR/perm-audit-$TIMESTAMP.log" ]]; then
-        echo "⚠️ World-writable files detected (see perm-audit-$TIMESTAMP.log)"
+restore_from_backup() {
+    print_info "Searching local backups..."
+    mapfile -t backups < <(ls -1t "$BACKUP_DIR"/dream-backup-*.tar.gz 2>/dev/null || true)
+    if [ ${#backups[@]} -eq 0 ]; then
+        print_warning "No local backups found in $BACKUP_DIR"
+        return 1
+    fi
+    echo "Available backups:"
+    select archive_path in "${backups[@]}"; do
+        [[ -n "${archive_path:-}" ]] && break
+        print_error "Invalid selection."
+    done
+
+    print_warning "This will overwrite files under $ROOT_DIR."
+    read -p "Proceed with restore from '$(basename "$archive_path")'? (y/N): " confirm
+    [[ "$confirm" =~ ^[Yy]$ ]] || { print_info "Restore cancelled."; return; }
+
+    print_info "Restoring..."
+    tar -xzf "$archive_path" -C "$ROOT_DIR"
+    print_success "Restore complete."
+    log_action "Restore from $(basename "$archive_path")"
+    print_warning "Re-check your .env, dependencies, and restart services."
+}
+
+# ============================================================================
+# 6) QA & MAINTENANCE
+# ============================================================================
+run_tests() {
+    check_venv || return 1
+    print_info "Running QA..."
+    local status=0
+
+    if command -v ruff >/dev/null 2>&1; then
+        print_info "Ruff..."
+        ruff check . || status=1
+    fi
+
+    if command -v pip-audit >/dev/null 2>&1; then
+        print_info "pip-audit..."
+        pip-audit || status=1
+    fi
+
+    if command -v pytest >/dev/null 2>&1; then
+        print_info "pytest..."
+        pytest --check-links --maxfail=3 --disable-warnings | tee "$LOG_DIR/test-output-$TIMESTAMP.log" || status=1
+        log_action "Tests complete: test-output-$TIMESTAMP.log"
+    fi
+
+    if [[ -f "tools/validate_integrity.py" ]]; then
+        print_info "Custom integrity check..."
+        python tools/validate_integrity.py || status=1
     fi
 
     if [[ $status -ne 0 ]]; then
-        log_action "❌ QA suite failed"
+        print_error "QA FAILED."
+        log_action "QA FAILED"
         return 1
     fi
-    log_action "✅ QA suite passed"
+    print_success "QA PASSED."
+    log_action "QA PASSED"
+}
+
+update_dependencies() {
+    check_venv || return 1
+    print_info "Updating dependencies from requirements.txt..."
+    if pip install --upgrade -r requirements.txt; then
+        pip freeze > requirements.txt
+        print_success "Dependencies updated."
+        log_action "Dependencies updated"
+        print_warning "Restart app to apply changes."
+    else
+        print_error "Dependency update failed."
+    fi
+}
+
+cleanup_disk() {
+    print_info "Cleaning logs/backups older than 30 days..."
+    find "$LOG_DIR" -type f -mtime +30 -print -delete | (grep -q . && print_success "Old logs removed." || print_info "No old logs.")
+    find "$BACKUP_DIR" -type f -mtime +30 -print -delete | (grep -q . && print_success "Old backups removed." || print_info "No old backups.")
+    log_action "Disk cleanup run"
 }
 
 # ============================================================================
-# SYSTEM HEALTH CHECK
+# 7) DEV TOOLS
 # ============================================================================
 system_health_check() {
-    echo "🩺 Checking system health..."
-    local report="$LOG_DIR/health-check-$TIMESTAMP.md"
-    echo "Disk usage:" | tee "$report"
-    df -h | tee -a "$report"
-    echo -e "\nMemory usage:" | tee -a "$report"
-    free -h | tee -a "$report"
-    echo -e "\n.env check:" | tee -a "$report"
-    [[ -f "$ROOT_DIR/.env" ]] && echo ".env present" | tee -a "$report" || echo ".env missing" | tee -a "$report"
-    echo -e "\nRunning services:" | tee -a "$report"
-    systemctl list-units --type=service --state=running | tee -a "$report"
-    echo -e "\nPip outdated packages:" | tee -a "$report"
-    pip_outdated_check | tee -a "$report"
-    log_action "🩺 System health report saved: $(basename "$report")"
+    print_info "Generating system health report..."
+    local report_file="$LOG_DIR/health-check-$TIMESTAMP.md"
+    {
+        echo "# System Health Report - $(date)"
+        echo -e "\n## Disk Usage"
+        df -h
+        echo -e "\n## Memory Usage"
+        free -h
+        echo -e "\n## .env Presence"
+        [[ -f "$ROOT_DIR/.env" ]] && echo "✅ .env present" || echo "❌ .env MISSING"
+        echo -e "\n## Top Memory Processes"
+        ps aux --sort=-%mem | head -n 6
+        echo -e "\n## Top CPU Processes"
+        ps aux --sort=-%cpu | head -n 6
+        echo -e "\n## Gunicorn Status"
+        systemctl status --no-pager "$GUNICORN_SERVICE" || true
+    } > "$report_file"
+    print_success "Health report: $report_file"
+    log_action "Health report saved: $(basename "$report_file")"
 }
 
-# ============================================================================
-# Pip Outdated Checker
-# ============================================================================
-pip_outdated_check() {
-    echo "📦 Checking for outdated Python packages..."
-    pip list --outdated || true
-}
-
-# ============================================================================
-# LAST 60 MIN LOG SNAPSHOT
-# ============================================================================
-export_logs_snapshot() {
-    OUTPUT="$LOG_DIR/log-snapshot-$TIMESTAMP.md"
-    echo "🧾 Exporting logs from the past 60 minutes..."
-    find "$ROOT_DIR" -type f -name "*.log" -mmin -60 -exec tail -n 50 {} + > "$OUTPUT"
-    echo "🕐 Snapshot saved to $OUTPUT"
-    log_action "🧾 Log snapshot created: $OUTPUT"
-}
-
-# ============================================================================
-# CODE STACKER
-# ============================================================================
-run_code_stacker() {
-    echo "📚 Running code-stacker.sh..."
-    if [[ -f "$STACKER_SCRIPT" ]]; then
-        bash "$STACKER_SCRIPT"
-        log_action "📚 Code stacker run complete"
+view_live_log() {
+    local gunicorn_log="$LOG_DIR/gunicorn.log"
+    local app_log="$LOG_DIR/app.log"
+    if [[ -f "$gunicorn_log" ]]; then
+        print_info "Tailing $gunicorn_log ..."
+        tail -f "$gunicorn_log"
+    elif [[ -f "$app_log" ]]; then
+        print_info "Tailing $app_log ..."
+        tail -f "$app_log"
     else
-        echo "❌ code-stacker.sh not found!"
+        print_error "No gunicorn.log or app.log in $LOG_DIR"
     fi
 }
 
-# ============================================================================
-# BACKUP: Create
-# ============================================================================
-run_full_backup() {
-    if ! run_tests; then
-        echo "❌ QA checks failed. Backup aborted."
-        log_action "❌ Backup aborted: QA failed"
+run_code_stacker() {
+    print_info "Running Code Stacker..."
+    if [[ ! -f "$STACKER_SCRIPT" ]]; then
+        print_error "code-stacker.sh not found at: $STACKER_SCRIPT"
+        print_info "Create it or update STACKER_SCRIPT path in toolkit."
         return 1
     fi
-    mkdir -p "$BACKUP_DIR"
-    local archive_name="dream-backup-$TIMESTAMP.tar"
-    local archive_path="$BACKUP_DIR/$archive_name"
-    local manifest="$BACKUP_DIR/manifest-$TIMESTAMP.txt"
-
-    tmp_excludes=$(mktemp)
-    tmp_includes=$(mktemp)
-    for pattern in "${DEFAULT_EXCLUDES[@]}"; do echo "$pattern" >> "$tmp_excludes"; done
-    [[ -f "$EXCLUDE_FILE" ]] && cat "$EXCLUDE_FILE" >> "$tmp_excludes"
-    echo "." >> "$tmp_includes"
-    grep -v '^#' "$INCLUDE_FILE" "$EXTRA_FILE" 2>/dev/null | sed '/^\s*$/d' >> "$tmp_includes"
-
-    tar -cf "$archive_path" --exclude-from="$tmp_excludes" -T "$tmp_includes" -v > "$manifest"
-    tar -rf "$archive_path" -C "$BACKUP_DIR" "$(basename "$manifest")"
-    gzip "$archive_path"
-    archive_path="$archive_path.gz"
-
-    echo "✅ Local backup created: $archive_path"
-    log_action "📦 Backup created: $(basename "$archive_path")"
-    rm "$tmp_excludes" "$tmp_includes"
+    if [[ ! -x "$STACKER_SCRIPT" ]]; then
+        print_info "Making code-stacker.sh executable..."
+        chmod +x "$STACKER_SCRIPT" || true
+    fi
+    if "$STACKER_SCRIPT"; then
+        print_success "Code stack generated."
+        log_action "Code Stacker run"
+    else
+        print_error "Code Stacker failed."
+    fi
 }
 
-# ============================================================================
-# BACKUP: Upload to GDrive
-# ============================================================================
-upload_to_gdrive() {
-    local archive="$1"
-    [[ ! -f "$archive" ]] && echo "❌ Archive not found: $archive" && return
-    rclone copy "$archive" "$REMOTE_NAME:$RCLONE_FOLDER" && {
-        echo "☁️ Uploaded to GDrive: $archive"
-        log_action "☁️ GDrive upload complete: $archive"
-    } || {
-        echo "❌ Upload failed."
-        log_action "❌ GDrive upload failed: $archive"
-    }
-}
 
 # ============================================================================
-# BACKUP: Restore
-# ============================================================================
-restore_from_backup() {
-    local archive="$1"
-    local mode="$2"
-    [[ "$archive" == "latest" ]] && archive=$(ls -1t "$BACKUP_DIR"/dream-backup-*.tar.gz | head -n1)
-    [[ ! -f "$archive" ]] && echo "❌ Archive not found." && return
-
-    echo "🛠️ Restoring from $archive"
-    if [[ "$mode" != "--auto" ]]; then
-        read -p "Proceed with restore? This will overwrite files. (y/N): " confirm
-        [[ "$confirm" != "y" && "$confirm" != "Y" ]] && echo "❌ Cancelled." && return
-    fi
-
-    tar -xzf "$archive" --exclude='master-artwork-paths.json' --exclude='.env'
-    if [[ "$mode" != "--auto" ]]; then
-        read -p "Restore master-artwork-paths.json? (y/N): " mconfirm
-        [[ "$mconfirm" == "y" || "$mconfirm" == "Y" ]] && tar -xzf "$archive" master-artwork-paths.json
-    else
-        tar -xzf "$archive" master-artwork-paths.json || true
-    fi
-
-    if tar -tzf "$archive" .env >/dev/null 2>&1; then
-        tar -xzf "$archive" .env
-        echo ".env restored"
-    else
-        echo "⚠️ .env not in archive"
-        echo "# placeholder" > .env.template
-    fi
-
-    python3 -m venv venv && source venv/bin/activate && pip install -r requirements.txt && deactivate
-    local report="$LOG_DIR/restore-check-$(date +%Y-%m-%d).md"
-    if python tools/validate_sku_integrity.py | tee "$report"; then
-        echo "SKU integrity check passed"
-    else
-        echo "⚠️ SKU integrity issues detected" | tee -a "$report"
-    fi
-    if command -v pytest >/dev/null 2>&1; then
-        pytest >> "$report" 2>&1 || true
-    fi
-    local slug_count=$(find art-processing/processed-artwork -mindepth 1 -maxdepth 1 -type d 2>/dev/null | wc -l)
-    echo "Restored slugs: $slug_count" >> "$report"
-    python - <<'PY' >> "$report" 2>&1
-from dotenv import load_dotenv
-load_dotenv();print("dotenv loaded")
-PY
-    if [[ -f ".env" ]]; then
-        echo ".env OK ✅" | tee -a "$report"
-    else
-        echo "⚠️ .env missing" | tee -a "$report"
-    fi
-    log_action "🔁 Restore completed from $archive"
-}
-
-# ============================================================================
-# BACKUP MENU
+# 8) MENUS
 # ============================================================================
 backup_menu() {
     while true; do
-        echo -e "\n=== 📦 BACKUP MENU ==="
-        echo "[1] Run Full Local Backup"
-        echo "[2] List Backups"
-        echo "[3] Restore From Backup"
-        echo "[4] Backup + Upload to Google Drive"
+        echo -e "\n${C_BLUE}--- 📦 Backup & Restore Menu ---${C_RESET}"
+        echo "[1] Dry-Run: show what WOULD be backed up"
+        echo "[2] Run Full Local Backup"
+        echo "[3] Run Backup + Upload to Google Drive"
+        echo "[4] Restore From Local Backup"
         echo "[0] Back to Main Menu"
-        read -p "Choice: " opt
+        read -p "Choose an option: " opt
         case "$opt" in
-            1) run_full_backup ;;
-            2) ls -1t "$BACKUP_DIR"/dream-backup-*.tar.gz 2>/dev/null || echo "No backups yet." ;;
-            3) restore_from_backup ;;
-            4) run_full_backup && latest=$(ls -1t "$BACKUP_DIR"/dream-backup-*.tar.gz | head -n1) && upload_to_gdrive "$latest" ;;
+            1) backup_dry_run ;;
+            2) run_full_backup ;;
+            3) run_full_backup && latest=$(ls -1t "$BACKUP_DIR"/dream-backup-*.tar.gz | head -n1) && upload_to_gdrive "$latest" ;;
+            4) restore_from_backup ;;
             0) break ;;
-            *) echo "❌ Invalid." ;;
+            *) print_error "Invalid option." ;;
         esac
     done
 }
 
-# ============================================================================
-# MAIN MENU
-# ============================================================================
+restart_menu() {
+    while true; do
+        echo -e "\n${C_RED}--- ⚡️ System Restart Menu ---${C_RESET}"
+        print_warning "Use with care."
+        echo "[1] Restart Application (Gunicorn)"
+        echo "[2] Restart Web Server (NGINX)"
+        echo "[3] REBOOT ENTIRE SERVER"
+        echo "[0] Back to Main Menu"
+        read -p "Choose an option: " opt
+        case "$opt" in
+            1) restart_service "$GUNICORN_SERVICE" ;;
+            2) restart_service "$NGINX_SERVICE" ;;
+            3) reboot_server ;;
+            0) break ;;
+            *) print_error "Invalid option." ;;
+        esac
+    done
+}
+
 main_menu() {
     while true; do
-        echo -e "\n🌟 Project Toolkit – DreamArtMachine"
-        echo "[1] Git PULL / Sync from GitHub"
-        echo "[2] Git PUSH / Commit & Push to GitHub"
-        echo "[3] Run Full QA, QC, & Testing (via pytest + SKU checks)"
-        echo "[4] System Health Check (disk, RAM, .env, pip outdated)"
-        echo "[5] Backup Management"
-        echo "[6] Export Log Snapshot (last 60 min)"
-        echo "[7] Run Code Stacker Tool"
-        echo "[8] Safe Stash → Git Pull → Reapply (optional)"
+        echo -e "\n${C_CYAN}🌟 Project Toolkit – DreamArtMachine 🌟${C_RESET}"
+        echo -e "${C_YELLOW}--- Git & Deployment ---${C_RESET}"
+        echo " [1] Git PULL & Deploy"
+        echo " [2] Run QA, Commit & PUSH"
+        echo -e "${C_YELLOW}--- System Management ---${C_RESET}"
+        echo " [3] Backup & Restore"
+        echo " [4] System Restart Options"
+        echo " [5] System Health Check"
+        echo -e "${C_YELLOW}--- QA & Maintenance ---${C_RESET}"
+        echo " [6] Run Full QA Suite"
+        echo " [7] Update Python Dependencies"
+        echo " [8] Cleanup Old Logs & Backups"
+        echo -e "${C_YELLOW}--- Developer Tools ---${C_RESET}"
+        echo " [9] View Live Application Log"
+        echo "[10] Run Code Stacker Tool"
         echo "[0] Exit"
-        read -p "Choose: " opt
+        read -p "Choose an option: " opt
         case "$opt" in
-            1) git_pull_safe ;;
+            1) git_pull_and_restart ;;
             2) git_push_safe ;;
-            3) run_tests ;;
-            4) system_health_check ;;
-            5) backup_menu ;;
-            6) export_logs_snapshot ;;
-            7) run_code_stacker ;;
-            8)
-                echo "🟡 Checking for local changes..."
-                if git diff --quiet && git diff --cached --quiet; then
-                    echo "✅ No local changes to stash."
-                else
-                    STASH_MSG="Toolkit auto-stash $(date '+%Y-%m-%d %H:%M:%S')"
-                    git stash push -m "$STASH_MSG"
-                    echo "🧾 Local changes stashed: '$STASH_MSG'"
-                    log_action "🟡 Git stash created before pull."
-                fi
-
-                echo "🔄 Pulling latest changes from GitHub..."
-                if git pull; then
-                    echo "✅ Git pull successful."
-                    log_action "✅ Git pull completed with stash safety."
-                else
-                    echo "❌ Git pull failed."
-                    log_action "❌ Git pull failed after stash."
-                    return 1
-                fi
-
-                echo ""
-                read -p "🔁 Reapply stashed changes now? (y/N): " confirm
-                if [[ "$confirm" =~ ^[Yy]$ ]]; then
-                    if git stash pop; then
-                        echo "✅ Stash reapplied successfully."
-                        log_action "🔁 Git stash popped after pull."
-                    else
-                        echo "⚠️ Merge conflicts may have occurred when applying the stash."
-                        log_action "⚠️ Git stash pop had conflicts."
-                    fi
-                else
-                    echo "📦 Stash saved. You can reapply later using: git stash pop"
-                    log_action "📦 Stash retained for manual pop."
-                fi
-                ;;
+            3) backup_menu ;;
+            4) restart_menu ;;
+            5) system_health_check ;;
+            6) run_tests ;;
+            7) update_dependencies ;;
+            8) cleanup_disk ;;
+            9) view_live_log ;;
+            10) run_code_stacker ;;
             0) echo "👋 Bye legend!"; exit 0 ;;
-            *) echo "❌ Invalid option." ;;
+            *) print_error "Invalid option." ;;
         esac
     done
 }
 
-
 # ============================================================================
-# CLI SHORTCUTS
+# 9) ENTRYPOINT
 # ============================================================================
-case "$1" in
-    --run-backup) run_full_backup ;;
-    --upload-latest)
-        latest=$(ls -1t "$BACKUP_DIR"/dream-backup-*.tar.gz | head -n1)
-        upload_to_gdrive "$latest"
-        ;;
-    --list-backups) ls -1t "$BACKUP_DIR"/dream-backup-*.tar.gz ;;
-    --restore-latest) restore_from_backup latest ;;
-    --restore-latest-auto) restore_from_backup latest --auto ;;
-    --code-stacker) run_code_stacker ;;
-    --run-tests) run_tests ;;
-    --validate-skus) python tools/validate_sku_integrity.py ;;
-    --run-pip-check) pip_outdated_check ;;
-    --repair-orphans)
-        shift
-        python tools/repair_orphan_skus.py "$@"
-        ;;
-    *) main_menu ;;
-esac
+if [[ $# -gt 0 ]]; then
+    case "$1" in
+        --backup) run_full_backup ;;
+        --backup-upload) run_full_backup && latest=$(ls -1t "$BACKUP_DIR"/dream-backup-*.tar.gz | head -n1) && upload_to_gdrive "$latest" ;;
+        --test) run_tests ;;
+        --pull) git_pull_and_restart ;;
+        --push) git_push_safe ;;
+        --stack) run_code_stacker ;;
+        --backup-dryrun) backup_dry_run ;;
+        *) print_error "Invalid arg '$1'. Run without args for menu." ;;
+    esac
+else
+    main_menu
+fi

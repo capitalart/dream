@@ -1,0 +1,16 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.2, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/dream
+configfile: pytest.ini
+plugins: pytest_check_links-0.10.1, anyio-4.10.0
+collected 13 items
+
+.pytest_cache/README.md .                                                [  7%]
+tests/test_homepage.py ...                                               [ 30%]
+tests/test_image_config.py .                                             [ 38%]
+tests/test_pip_outdated.py .                                             [ 46%]
+tests/test_restore_integrity.py .                                        [ 53%]
+tests/test_security_layer.py ..                                          [ 69%]
+tests/test_validate_sku_integrity.py ....                                [100%]
+
+======================== 13 passed, 1 warning in 13.48s ========================
