@@ -1,7 +1,6 @@
 import logging
 
 from flask import Blueprint, jsonify, request, url_for
-from flask_login import login_required
 from werkzeug.utils import secure_filename
 
 from services.artwork_analysis_service import analyze_artwork
@@ -33,7 +32,6 @@ def process_analysis_vision() -> tuple[dict, int]:
 # New Analyze Route
 # ==========================================================================
 @bp.route("/analyze/<aspect>/<filename>", methods=["POST"])
-@login_required
 def analyze_route(aspect: str, filename: str):
     """Analyse an uploaded artwork and return redirect info."""
     safe_name = secure_filename(filename)

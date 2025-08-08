@@ -10,7 +10,6 @@ import os
 from datetime import datetime
 
 from flask import Blueprint, redirect, render_template, url_for
-from flask_login import login_required
 
 import config
 from routes import utils as routes_utils
@@ -21,14 +20,12 @@ logger = logging.getLogger(__name__)
 
 
 @bp.route("/")
-@login_required
 def root() -> "Response":
     """Redirect the base URL to /home."""
     return redirect(url_for("home.home"))
 
 
 @bp.route("/home")
-@login_required
 def home() -> str:
     """Render the application homepage."""
     return render_template(
@@ -39,7 +36,6 @@ def home() -> str:
 
 
 @bp.route("/artworks")
-@login_required
 def artworks() -> str:
     """List all unanalysed artworks ready for processing."""
     try:
@@ -63,7 +59,6 @@ def artworks() -> str:
 
 
 @bp.route("/finalised")
-@login_required
 def finalised() -> str:
     """Render the finalised artworks page."""
     return render_template(

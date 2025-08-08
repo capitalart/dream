@@ -26,6 +26,8 @@ LOG_DIR = BASE_DIR / "logs"
 INPUTS_DIR = BASE_DIR / "inputs"
 MOCKUPS_DIR = INPUTS_DIR / "mockups"
 MASTER_ARTWORK_PATHS_FILE = BASE_DIR / "master-artwork-paths.json"
+# Database
+DB_PATH = BASE_DIR / "dream.db"
 # SKU tracking
 SKU_TRACKER = BASE_DIR / "sku_tracker.json"
 SKU_PREFIX = "RJC"
