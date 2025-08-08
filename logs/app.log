@@ -51,3 +51,5 @@ Traceback (most recent call last):
   File "/home/dream/venv/lib/python3.11/site-packages/werkzeug/routing/map.py", line 924, in build
     raise BuildError(endpoint, values, method, self)
 werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'home.delete_unanalysed_artwork' with values ['slug']. Did you mean 'home.artworks' instead?
+2025-08-08 15:09:42,780 INFO services.sku_service: Assigned new SKU RJC-00010
+2025-08-08 15:09:42,799 WARNING init.image_config: 📦 Large image loaded: /home/dream/art-processing/unanalysed-artwork/forest-reflection-fire-beneath-water-blue-trees-mirrored-in-glowing-floodwaters-fire-sky-above-spiri-1/forest-reflection-fire-beneath-water-blue-trees-mirrored-in-glowing-floodwaters-fire-sky-above-spiri-1.jpg (11520x14400)
