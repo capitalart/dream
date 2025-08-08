@@ -3,7 +3,29 @@
    Uses --header-bg variable for theme-aware headers.
    ======================================================== */
 
+/* Prevent sticky header overlap on anchor/first content */
+html { scroll-padding-top: var(--header-height, 72px); }
+
+/* Main container */
+.container {
+  max-width: 2400px;
+  margin: 0 auto;
+  padding: 2.5rem 2rem; /* generous top padding clears header */
+  box-sizing: border-box;
+}
+
+@media (max-width: 1000px) { .container { padding: 1.6rem 1rem; } }
+@media (max-width: 700px)  { .container { padding: 1.2rem .75rem; } }
+
 /* === Layout Grids, Columns & Rows === */
+.artwork-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Buttons rendered as links should inherit button color */
+.button-row a.btn { color: var(--btn-primary-text); text-decoration: none; }
 .review-artwork-grid, .row { display: flex; flex-wrap: wrap; gap: 2.5rem; align-items: flex-start; width: 100%; }
 .exports-special-grid { display: grid; grid-template-columns: 1fr 1.7fr; gap: 2em; margin: 2em 0; }
 .page-title-row { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 2.5rem; }
