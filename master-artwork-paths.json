@@ -1,0 +1,7 @@
+{
+  "test-art": {
+    "image": "/home/dream/art-processing/processed-artwork/test-art/test-art.jpg",
+    "analysis": "/home/dream/art-processing/processed-artwork/test-art/test-art-analysis.json",
+    "openai": "/home/dream/art-processing/processed-artwork/test-art/test-art-openai.jpg"
+  }
+}

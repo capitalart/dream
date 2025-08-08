@@ -1,57 +1,74 @@
-import logging
+# routes/analyze_routes.py
+# ======================================================================
+# Analyze Routes – JSON API endpoints for artwork analysis
+# ======================================================================
+
+from __future__ import annotations
+
 from pathlib import Path
+from typing import Any, Dict
 
-from flask import Blueprint, jsonify, request, url_for
-from flask_login import login_required
-from werkzeug.utils import secure_filename
+from flask import Blueprint, jsonify, request, current_app, url_for
+from werkzeug.exceptions import BadRequest
 
+import config
 from services.artwork_analysis_service import analyze_artwork
-from scripts.generate_composites import generate as generate_mockups
 
 bp = Blueprint("analysis", __name__)
 
-logger = logging.getLogger(__name__)
-
-
-def _secure_path(name: str) -> str:
-    """Return a safe relative path for a filename."""
-    parts = [secure_filename(p) for p in Path(name).parts]
-    return "/".join(parts)
-
-
-@bp.route("/process-analysis-vision/", methods=["POST"])
-def process_analysis_vision() -> tuple[dict, int]:
-    data = request.get_json(silent=True) or {}
-    filename = data.get("filename")
-    if not filename:
-        return {"error": "filename required"}, 400
-    filename = secure_filename(filename)
-    try:
-        slug = analyze_artwork(filename)
-        generate_mockups(slug)
-    except FileNotFoundError:
-        logger.error("File not found during analysis: %s", filename)
-        return {"error": "file not found"}, 404
-
-    return {"slug": slug, "status": "complete"}, 200
-
-
-# ==========================================================================
-# New Analyze Route
-# ==========================================================================
-@bp.route("/analyze/<aspect>/<path:filename>", methods=["POST"])
-@login_required
+# ----------------------------------------------------------------------
+# POST /analyze/<aspect>/<path:filename>
+# - <aspect> is a label like "square", "4x5", etc.
+# - <filename> is a RELATIVE path under UNANALYSED_ARTWORK_DIR, e.g.
+#       "test-art/test-art-ANALYSE.jpg"
+# Returns JSON: { success: bool, redirect_url?: str, error?: str }
+# ----------------------------------------------------------------------
+@bp.post("/analyze/<aspect>/<path:filename>")
 def analyze_route(aspect: str, filename: str):
-    """Analyse an uploaded artwork and return redirect info."""
-    safe_name = _secure_path(filename)
-    provider = request.form.get("provider", "openai").lower()
-    try:
-        slug = analyze_artwork(safe_name)
-        generate_mockups(slug)
-    except FileNotFoundError:
-        logger.error("File not found during analysis: %s", safe_name)
+    """
+    Analyse an uploaded artwork and return redirect information as JSON.
+
+    IMPORTANT:
+    - Do NOT pass `filename` through `secure_filename` because we rely on the
+      subfolder (slug) component, e.g. "slug/slug-ANALYSE.jpg".
+    """
+    provider = (request.form.get("provider") or "openai").strip().lower()
+
+    # Build the real path inside UNANALYSED_ARTWORK_DIR safely
+    rel = Path(filename)
+    # Prevent any path escaping
+    if rel.is_absolute() or ".." in rel.parts:
+        raise BadRequest("Invalid filename")
+
+    src_path = (config.UNANALYSED_ARTWORK_DIR / rel).resolve()
+    root_real = config.UNANALYSED_ARTWORK_DIR.resolve()
+    if not str(src_path).startswith(str(root_real)):
+        raise BadRequest("Invalid path scope")
+
+    if not src_path.exists():
+        current_app.logger.error("File not found during analysis: %s", rel)
         return jsonify({"error": "file not found"}), 404
-    redirect_url = url_for("finalise.edit_listing", slug=slug)
-    return jsonify(
-        {"success": True, "provider": provider, "redirect_url": redirect_url}
-    )
+
+    # Derive slug and the actual filename for downstream helpers
+    slug = rel.parts[0]
+    fname = rel.name
+
+    try:
+        # Let the service do the heavy lifting. We pass the resolved path so it
+        # never has to reconstruct using underscores etc.
+        result_slug = analyze_artwork(
+            rel_path=str(rel),          # keep a stable, portable relative path
+            src_path=src_path,          # absolute path to the ANALYSE image
+            aspect=aspect,
+            provider=provider,
+            slug_hint=slug,             # hint for SKU/slug logic if needed
+            filename_hint=fname,        # hint for logging
+        )
+    except Exception as exc:  # noqa: BLE001 – we want a JSON 500 with log
+        current_app.logger.exception("Analysis failed for %s", rel)
+        return jsonify({"error": str(exc)}), 500
+
+    # Where to send the user next
+    to_slug = result_slug or slug
+    edit_url = url_for("finalise.edit_listing", slug=to_slug)
+    return jsonify({"success": True, "redirect_url": edit_url}), 200

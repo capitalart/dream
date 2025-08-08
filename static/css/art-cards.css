@@ -8,22 +8,8 @@
 .artwork-info-card h2 { font-size: 1.21em; font-weight: bold; margin-bottom: 0.6em; }
 .gallery-section { margin: 2.5em auto 3.5em auto; max-width: 78.125rem; padding: 0 1em;}
 
-/* FIX: Adjusted the minmax value to better achieve a 5-column layout on wide screens */
-.artwork-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5em; margin-bottom: 2em; }
-
-/* Responsive grid breakpoints */
-@media (max-width: 1800px) {
-  .artwork-grid { grid-template-columns: repeat(4, 1fr); }
-}
-@media (max-width: 1400px) {
-  .artwork-grid { grid-template-columns: repeat(3, 1fr); }
-}
-@media (max-width: 1000px) {
-  .artwork-grid { grid-template-columns: repeat(2, 1fr); }
-}
-@media (max-width: 600px) {
-  .artwork-grid { grid-template-columns: 1fr; }
-}
+/* Artworks grid */
+.artwork-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.25rem; margin-bottom: 2em;}
 
 .gallery-card { position: relative; background: var(--card-bg); border: 0.0625rem solid var(--card-border, #000); box-shadow: var(--shadow); display: flex; flex-direction: column; align-items: center; transition: box-shadow 0.18s, transform 0.12s; min-height: 22.8125rem; padding: 0.625rem; overflow: hidden;}
 .gallery-card:hover { box-shadow: 0 0.25rem 1rem #0002; transform: translateY(-0.25rem) scale(1.013);}
@@ -177,7 +163,7 @@
 
 /* Responsive Art Cards */
 @media (max-width: 1023px) {
-  .artwork-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 1.5em; margin-bottom: 2em; }
+  .artwork-grid { gap: 1.25rem; }
   .card-thumb { padding: 0.75rem 0 0.25rem 0; }
   .card-title { font-size: 1em; }
   .finalised-grid { grid-template-columns: repeat(auto-fit, minmax(13.75rem, 1fr)); }

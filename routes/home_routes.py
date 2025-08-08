@@ -7,9 +7,11 @@ from __future__ import annotations
 
 import logging
 import os
+import json
+import shutil
 from datetime import datetime
 
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import login_required
 
 import config
@@ -60,6 +62,48 @@ def artworks() -> str:
         google_configured=bool(os.getenv("GOOGLE_API_KEY")),
         get_artwork_image_url=routes_utils.get_artwork_image_url,
     )
+
+
+@bp.post("/artworks/delete-unanalysed/<slug>")
+@login_required
+def delete_unanalysed_artwork(slug: str):
+    slug = config.sanitize_slug(slug)
+    folder = config.UNANALYSED_ARTWORK_DIR / slug
+    removed = False
+    try:
+        if folder.exists():
+            shutil.rmtree(folder)
+            removed = True
+
+        registry_path = getattr(
+            config, "OUTPUT_JSON", getattr(config, "MASTER_ARTWORK_PATHS_FILE", None)
+        )
+        reg = {}
+        if registry_path and registry_path.exists():
+            try:
+                reg = json.loads(registry_path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError:
+                reg = {}
+
+        to_delete = []
+        for key, rec in reg.items():
+            cur = "|".join(
+                [rec.get("image", ""), rec.get("analysis", ""), rec.get("openai", "")]
+            )
+            if f"/{slug}/" in cur or key == slug:
+                to_delete.append(key)
+        for k in to_delete:
+            reg.pop(k, None)
+
+        if registry_path:
+            tmp = registry_path.with_suffix(".tmp")
+            tmp.write_text(json.dumps(reg, indent=2), encoding="utf-8")
+            os.replace(tmp, registry_path)
+
+        flash(("Deleted" if removed else "Nothing to delete") + f" for {slug}", "success")
+    except Exception as exc:  # pragma: no cover - defensive
+        flash(f"Delete failed for {slug}: {exc}", "danger")
+    return redirect(url_for("home.artworks"))
 
 
 @bp.route("/finalised")

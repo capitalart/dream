@@ -1,0 +1,45 @@
+============================= test session starts ==============================
+platform linux -- Python 3.11.2, pytest-8.4.1, pluggy-1.6.0
+rootdir: /home/dream
+configfile: pytest.ini
+plugins: pytest_check_links-0.10.1, anyio-4.10.0
+collected 15 items
+
+.pytest_cache/README.md .                                                [  6%]
+logs/health-check-2025-08-08_14-54-31.md .                               [ 13%]
+tests/test_analyze_route.py F                                            [ 20%]
+tests/test_homepage.py ...                                               [ 40%]
+tests/test_image_config.py .                                             [ 46%]
+tests/test_pip_outdated.py .                                             [ 53%]
+tests/test_restore_integrity.py .                                        [ 60%]
+tests/test_security_layer.py ..                                          [ 73%]
+tests/test_validate_sku_integrity.py ....                                [100%]
+
+=================================== FAILURES ===================================
+___________________________ test_analyze_route_smoke ___________________________
+
+client = <FlaskClient <Flask 'real_app'>>
+
+    def test_analyze_route_smoke(client):
+        login(client)
+        slug = "test-art"
+        filename = f"{slug}-ANALYSE.jpg"
+        rel_path = Path(slug) / filename
+        _create_image(config.UNANALYSED_ARTWORK_DIR / rel_path)
+    
+        resp = client.post(
+            f"/analyze/square/{rel_path}",
+            data={"provider": "openai"},
+            headers={"X-Requested-With": "XMLHttpRequest"},
+        )
+>       assert resp.status_code == 200
+E       assert 404 == 200
+E        +  where 404 = <WrapperTestResponse streamed [404 NOT FOUND]>.status_code
+
+tests/test_analyze_route.py:48: AssertionError
+------------------------------ Captured log call -------------------------------
+ERROR    services.artwork_analysis_service:artwork_analysis_service.py:52 Analysis failed for test-art_test-art-ANALYSE.jpg
+ERROR    routes.analyze_routes:analyze_routes.py:51 File not found during analysis: test-art_test-art-ANALYSE.jpg
+=========================== short test summary info ============================
+FAILED tests/test_analyze_route.py::test_analyze_route_smoke - assert 404 == 200
+=================== 1 failed, 14 passed, 1 warning in 13.32s ===================

@@ -44,3 +44,55 @@ Extension host agent listening on /tmp/code-52b17182-b953-4ad3-b9c6-95c7e25d64ae
 [12:08:51] Error while installing the extension github.copilot-chat Cannot read the extension from /home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0 file:///home/dream/.vscode-server/extensions/extensions.json
 New EH opened, aborting shutdown
 [12:13:10] New EH opened, aborting shutdown
+[14:51:03] Getting Manifest... donjayamanne.githistory
+[14:51:03] Installing extension: donjayamanne.githistory {
+  isMachineScoped: false,
+  installPreReleaseVersion: false,
+  pinned: false,
+  donotVerifySignature: false,
+  context: { clientTargetPlatform: 'darwin-x64' },
+  isApplicationScoped: false,
+  profileLocation: xr {
+    scheme: 'file',
+    authority: '',
+    path: '/home/dream/.vscode-server/extensions/extensions.json',
+    query: '',
+    fragment: '',
+    _formatted: 'file:///home/dream/.vscode-server/extensions/extensions.json',
+    _fsPath: '/home/dream/.vscode-server/extensions/extensions.json'
+  },
+  productVersion: { version: '1.102.3', date: '2025-07-29T03:00:23.339Z' }
+}
+[14:51:03] [/home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0]: Extension is not compatible with Code 1.102.3. Extension requires: ^1.103.0-20250728.
+[14:51:03] [/home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0]: Extension is not compatible with Code 1.102.3. Extension requires: ^1.103.0-20250728.
+[14:51:04] Extension signature verification result for donjayamanne.githistory: Success. Internal Code: 0. Executed: true. Duration: 938ms.
+[14:51:04] Extracted extension to file:///home/dream/.vscode-server/extensions/donjayamanne.githistory-0.6.20: donjayamanne.githistory
+[14:51:04] Renamed to /home/dream/.vscode-server/extensions/donjayamanne.githistory-0.6.20
+[14:51:04] [/home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0]: Extension is not compatible with Code 1.102.3. Extension requires: ^1.103.0-20250728.
+[14:51:04] Extension installed successfully: donjayamanne.githistory file:///home/dream/.vscode-server/extensions/extensions.json
+[14:51:09] Getting Manifest... eamodio.gitlens
+[14:51:09] Installing extension: eamodio.gitlens {
+  isMachineScoped: false,
+  installPreReleaseVersion: false,
+  pinned: false,
+  donotVerifySignature: false,
+  context: { clientTargetPlatform: 'darwin-x64' },
+  isApplicationScoped: false,
+  profileLocation: xr {
+    scheme: 'file',
+    authority: '',
+    path: '/home/dream/.vscode-server/extensions/extensions.json',
+    query: '',
+    fragment: '',
+    _formatted: 'file:///home/dream/.vscode-server/extensions/extensions.json',
+    _fsPath: '/home/dream/.vscode-server/extensions/extensions.json'
+  },
+  productVersion: { version: '1.102.3', date: '2025-07-29T03:00:23.339Z' }
+}
+[14:51:09] [/home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0]: Extension is not compatible with Code 1.102.3. Extension requires: ^1.103.0-20250728.
+[14:51:09] [/home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0]: Extension is not compatible with Code 1.102.3. Extension requires: ^1.103.0-20250728.
+[14:51:11] Extension signature verification result for eamodio.gitlens: Success. Internal Code: 0. Executed: true. Duration: 973ms.
+[14:51:11] Extracted extension to file:///home/dream/.vscode-server/extensions/eamodio.gitlens-17.3.3: eamodio.gitlens
+[14:51:11] Renamed to /home/dream/.vscode-server/extensions/eamodio.gitlens-17.3.3
+[14:51:11] [/home/dream/.vscode-server/extensions/github.copilot-chat-0.30.0]: Extension is not compatible with Code 1.102.3. Extension requires: ^1.103.0-20250728.
+[14:51:11] Extension installed successfully: eamodio.gitlens file:///home/dream/.vscode-server/extensions/extensions.json
