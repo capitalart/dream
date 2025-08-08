@@ -99,7 +99,8 @@ function runAnalyze(card, provider, filename) {
   // Get the aspect ratio from the card's data attribute
   const aspect = card.dataset.aspect;
   // Build the correct URL
-  const actionUrl = `/analyze/${encodeURIComponent(aspect)}/${encodeURIComponent(filename)}`;
+  const encodedFilename = filename.split('/').map(encodeURIComponent).join('/');
+  const actionUrl = `/analyze/${encodeURIComponent(aspect)}/${encodedFilename}`;
 
   const formData = new FormData();
   formData.append('provider', provider);
