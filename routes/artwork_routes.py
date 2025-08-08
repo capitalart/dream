@@ -19,7 +19,6 @@ from flask import (
     send_file,
     url_for,
 )
-from flask_login import login_required
 from werkzeug.utils import secure_filename, safe_join
 
 import json
@@ -91,7 +90,6 @@ def _serve_from_base(base: Path, subpath: str):
 # 2. Upload Handling
 # ==========================================================================
 @bp.route("/upload", methods=["GET", "POST"])
-@login_required
 def upload_artwork():
     """Handle new artwork file uploads with derivative generation."""
     if request.method == "POST":
@@ -156,21 +154,18 @@ def upload_artwork():
 # 3. Image Serving Routes
 # ==========================================================================
 @bp.route("/unanalysed/<path:filename>")
-@login_required
 def unanalysed_image(filename: str):
     """Serve raw uploaded artwork awaiting analysis."""
     return _serve_from_base(config.UNANALYSED_ARTWORK_DIR, filename)
 
 
 @bp.route("/processed/<path:filename>")
-@login_required
 def processed_image(filename: str):
     """Serve processed artwork images."""
     return _serve_from_base(config.PROCESSED_ARTWORK_DIR, filename)
 
 
 @bp.route("/finalised/<path:filename>")
-@login_required
 def finalised_image(filename: str):
     """Serve finalised artwork images."""
     return _serve_from_base(config.FINALISED_ARTWORK_DIR, filename)
