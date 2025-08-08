@@ -1,2 +1,53 @@
 2025-08-08 14:46:51,234 INFO services.sku_service: Assigned new SKU RJC-00007
 2025-08-08 14:46:51,266 WARNING init.image_config: 📦 Large image loaded: /home/dream/art-processing/unanalysed-artwork/waterhole-at-sunset-generate-an-aboriginal-dot-painting-of-an-outback-waterhole-at-sunset-with-orang-2/waterhole-at-sunset-generate-an-aboriginal-dot-painting-of-an-outback-waterhole-at-sunset-with-orang-2.jpg (11520x14400)
+2025-08-08 15:07:27,837 INFO services.sku_service: Assigned new SKU RJC-00008
+2025-08-08 15:07:27,858 WARNING init.image_config: 📦 Large image loaded: /home/dream/art-processing/unanalysed-artwork/native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1/native-hibiscus-alyogyne-huegelii-generate-an-aboriginal-dot-painting-of-a-native-hibiscus-alyogyne-1.jpg (11520x14400)
+2025-08-08 15:08:33,059 INFO services.sku_service: Assigned new SKU RJC-00009
+2025-08-08 15:08:33,078 WARNING init.image_config: 📦 Large image loaded: /home/dream/art-processing/unanalysed-artwork/outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8/outback-billabong-generate-an-aboriginal-dot-painting-of-an-outback-billabong-surrounded-by-reeds-an-8.jpg (11520x14400)
+2025-08-08 15:08:38,313 ERROR app: Exception on /artworks [GET]
+Traceback (most recent call last):
+  File "/home/dream/venv/lib/python3.11/site-packages/flask/app.py", line 1511, in wsgi_app
+    response = self.full_dispatch_request()
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/venv/lib/python3.11/site-packages/flask/app.py", line 919, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/venv/lib/python3.11/site-packages/flask/app.py", line 917, in full_dispatch_request
+    rv = self.dispatch_request()
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/venv/lib/python3.11/site-packages/flask/app.py", line 902, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/venv/lib/python3.11/site-packages/flask_login/utils.py", line 290, in decorated_view
+    return current_app.ensure_sync(func)(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/routes/home_routes.py", line 56, in artworks
+    )
+      
+  File "/home/dream/venv/lib/python3.11/site-packages/flask/templating.py", line 150, in render_template
+    return _render(app, template, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/venv/lib/python3.11/site-packages/flask/templating.py", line 131, in _render
+    rv = template.render(context)
+         ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/venv/lib/python3.11/site-packages/jinja2/environment.py", line 1295, in render
+    self.environment.handle_exception()
+  File "/home/dream/venv/lib/python3.11/site-packages/jinja2/environment.py", line 942, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "/home/dream/templates/artworks.html", line 1, in top-level template code
+    {% extends "main.html" %}
+  File "/home/dream/templates/main.html", line 93, in top-level template code
+    {% block content %}{% endblock %}
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/templates/artworks.html", line 33, in block 'content'
+    <form method="post" action="{{ url_for('home.delete_unanalysed_artwork', slug=art.slug) }}" onsubmit="return confirm('Delete this artwork and its files? This cannot be undone.');">
+    ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/venv/lib/python3.11/site-packages/flask/app.py", line 1121, in url_for
+    return self.handle_url_build_error(error, endpoint, values)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/venv/lib/python3.11/site-packages/flask/app.py", line 1110, in url_for
+    rv = url_adapter.build(  # type: ignore[union-attr]
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/dream/venv/lib/python3.11/site-packages/werkzeug/routing/map.py", line 924, in build
+    raise BuildError(endpoint, values, method, self)
+werkzeug.routing.exceptions.BuildError: Could not build url for endpoint 'home.delete_unanalysed_artwork' with values ['slug']. Did you mean 'home.artworks' instead?
