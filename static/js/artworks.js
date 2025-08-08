@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!card) return;
       
       const provider = btn.dataset.provider;
-      const filename = card.dataset.analyse;
+      const filename = card.dataset.filename;
       
       if (!filename || !provider) {
         alert('Error: Missing filename or provider information.');

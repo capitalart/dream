@@ -37,16 +37,12 @@ def process_analysis_vision() -> tuple[dict, int]:
 def analyze_route(aspect: str, filename: str):
     """Analyse an uploaded artwork and return redirect info."""
     safe_name = secure_filename(filename)
-    provider = request.form.get("provider", "openai").lower()
     try:
         slug = analyze_artwork(safe_name)
         generate_mockups(slug)
     except FileNotFoundError:
         logger.error("File not found during analysis: %s", safe_name)
         return jsonify({"error": "file not found"}), 404
-    redirect_url = url_for(
-        "artwork.edit_listing", aspect=aspect, filename=f"{slug}.jpg"
-    )
-    return jsonify(
-        {"success": True, "provider": provider, "redirect_url": redirect_url}
-    )
+
+    redirect_url = url_for("finalise.edit_listing", slug=slug)
+    return jsonify({"success": True, "redirect_url": redirect_url})
