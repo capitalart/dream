@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from flask import Blueprint, jsonify, request, url_for
 from flask_login import login_required
@@ -10,6 +11,12 @@ from scripts.generate_composites import generate as generate_mockups
 bp = Blueprint("analysis", __name__)
 
 logger = logging.getLogger(__name__)
+
+
+def _secure_path(name: str) -> str:
+    """Return a safe relative path for a filename."""
+    parts = [secure_filename(p) for p in Path(name).parts]
+    return "/".join(parts)
 
 
 @bp.route("/process-analysis-vision/", methods=["POST"])
@@ -32,11 +39,11 @@ def process_analysis_vision() -> tuple[dict, int]:
 # ==========================================================================
 # New Analyze Route
 # ==========================================================================
-@bp.route("/analyze/<aspect>/<filename>", methods=["POST"])
+@bp.route("/analyze/<aspect>/<path:filename>", methods=["POST"])
 @login_required
 def analyze_route(aspect: str, filename: str):
     """Analyse an uploaded artwork and return redirect info."""
-    safe_name = secure_filename(filename)
+    safe_name = _secure_path(filename)
     provider = request.form.get("provider", "openai").lower()
     try:
         slug = analyze_artwork(safe_name)
@@ -44,9 +51,7 @@ def analyze_route(aspect: str, filename: str):
     except FileNotFoundError:
         logger.error("File not found during analysis: %s", safe_name)
         return jsonify({"error": "file not found"}), 404
-    redirect_url = url_for(
-        "artwork.edit_listing", aspect=aspect, filename=f"{slug}.jpg"
-    )
+    redirect_url = url_for("finalise.edit_listing", slug=slug)
     return jsonify(
         {"success": True, "provider": provider, "redirect_url": redirect_url}
     )

@@ -1,31 +1,33 @@
 {% extends "main.html" %}
 {% block title %}Artworks | DreamArtMachine{% endblock %}
 {% block content %}
-<h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-two-light.svg') }}" class="hero-step-icon" alt="Step 2: Artwork" />Artwork</h1>
-<p class="page-description">Browse and analyze uploaded artworks.</p>
-<section class="main-content">
-  {% if artworks %}
-  <div class="gallery-grid">
-    {% for art in artworks %}
-    <div class="gallery-card" data-analyse="{{ art.analyse or '' }}" data-aspect="{{ art.aspect }}" data-sku="{{ art.sku }}">
-      {% if art.thumb_path %}
-      <img src="{{ get_artwork_image_url('unanalysed', art.thumb_path) }}" alt="{{ art.slug }}" class="card-img-top">
-      {% else %}
-      <div class="card-img-top placeholder">No thumbnail</div>
-      {% endif %}
-      <div class="card-body">
-        <h3 class="card-title">{{ art.filename }}</h3>
-        <div class="card-meta">SKU: {{ art.sku }}<br>Uploaded: {{ art.upload_date }}</div>
-        <button class="btn btn-primary btn-analyze" data-provider="openai">Analyze</button>
+<div class="page-content">
+  <h1><img src="{{ url_for('static', filename='icons/svg/light/number-circle-two-light.svg') }}" class="hero-step-icon" alt="Step 2: Artwork" />Artwork</h1>
+  <p class="page-description">Browse and analyze uploaded artworks.</p>
+  <section class="main-content">
+    {% if artworks %}
+    <div class="artwork-grid">
+      {% for art in artworks %}
+      <div class="gallery-card" data-analyse="{{ art.analyse or '' }}" data-aspect="{{ art.aspect }}" data-sku="{{ art.sku }}">
+        {% if art.thumb_path %}
+        <img src="{{ get_artwork_image_url('unanalysed', art.thumb_path) }}" alt="{{ art.slug }}" class="card-img-top">
+        {% else %}
+        <div class="card-img-top placeholder">No thumbnail</div>
+        {% endif %}
+        <div class="card-body">
+          <h3 class="card-title">{{ art.filename }}</h3>
+          <div class="card-meta">SKU: {{ art.sku }}<br>Uploaded: {{ art.upload_date }}</div>
+          <button class="btn btn-primary btn-analyze" data-provider="openai">Analyze</button>
+        </div>
+        <div class="card-overlay hidden"></div>
       </div>
-      <div class="card-overlay hidden"></div>
+      {% endfor %}
     </div>
-    {% endfor %}
-  </div>
-  {% else %}
-  <p>No artworks uploaded yet.</p>
-  {% endif %}
-</section>
+    {% else %}
+    <p>No artworks uploaded yet.</p>
+    {% endif %}
+  </section>
+</div>
 {% endblock %}
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/artworks.js') }}"></script>

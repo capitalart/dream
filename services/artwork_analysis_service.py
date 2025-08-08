@@ -1,4 +1,5 @@
 """Artwork analysis service for DreamArtMachine."""
+
 from __future__ import annotations
 
 import base64
@@ -51,7 +52,9 @@ def analyze_artwork(filename: str) -> str:
         logger.error("Analysis failed for %s", filename)
         raise FileNotFoundError(filename)
 
-    slug = sanitize_slug(Path(filename).stem)
+    stem = Path(filename).stem
+    stem = stem.replace("-ANALYSE", "").replace("-analyse", "")
+    slug = sanitize_slug(stem)
     slug_dir = (PROCESSED_ARTWORK_DIR / slug).resolve()
     slug_dir.mkdir(parents=True, exist_ok=True)
 
@@ -89,7 +92,7 @@ def _perform_analysis(slug: str, image: Path) -> Tuple[Dict[str, Any], bytes]:
     api_key = os.getenv("OPENAI_API_KEY")
     if OpenAI and api_key:
         try:  # pragma: no cover - network dependent
-            client = OpenAI(api_key=api_key)
+            client = OpenAI()
             with img_path.open("rb") as fh:
                 resp = client.images.generate_variation(
                     model="gpt-image-1", image=fh, timeout=30
@@ -146,4 +149,3 @@ def _update_master_paths(
     with tmp.open("w", encoding="utf-8") as fh:
         json.dump(data, fh, indent=2)
     tmp.replace(MASTER_ARTWORK_PATHS_FILE)
-
